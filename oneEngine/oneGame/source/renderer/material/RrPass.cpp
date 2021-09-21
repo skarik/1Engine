@@ -209,6 +209,14 @@ void RrPass::setVertexSpecificationByCommonList ( renderer::shader::Location* lo
 			m_vertexSpecification[i].dataFormat = gpu::kFormatR16G16B16A16UInteger;
 			m_vertexSpecification[i].dataStride = sizeof(uint16_t) * 4;
 			break;
+		case renderer::shader::Location::kUV2:
+			m_vertexSpecification[i].dataFormat = gpu::kFormatR32G32B32A32SFloat;
+			m_vertexSpecification[i].dataStride = sizeof(Vector4f);
+			break;
+		case renderer::shader::Location::kUV3:
+			m_vertexSpecification[i].dataFormat = gpu::kFormatR32G32B32A32SFloat;
+			m_vertexSpecification[i].dataStride = sizeof(Vector4f);
+			break;
 		case renderer::shader::Location::kIgnore:
 		case renderer::shader::Location::kInvalid:
 			ARCORE_ERROR("Invalid vertex attribute location specified!");

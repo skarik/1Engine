@@ -77,14 +77,14 @@ void rrMeshBuffer::InitMeshBuffers ( arModelData* const modelData )
 		m_bufferEnabled[renderer::shader::kVBufferSlotUV1] = true;
 	}
 	if (m_modeldata->texcoord2) {
-		m_buffer[renderer::shader::kVBufferSlotMaxPosition + 0].initAsVertexBuffer(NULL, gpu::kFormatR32G32B32A32SFloat, m_modeldata->vertexNum);
-		m_buffer[renderer::shader::kVBufferSlotMaxPosition + 0].uploadElements(NULL, m_modeldata->texcoord2, m_modeldata->vertexNum, gpu::kTransferWriteDiscardPrevious);
-		m_bufferEnabled[renderer::shader::kVBufferSlotMaxPosition + 0] = true;
+		m_buffer[renderer::shader::kVBufferSlotUV2].initAsVertexBuffer(NULL, gpu::kFormatR32G32B32A32SFloat, m_modeldata->vertexNum);
+		m_buffer[renderer::shader::kVBufferSlotUV2].uploadElements(NULL, m_modeldata->texcoord2, m_modeldata->vertexNum, gpu::kTransferWriteDiscardPrevious);
+		m_bufferEnabled[renderer::shader::kVBufferSlotUV2] = true;
 	}
 	if (m_modeldata->texcoord3) {
-		m_buffer[renderer::shader::kVBufferSlotMaxPosition + 1].initAsVertexBuffer(NULL, gpu::kFormatR32G32B32A32SFloat, m_modeldata->vertexNum);
-		m_buffer[renderer::shader::kVBufferSlotMaxPosition + 1].upload(NULL, m_modeldata->texcoord3, m_modeldata->vertexNum, gpu::kTransferWriteDiscardPrevious);
-		m_bufferEnabled[renderer::shader::kVBufferSlotMaxPosition + 1] = true;
+		m_buffer[renderer::shader::kVBufferSlotUV3].initAsVertexBuffer(NULL, gpu::kFormatR32G32B32A32SFloat, m_modeldata->vertexNum);
+		m_buffer[renderer::shader::kVBufferSlotUV3].upload(NULL, m_modeldata->texcoord3, m_modeldata->vertexNum, gpu::kTransferWriteDiscardPrevious);
+		m_bufferEnabled[renderer::shader::kVBufferSlotUV3] = true;
 	}
 
 	// upload index buffer:

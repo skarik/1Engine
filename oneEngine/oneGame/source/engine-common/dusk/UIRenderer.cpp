@@ -15,6 +15,7 @@
 #include "renderer/texture/RrRenderTexture.h"
 #include "renderer/utils/rrMeshBuilder2D.h"
 #include "renderer/utils/rrTextBuilder2D.h"
+#include "renderer/state/RaiiHelpers2.h"
 
 #include "engine-common/dusk/UI.h"
 #include "engine-common/dusk/Element.h"
@@ -60,12 +61,15 @@ dusk::UIRenderer::UIRenderer (UserInterface* ui)
 	dguiPass.m_surface.diffuseColor = Color(1.0F, 1.0F, 1.0F, 1.0F);
 	dguiPass.setTexture( TEX_MAIN, m_fontTexture );
 	dguiPass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{"shaders/v2d/duskui_default_vv.spv", "shaders/v2d/duskui_default_p.spv"}) );
-	renderer::shader::Location t_vspecDguiPass[] = {renderer::shader::Location::kPosition,
-													renderer::shader::Location::kUV0,
-													renderer::shader::Location::kColor,
-													renderer::shader::Location::kNormal, // Normals used for controlling text or shapes.
-													renderer::shader::Location::kUV1 }; // UV1 used for controlling scissor.
-	dguiPass.setVertexSpecificationByCommonList(t_vspecDguiPass, 5);
+	renderer::shader::Location t_vspecDguiPass[] = {
+		renderer::shader::Location::kPosition,
+		renderer::shader::Location::kUV0,
+		renderer::shader::Location::kColor,
+		renderer::shader::Location::kNormal, // Normals used for controlling text or shapes.
+		renderer::shader::Location::kUV1, // UV1 used for controlling scissor.
+		renderer::shader::Location::kUV2 // UV2 used for controlling mouse-glow
+		};
+	dguiPass.setVertexSpecificationByCommonList(t_vspecDguiPass, 6);
 	PassInitWithInput(1, &dguiPass);
 
 	// Create the render targets
@@ -346,12 +350,13 @@ void dusk::UIRenderer::P1RenderElements ( rrRenderContext* render_context, const
 	l_ctx.m_uir = this;
 	l_ctx.m_colors = &m_colors;
 
-	//
+	// ================================
 	// Update color state
+
 	m_colors.setSize(m_interface->m_elements.size());
 	m_colors.update();
 
-	//
+	// ================================
 	// Mesh generation
 
 	// Set up the mesh builder now
@@ -380,8 +385,34 @@ void dusk::UIRenderer::P1RenderElements ( rrRenderContext* render_context, const
 		return;
 	}
 
+	// ================================
+	// Parameter Setup
 
-	//
+	// Set up the constant buffer
+	struct DuskUI_Params
+	{
+		Vector4f positionTransform;
+		Vector4f scissorCoords;
+		Vector2f glowPosition;
+		float glowSize;
+		float glowStrength;
+	} duskUI_Params;
+
+	Vector2f offset, multiplier;
+	meshBuilder.getScreenMapping(multiplier, offset);
+
+	duskUI_Params.positionTransform = Vector4f( Vector2f(-offset.x / multiplier.x, -offset.y / multiplier.y), Vector2f(1.0F / multiplier.x, 1.0F / multiplier.y) );
+	duskUI_Params.scissorCoords = Vector4f(scissorArea.pos, scissorArea.size);
+	duskUI_Params.glowPosition = m_glowPosition;
+	duskUI_Params.glowSize = 200.0F;
+	duskUI_Params.glowStrength = 0.32F;
+
+	// Upload the draw params
+	gpu::Buffer cbDuskUI_Params = render_context->constantBuffer_pool->Allocate( sizeof(duskUI_Params) );
+	cbDuskUI_Params.upload(render_context->context_graphics, &duskUI_Params, sizeof(duskUI_Params), gpu::kTransferWriteDiscardPrevious);
+
+
+	// ================================
 	// Rendering
 
 	gpu::GraphicsContext* gfx = render_context->context_graphics;
@@ -420,13 +451,12 @@ void dusk::UIRenderer::P1RenderElements ( rrRenderContext* render_context, const
 	// Set the constant buffer used
 	gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_PER_OBJECT_EXTENDED, &m_cbufPerObjectSurfaces[1]);
 	gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_PER_OBJECT_EXTENDED, &m_cbufPerObjectSurfaces[1]);
+	gfx->setShaderCBuffer(gpu::kShaderStageVs, renderer::CBUFFER_USER0, &cbDuskUI_Params);
+	gfx->setShaderCBuffer(gpu::kShaderStagePs, renderer::CBUFFER_USER0, &cbDuskUI_Params);
 
 	// bind the index buffer
 	gfx->setIndexBuffer(&m_meshBuffer.m_indexBuffer, gpu::kIndexFormatUnsigned16);
 	// bind the vertex buffers
-	//for (int i = 0; i < renderer::shader::kVBufferSlotMaxCount; ++i)
-	//	if (m_meshBuffer.m_bufferEnabled[i])
-	//		gfx->setVertexBuffer(i, &m_meshBuffer.m_buffer[i], 0);
 	auto passAccess = PassAccess(kPassId);
 	for (int i = 0; i < passAccess.getVertexSpecificationCount(); ++i)
 	{

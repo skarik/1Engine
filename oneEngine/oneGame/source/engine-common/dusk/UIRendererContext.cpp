@@ -5,6 +5,36 @@
 #include "renderer/utils/rrMeshBuilder2D.h"
 #include "renderer/utils/rrTextBuilder2D.h"
 
+struct ErScissorParams
+{
+	ErScissorParams ( const Vector2f& scissor_position, const Vector2f& scissor_size )
+		: data(scissor_position, scissor_size )
+		{};
+
+	Vector4f	data;
+	operator const Vector4f&() const
+	{
+		return data;
+	}
+};
+
+struct ErVertexEffectParams
+{
+	ErVertexEffectParams ( const float additive_mouse_glow, const float multiplicative_mouse_glow )
+		: data(
+			additive_mouse_glow > 0 ? additive_mouse_glow : -multiplicative_mouse_glow,
+			0.0F,
+			0.0F,
+			0.0F)
+		{};
+
+	Vector4f	data;
+	operator const Vector4f&() const
+	{
+		return data;
+	}
+};
+
 void dusk::UIRendererContext::setScissor ( const Rect& scissor )
 {
 	m_currentScissor = scissor;
@@ -41,6 +71,7 @@ void dusk::UIRendererContext::generateColor( Element* source )
 	const Color kAccentColor (0.16F, 0.32F, 0.96F, 1.00F);
 	const Color kBackgroundColor (0.16F, 0.16F, 0.16F, 1.00F);
 	const Color kBackgroundBump (0.16F, 0.16F, 0.16F, 1.00F);
+	const Color kElementBump = kBackgroundBump * 0.5F;
 	const Color kAccentColorGray = kAccentColor.luminosityRGBA();
 
 	// Set up the theme defaults
@@ -54,6 +85,12 @@ void dusk::UIRendererContext::generateColor( Element* source )
 	// Create specific colors for each theme bit
 	if (m_colorType == kColorStyleBackground)
 	{
+	}
+	else if (m_colorType == kColorStyleElement)
+	{
+		l_bgDisabledColor = kBackgroundColor - kElementBump * 1.0F;
+		l_bgHoveredColor = kBackgroundColor + kBackgroundBump * 2.0F;
+		l_bgActiveColor = kBackgroundColor + kElementBump * 1.0F;
 	}
 	else if (m_colorType == kColorStyleElementEmphasized)
 	{
@@ -165,10 +202,11 @@ float dusk::UIRendererContext::getTextWidth ( TextFontStyle font, const char* st
 	return l_size.x;
 }
 
-void dusk::UIRendererContext::drawRectangle ( Element* source, const Rect& rectangle )
+void dusk::UIRendererContext::drawRectangle ( Element* source, const Rect& rectangle, const DrawRectParams& params )
 {
 	m_mb2->enableAttribute(renderer::shader::kVBufferSlotNormal);
 	m_mb2->enableAttribute(renderer::shader::kVBufferSlotUV1);
+	m_mb2->enableAttribute(renderer::shader::kVBufferSlotUV2);
 	auto tVertexCount = m_mb2->getModelDataVertexCount();
 
 	generateColor(source);
@@ -183,7 +221,9 @@ void dusk::UIRendererContext::drawRectangle ( Element* source, const Rect& recta
 		// Zero out normals to disable texture use on this shape
 		m_modeldata->normal[i] = Vector3f(0.0F, 0.0F, 0.0F);
 		// Shunt current scissor params into this shape
-		m_modeldata->texcoord1[i] = Vector4f(m_currentScissor.pos, m_currentScissor.size);
+		m_modeldata->texcoord1[i] = ErScissorParams(m_currentScissor.pos, m_currentScissor.size);
+		// Disable mouse glow effects
+		m_modeldata->texcoord2[i] = ErVertexEffectParams(params.interactible ? 1.0F : 0.0F, 0.0F);
 	}
 }
 
@@ -191,6 +231,7 @@ void dusk::UIRendererContext::drawBorder ( Element* source, const Rect& rectangl
 {
 	m_mb2->enableAttribute(renderer::shader::kVBufferSlotNormal);
 	m_mb2->enableAttribute(renderer::shader::kVBufferSlotUV1);
+	m_mb2->enableAttribute(renderer::shader::kVBufferSlotUV2);
 	auto tVertexCount = m_mb2->getModelDataVertexCount();
 
 	generateColor(source);
@@ -205,13 +246,16 @@ void dusk::UIRendererContext::drawBorder ( Element* source, const Rect& rectangl
 		// Zero out normals to disable texture use on this shape
 		m_modeldata->normal[i] = Vector3f(0.0F, 0.0F, 0.0F);
 		// Shunt current scissor params into this shape
-		m_modeldata->texcoord1[i] = Vector4f(m_currentScissor.pos, m_currentScissor.size);
+		m_modeldata->texcoord1[i] = ErScissorParams(m_currentScissor.pos, m_currentScissor.size);
+		// Disable mouse glow effects
+		m_modeldata->texcoord2[i] = ErVertexEffectParams(1.0F, 0.0F);
 	}
 }
 
 void dusk::UIRendererContext::drawText ( Element* source, const Vector2f& position, const char* str )
 {
 	m_mb2->enableAttribute(renderer::shader::kVBufferSlotUV1);
+	m_mb2->enableAttribute(renderer::shader::kVBufferSlotUV2);
 	auto tVertexCount = m_mb2->getModelDataVertexCount();
 
 	rrTextBuilder2D* l_textBuilder = static_cast<rrTextBuilder2D*>(m_mb2);
@@ -240,5 +284,7 @@ void dusk::UIRendererContext::drawText ( Element* source, const Vector2f& positi
 	{
 		// Shunt current scissor params into this shape
 		m_modeldata->texcoord1[i] = Vector4f(m_currentScissor.pos, m_currentScissor.size);
+		// Disable mouse glow effects
+		m_modeldata->texcoord2[i] = ErVertexEffectParams(0.0F, 0.0F);
 	}
 }

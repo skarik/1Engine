@@ -107,6 +107,7 @@ namespace dusk
 	public:
 
 		bool				m_renderMouselessFocus = false;
+		Vector2f			m_glowPosition;
 
 	private:
 
@@ -124,7 +125,6 @@ namespace dusk
 
 		UIRendererElementColors
 							m_colors;
-
 	};
 
 	enum ColorStyle : uint8_t
@@ -179,9 +179,16 @@ namespace dusk
 
 	struct TextStyleSettings
 	{
-		TextFontStyle				font;
-		TextAlignStyleHorizontal	align_horizontal;
-		TextAlignStyleVertical		align_vertical;
+		TextFontStyle		font;
+		TextAlignStyleHorizontal
+							align_horizontal;
+		TextAlignStyleVertical
+							align_vertical;
+	};
+
+	struct DrawRectParams
+	{
+		bool				interactible = false;
 	};
 
 	class UIRendererContext
@@ -198,7 +205,7 @@ namespace dusk
 		ENGCOM_API float		getTextHeight ( TextFontStyle font );
 		ENGCOM_API float		getTextWidth ( TextFontStyle font, const char* str );
 
-		ENGCOM_API void			drawRectangle ( Element* source, const Rect& rectangle );
+		ENGCOM_API void			drawRectangle ( Element* source, const Rect& rectangle, const DrawRectParams& params = DrawRectParams() );
 		ENGCOM_API void			drawBorder ( Element* source, const Rect& rectangle );
 		ENGCOM_API void			drawText ( Element* source, const Vector2f& position, const char* str );
 

@@ -24,6 +24,8 @@ namespace renderer
 			kUV1 = 6,
 			kBoneWeight = 7,
 			kBoneIndices = 8,
+			kUV2 = 9,
+			kUV3 = 10,
 			kMAX_POSITION,
 		};
 
@@ -41,6 +43,8 @@ namespace renderer
 			kVBufferSlotUV1 = (uint32_t)Location::kUV1,
 			kVBufferSlotBoneWeight = (uint32_t)Location::kBoneWeight,
 			kVBufferSlotBoneIndices = (uint32_t)Location::kBoneIndices,
+			kVBufferSlotUV2 = (uint32_t)Location::kUV2,
+			kVBufferSlotUV3 = (uint32_t)Location::kUV3,
 			// Max engine-defined slot position.
 			kVBufferSlotMaxPosition,
 			// Max recommended vertex attributes.

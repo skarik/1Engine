@@ -61,7 +61,7 @@ void dusk::elements::Button::Render ( UIRendererContext* uir )
 
 	uir->setFocus(dusk::kFocusStyleAutomatic);
 	uir->setColor(m_emphasizeVisuals ? dusk::kColorStyleElementEmphasized : dusk::kColorStyleElement);
-	uir->drawRectangle(this, m_absoluteRect);
+	uir->drawRectangle(this, m_absoluteRect, {true});
 
 	uir->setColor(dusk::kColorStyleLabel);
 	uir->setTextSettings(TextStyleSettings{dusk::kTextFontButton, dusk::kTextAlignLeft, dusk::kTextAlignMiddle});

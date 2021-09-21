@@ -3,12 +3,28 @@
 // Skips the alpha cutoff as well. In texture mode, sqrt's the alpha to counteract the effects of Dusk's double blend.
 #version 430
 
+#extension GL_GOOGLE_include_directive : require
+#extension GL_EXT_control_flow_attributes : require
+
+#include "../common.glsli"
+#include "../cbuffers.glsli"
+
 // Inputs from vertex shader
 layout(location = 0) in vec4 v2f_colors;
 layout(location = 1) in vec4 v2f_position;
 layout(location = 2) in vec2 v2f_texcoord0;
 layout(location = 3) in float v2f_textureStrength;
-layout(location = 4) in vec4 v2f_scissorCoords;
+layout(location = 5) in float v2f_mouseGlow;
+
+// CBuffers
+layout(binding = CBUFFER_USER0, std430) uniform sys_cbuffer_DuskUI_Params
+{
+	vec4 sys_DuskUI_PositionTransform;
+	vec4 sys_DuskUI_ScissorCoords;
+	vec2 sys_DuskUI_GlowPosition;
+	float sys_DuskUI_GlowSize;
+	float sys_DuskUI_GlowStrength;
+};
 
 // Outputs
 layout(location = 0) out vec4 FragDiffuse;
@@ -16,36 +32,37 @@ layout(location = 0) out vec4 FragDiffuse;
 // Samplers
 layout(binding = 0, location = 20) uniform sampler2D textureSampler0;
 
-// Inputs
-layout(binding = 1, std140) uniform sys_cbuffer_PerObjectExt
-{
-    vec4    sys_DiffuseColor;
-    vec4    sys_SpecularColor;
-    vec3    sys_EmissiveColor;
-    float   sys_AlphaCutoff;
-    vec4    sys_LightingOverrides;
-
-    vec4    sys_TextureScale;
-    vec4    sys_TextureOffset;
-};
-
 void main ( void )
 {
 	// Software scissoring
-	if (any(lessThan(v2f_position.xy, v2f_scissorCoords.xy)) || any(greaterThan(v2f_position.xy, v2f_scissorCoords.xy + v2f_scissorCoords.zw)))
+	if (any(lessThan(v2f_position.xy, sys_DuskUI_ScissorCoords.xy)) || any(greaterThan(v2f_position.xy, sys_DuskUI_ScissorCoords.xy + sys_DuskUI_ScissorCoords.zw)))
 	{
 		discard;
 	}
+	
+	// Check mouse glow
+	float glow_additive = max(0.0, v2f_mouseGlow);
+	float glow_multiply = max(0.0, -v2f_mouseGlow);
 
 	vec4 primColor, textColor;
 
-	// Generate normal prim color
-	primColor = vec4(1, 1, 1, 1);
-	primColor.a = v2f_colors.a * sys_DiffuseColor.a;
+	{
+		// Generate normal prim color
+		primColor = vec4(1, 1, 1, 1);
+		primColor.a = v2f_colors.a * sys_DiffuseColor.a;
+		
+		float glow_gradient = max(0.0, 1.0 - (length(v2f_position.xy - sys_DuskUI_GlowPosition) / sys_DuskUI_GlowSize));
+		primColor = mix(
+			primColor + glow_gradient * sys_DuskUI_GlowStrength * glow_additive, 
+			primColor * glow_gradient,
+			glow_multiply);
+	}
 	
-	// Generate text colors 
-	textColor = texture( textureSampler0, v2f_texcoord0 );
-	textColor.a = sqrt(textColor.a) * v2f_colors.a * sys_DiffuseColor.a;
+	{
+		// Generate text colors 
+		textColor = texture( textureSampler0, v2f_texcoord0 );
+		textColor.a = sqrt(textColor.a) * v2f_colors.a * sys_DiffuseColor.a;
+	}
 	
 	// Select correct shape type
 	FragDiffuse = mix(primColor, textColor, v2f_textureStrength);

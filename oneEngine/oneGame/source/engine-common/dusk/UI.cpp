@@ -590,6 +590,9 @@ void dusk::UserInterface::UpdateElements ( void )
 		// Update them
 		element->Update(&l_stepInfo);
 	}*/
+
+	// Update the renderer's mouse position
+	m_renderer->m_glowPosition = l_stepInfo.mouse_position;
 }
 
 //	DestroyElement(index) : Removes the element with the given index/handle.

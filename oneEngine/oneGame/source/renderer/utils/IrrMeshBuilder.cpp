@@ -115,9 +115,9 @@ void IrrMeshBuilder::expand ( const uint16_t vertexCount )
 		if (m_model->weight == NULL) nulled_attribute = true;
 	if (m_enabledAttribs[renderer::shader::kVBufferSlotBoneIndices])
 		if (m_model->bone == NULL) nulled_attribute = true;
-	if (m_enabledAttribs[renderer::shader::kVBufferSlotMaxPosition + 0])
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotUV2])
 		if (m_model->texcoord2 == NULL) nulled_attribute = true;
-	if (m_enabledAttribs[renderer::shader::kVBufferSlotMaxPosition + 1])
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotUV3])
 		if (m_model->texcoord3 == NULL) nulled_attribute = true;
 
 	if (nulled_attribute || m_model->vertexNum < vertexCount)
@@ -172,9 +172,9 @@ void IrrMeshBuilder::reallocateGreedy ( uint16_t targetSize )
 		m_model->weight = reallocate(m_model->weight, old_count, m_model->vertexNum);
 	if (m_enabledAttribs[renderer::shader::kVBufferSlotBoneIndices])
 		m_model->bone = reallocate(m_model->bone, old_count, m_model->vertexNum);
-	if (m_enabledAttribs[renderer::shader::kVBufferSlotMaxPosition + 0])
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotUV2])
 		m_model->texcoord2 = reallocate(m_model->texcoord2, old_count, m_model->vertexNum);
-	if (m_enabledAttribs[renderer::shader::kVBufferSlotMaxPosition + 1])
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotUV3])
 		m_model->texcoord3 = reallocate(m_model->texcoord3, old_count, m_model->vertexNum);
 }
 
@@ -207,9 +207,9 @@ void IrrMeshBuilder::reallocateConservative ( uint16_t targetSize )
 		m_model->weight = reallocate(m_model->weight, old_count, m_model->vertexNum);
 	if (m_enabledAttribs[renderer::shader::kVBufferSlotBoneIndices])
 		m_model->bone = reallocate(m_model->bone, old_count, m_model->vertexNum);
-	if (m_enabledAttribs[renderer::shader::kVBufferSlotMaxPosition + 0])
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotUV2])
 		m_model->texcoord2 = reallocate(m_model->texcoord2, old_count, m_model->vertexNum);
-	if (m_enabledAttribs[renderer::shader::kVBufferSlotMaxPosition + 1])
+	if (m_enabledAttribs[renderer::shader::kVBufferSlotUV3])
 		m_model->texcoord3 = reallocate(m_model->texcoord3, old_count, m_model->vertexNum);
 
 }
