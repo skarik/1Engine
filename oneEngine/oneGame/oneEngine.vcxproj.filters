@@ -37,9 +37,6 @@
     <Filter Include="SOURCE\Engine\Physics\Motion">
       <UniqueIdentifier>{dfb2f69e-5a58-4add-8ea6-dbc98161d048}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SOURCE\Engine\Physics\Material">
-      <UniqueIdentifier>{a5018e81-f958-4224-bd46-4d17cfe7c012}</UniqueIdentifier>
-    </Filter>
     <Filter Include="SOURCE\Engine\Physics\Volumes">
       <UniqueIdentifier>{9442eb66-d2f1-40b1-b935-4b1c56c2a8ec}</UniqueIdentifier>
     </Filter>
@@ -101,9 +98,6 @@
     </ClInclude>
     <ClInclude Include="source\engine\physics\motion\CRigidbodyCharacter.h">
       <Filter>SOURCE\Engine\Physics\Motion</Filter>
-    </ClInclude>
-    <ClInclude Include="source\engine\physics\material\physMaterial.h">
-      <Filter>SOURCE\Engine\Physics\Material</Filter>
     </ClInclude>
     <ClInclude Include="source\engine\physics\volumes\CVolumeTrigger.h">
       <Filter>SOURCE\Engine\Physics\Volumes</Filter>
@@ -172,9 +166,6 @@
     </ClCompile>
     <ClCompile Include="source\engine\physics\motion\CRigidbodyCharacter.cpp">
       <Filter>SOURCE\Engine\Physics\Motion</Filter>
-    </ClCompile>
-    <ClCompile Include="source\engine\physics\material\physMaterial.cpp">
-      <Filter>SOURCE\Engine\Physics\Material</Filter>
     </ClCompile>
     <ClCompile Include="source\engine\physics\volumes\CVolumeTrigger.cpp">
       <Filter>SOURCE\Engine\Physics\Volumes</Filter>

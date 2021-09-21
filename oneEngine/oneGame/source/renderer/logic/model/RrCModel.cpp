@@ -14,6 +14,8 @@
 
 #include "core-ext/system/io/assets/ModelIO.h"
 
+#include "physical/material/ArMaterial.h"
+
 template <typename Type>
 void AssignMPDDataAsType ( Type*& target, const void* data )
 {
@@ -125,6 +127,9 @@ static bool LoadModelToMeshGroup ( const rrModelLoadParams& load_params, RrAnima
 			mesh_group->m_meshes.push_back(meshBuffer);
 			mesh_group->m_meshBounds.push_back(meshBounds);
 			mesh_group->m_meshNames.push_back(meshName);
+
+			// Add an empty material for now
+			mesh_group->m_materials.push_back(ArMaterial());
 		}
 
 		mesh_group->m_loadState.meshes = true;

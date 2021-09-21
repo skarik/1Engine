@@ -345,6 +345,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="source\physical\interface\tobt.h" />
+    <ClInclude Include="source\physical\material\ArMaterial.h" />
+    <ClInclude Include="source\physical\material\PhysMaterial.h" />
     <ClInclude Include="source\physical\mode.h" />
     <ClInclude Include="source\physical\module_physical.h" />
     <ClInclude Include="source\physical\physical.h" />
@@ -694,6 +696,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="source\physical\material\PhysMaterial.cpp" />
     <ClCompile Include="source\physical\module_physical.cpp" />
     <ClCompile Include="source\physical\physics\cast\PrCast.cpp" />
     <ClCompile Include="source\physical\physics\cast\PrCast.Raycast.cpp" />
@@ -836,9 +839,9 @@
       <StructMemberAlignment>16Bytes</StructMemberAlignment>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-	  <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <PreprocessorDefinitions>_ENGINE_PHYSICAL;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-	  <ObjectFileName>$(IntDir)%(RelativeDir)\</ObjectFileName>
+      <ObjectFileName>$(IntDir)%(RelativeDir)\</ObjectFileName>
     </ClCompile>
     <Link>
       <LargeAddressAware>true</LargeAddressAware>

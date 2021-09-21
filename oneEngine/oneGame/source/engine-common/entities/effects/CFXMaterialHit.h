@@ -2,7 +2,7 @@
 #define ENGINE_COMMON_EFFECTS_MATERIAL_HIT_H_
 
 #include "engine/behavior/CGameBehavior.h"
-#include "engine/physics/material/physMaterial.h"
+#include "physical/material/physMaterial.h"
 #include "physical/physics/cast/RaycastHit.h"
 
 class CFXMaterialHit : public CGameBehavior
@@ -14,7 +14,7 @@ public:
 		HT_STEP
 	};
 public:
-	ENGCOM_API explicit		CFXMaterialHit ( const physMaterial& hitMat, const RaycastHit& hitResult, const EHitType hitType );
+	ENGCOM_API explicit		CFXMaterialHit ( const PrPhysMaterialType hitMat, const RaycastHit& hitResult, const EHitType hitType );
 	//						~CFXMaterialHit ( void );
 
 	ENGCOM_API void			Update ( void );

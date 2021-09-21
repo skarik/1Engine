@@ -139,6 +139,9 @@
     <Filter Include="SOURCE\Physical\Physics\Fluid">
       <UniqueIdentifier>{76e52223-8cb8-4e80-851d-8f6f1aad8557}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\Physical\Material">
+      <UniqueIdentifier>{daae8017-9b2d-4ad8-bb49-d5d368e9b10b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\physical\physical.h">
@@ -1155,6 +1158,12 @@
     <ClInclude Include="source-lib\bullet\btExports.h">
       <Filter>SOURCE-LIB\bullet</Filter>
     </ClInclude>
+    <ClInclude Include="source\physical\material\PhysMaterial.h">
+      <Filter>SOURCE\Physical\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="source\physical\material\ArMaterial.h">
+      <Filter>SOURCE\Physical\Material</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\physical\animation\CHKAnimation.cpp">
@@ -1717,6 +1726,9 @@
     </ClCompile>
     <ClCompile Include="source\physical\physics\shapes\PrShapeBox.cpp">
       <Filter>SOURCE\Physical\Physics\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\physical\material\PhysMaterial.cpp">
+      <Filter>SOURCE\Physical\Material</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

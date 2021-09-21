@@ -4,9 +4,11 @@
 //#include "engine-common/entities/CParticleSystem.h"
 //#include "renderer/logic/particle/CParticleEmitter.h"
 
-CFXMaterialHit::CFXMaterialHit ( const physMaterial& hitMat, const RaycastHit& hitResult, const EHitType hitType )
+CFXMaterialHit::CFXMaterialHit ( const PrPhysMaterialType hitMat, const RaycastHit& hitResult, const EHitType hitType )
 	: CGameBehavior()
 {
+	auto materialInfo = PrGetPhysMaterial(hitMat);
+
 	arstring<128> particleSystemName;
 	arstring<128> soundSystemName;
 	arstring<64>  materialName; // ( "particle_dirt_chunk" );
@@ -14,8 +16,8 @@ CFXMaterialHit::CFXMaterialHit ( const physMaterial& hitMat, const RaycastHit& h
 	switch ( hitType )
 	{
 		case HT_HIT:
-			particleSystemName = hitMat.pt_hit;
-			soundSystemName = hitMat.snd_hit;
+			particleSystemName = materialInfo->pt_hit;
+			soundSystemName = materialInfo->snd_hit;
 			switch ( (uint32_t)hitMat )
 			{
 			case 2:
@@ -29,8 +31,8 @@ CFXMaterialHit::CFXMaterialHit ( const physMaterial& hitMat, const RaycastHit& h
 			}
 			break;
 		case HT_COLLIDE:
-			particleSystemName = hitMat.pt_collide;
-			soundSystemName = hitMat.snd_collide;
+			particleSystemName = materialInfo->pt_collide;
+			soundSystemName = materialInfo->snd_collide;
 			switch ( (uint32_t)hitMat )
 			{
 			case 2:
@@ -40,8 +42,8 @@ CFXMaterialHit::CFXMaterialHit ( const physMaterial& hitMat, const RaycastHit& h
 			}
 			break;
 		case HT_STEP:
-			particleSystemName = hitMat.pt_step;
-			soundSystemName = hitMat.snd_step;
+			particleSystemName = materialInfo->pt_step;
+			soundSystemName = materialInfo->snd_step;
 			switch ( (uint32_t)hitMat )
 			{
 			case 2:

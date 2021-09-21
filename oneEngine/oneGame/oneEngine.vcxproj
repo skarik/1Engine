@@ -65,7 +65,6 @@
     <ClInclude Include="source\engine\network\GameNetworking.h" />
     <ClInclude Include="source\engine\network\types.h" />
     <ClInclude Include="source\engine\physics\collider\sCollision.h" />
-    <ClInclude Include="source\engine\physics\material\physMaterial.h" />
     <ClInclude Include="source\engine\physics\motion\CMotion.h" />
     <ClInclude Include="source\engine\physics\motion\CRigidbody.h" />
     <ClInclude Include="source\engine\physics\motion\CRigidbodyCharacter.h" />
@@ -88,7 +87,6 @@
     <ClCompile Include="source\engine\client.cpp" />
     <ClCompile Include="source\engine\module_engine.cpp" />
     <ClCompile Include="source\engine\network\BehaviorList.cpp" />
-    <ClCompile Include="source\engine\physics\material\physMaterial.cpp" />
     <ClCompile Include="source\engine\physics\motion\CMotion.cpp" />
     <ClCompile Include="source\engine\physics\motion\CRigidbody.cpp" />
     <ClCompile Include="source\engine\physics\motion\CRigidbodyCharacter.cpp" />
@@ -162,9 +160,9 @@
       <StructMemberAlignment>16Bytes</StructMemberAlignment>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
-	  <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <PreprocessorDefinitions>_ENGINE_ENGINE;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-	  <ObjectFileName>$(IntDir)%(RelativeDir)\</ObjectFileName>
+      <ObjectFileName>$(IntDir)%(RelativeDir)\</ObjectFileName>
     </ClCompile>
     <Link>
       <LargeAddressAware>true</LargeAddressAware>

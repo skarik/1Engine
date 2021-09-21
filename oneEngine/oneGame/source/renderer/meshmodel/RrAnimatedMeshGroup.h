@@ -6,6 +6,7 @@
 #include "core/math/Cubic.h"
 #include "core-ext/resources/IArResource.h"
 #include "core-ext/animation/Skeleton.h"
+#include "physical/material/ArMaterial.h"
 
 #include <vector>
 
@@ -37,6 +38,8 @@ public:
 						m_meshNames;
 
 	// TODO: Associated materials are also part of meshgroups.
+	std::vector<ArMaterial>
+						m_materials;
 
 	std::vector<rrMeshBuffer*>
 						m_morphs;

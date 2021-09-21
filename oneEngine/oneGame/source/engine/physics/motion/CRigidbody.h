@@ -9,7 +9,7 @@
 #include "physical/types/motion.h"
 #include "physical/physics/motion/IPrRigidBody.h"
 #include "engine/behavior/CGameBehavior.h"
-#include "engine/physics/material/physMaterial.h"
+#include "physical/material/physMaterial.h"
 #include "engine/physics/motion/CMotion.h"
 
 #include "bullet/LinearMath/btMotionState.h"
@@ -171,7 +171,9 @@ protected:
 	PrWorld*		world;
 
 	// Properties
-	physMaterial	mMaterial;
+	//physMaterial	mMaterial;
+	PrPhysMaterialType
+					mMaterial;
 	unsigned int	bitmask;
 
 	// Motion state
