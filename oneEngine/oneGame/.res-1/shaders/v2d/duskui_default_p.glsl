@@ -51,10 +51,10 @@ void main ( void )
 		primColor = vec4(1, 1, 1, 1);
 		primColor.a = v2f_colors.a * sys_DiffuseColor.a;
 		
-		float glow_gradient = max(0.0, 1.0 - (length(v2f_position.xy - sys_DuskUI_GlowPosition) / sys_DuskUI_GlowSize));
+		float glow_gradient = pow(max(0.0, 1.0 - (length(v2f_position.xy - sys_DuskUI_GlowPosition) / sys_DuskUI_GlowSize)), 3.0);
 		primColor = mix(
 			primColor + glow_gradient * sys_DuskUI_GlowStrength * glow_additive, 
-			primColor * glow_gradient,
+			primColor + primColor * sys_DuskUI_GlowStrength * 4.0 * glow_gradient,
 			glow_multiply);
 	}
 	

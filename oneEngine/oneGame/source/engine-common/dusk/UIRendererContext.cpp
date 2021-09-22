@@ -220,10 +220,23 @@ void dusk::UIRendererContext::drawRectangle ( Element* source, const Rect& recta
 	{
 		// Zero out normals to disable texture use on this shape
 		m_modeldata->normal[i] = Vector3f(0.0F, 0.0F, 0.0F);
-		// Shunt current scissor params into this shape
-		m_modeldata->texcoord1[i] = ErScissorParams(m_currentScissor.pos, m_currentScissor.size);
 		// Disable mouse glow effects
 		m_modeldata->texcoord2[i] = ErVertexEffectParams(params.interactible ? 1.0F : 0.0F, 0.0F);
+	}
+
+	// TODO: Make this less of a hack
+	// Add the mouse key area hover
+
+	tVertexCount = m_mb2->getModelDataVertexCount();
+	if (params.interactible)
+		m_mb2->addRect(rectangle, m_dsColorBackground, true);
+
+	for (uint16_t i = tVertexCount; i < m_mb2->getModelDataVertexCount(); ++i)
+	{
+		// Zero out normals to disable texture use on this shape
+		m_modeldata->normal[i] = Vector3f(0.0F, 0.0F, 0.0F);
+		// Disable mouse glow effects
+		m_modeldata->texcoord2[i] = ErVertexEffectParams(0.0F, 1.0F);
 	}
 }
 
@@ -245,8 +258,6 @@ void dusk::UIRendererContext::drawBorder ( Element* source, const Rect& rectangl
 	{
 		// Zero out normals to disable texture use on this shape
 		m_modeldata->normal[i] = Vector3f(0.0F, 0.0F, 0.0F);
-		// Shunt current scissor params into this shape
-		m_modeldata->texcoord1[i] = ErScissorParams(m_currentScissor.pos, m_currentScissor.size);
 		// Disable mouse glow effects
 		m_modeldata->texcoord2[i] = ErVertexEffectParams(1.0F, 0.0F);
 	}

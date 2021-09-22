@@ -3,6 +3,8 @@
 #include "core/math/Math.h"
 #include "core/system/Screen.h"
 
+#include "core-ext/settings/SessionSettings.h"
+
 #include "gpuw/Device.h"
 #include "gpuw/Public/Error.h"
 #include "gpuw/RenderTarget.h"
@@ -19,6 +21,8 @@
 
 #include "engine-common/dusk/UI.h"
 #include "engine-common/dusk/Element.h"
+
+static core::settings::SessionSetting<bool> ui_DuskUpdateFullRect ("ui_DuskUpdateFullRect", true);
 
 dusk::UIRenderer::UIRenderer (UserInterface* ui)
 	: RrRenderObject(),
@@ -227,8 +231,7 @@ bool dusk::UIRenderer::P1UpdateRenderTarget ( void )
 		return true;
 	}
 
-	//return false;
-	return true; // Force now for testing urposes
+	return ui_DuskUpdateFullRect;
 }
 
 //	ERUpdateRenderList() : Updates the render list.
@@ -404,7 +407,7 @@ void dusk::UIRenderer::P1RenderElements ( rrRenderContext* render_context, const
 	duskUI_Params.positionTransform = Vector4f( Vector2f(-offset.x / multiplier.x, -offset.y / multiplier.y), Vector2f(1.0F / multiplier.x, 1.0F / multiplier.y) );
 	duskUI_Params.scissorCoords = Vector4f(scissorArea.pos, scissorArea.size);
 	duskUI_Params.glowPosition = m_glowPosition;
-	duskUI_Params.glowSize = 200.0F;
+	duskUI_Params.glowSize = 150.0F;
 	duskUI_Params.glowStrength = 0.32F;
 
 	// Upload the draw params
