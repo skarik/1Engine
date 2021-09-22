@@ -28,7 +28,7 @@ void dusk::elements::Checkbox::Render ( UIRendererContext* uir )
 
 	uir->setFocus(dusk::kFocusStyleAutomatic);
 	uir->setColor(m_emphasizeVisuals ? dusk::kColorStyleElementEmphasized : dusk::kColorStyleElement);
-	uir->drawRectangle(this, m_absoluteRect);
+	uir->drawRectangle(this, m_absoluteRect, {true});
 
 	if (m_value)
 	{
@@ -38,9 +38,9 @@ void dusk::elements::Checkbox::Render ( UIRendererContext* uir )
 		Rect subrect = m_absoluteRect;
 		subrect.pos.x += kSubrectMargins;
 		subrect.pos.y += kSubrectMargins;
-		subrect.size.x -= kSubrectMargins;
-		subrect.size.y -= kSubrectMargins;
-		uir->drawRectangle(this, subrect);
+		subrect.size.x -= kSubrectMargins * 2;
+		subrect.size.y -= kSubrectMargins * 2;
+		uir->drawRectangle(this, subrect, {true, true});
 	}
 
 	m_isMouseIn = mouseInPrevious;

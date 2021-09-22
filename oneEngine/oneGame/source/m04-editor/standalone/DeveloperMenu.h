@@ -51,6 +51,12 @@ namespace M04
 		
 		dusk::Element*	ui_seq_editor;
 		dusk::Element*	ui_noise_editor;
+
+		dusk::Element*	ui_model_editor;
+
+		dusk::Element*	ui_material_editor;
+		dusk::Element*	ui_material_browser;
+		dusk::Element*	ui_level_builder;
 	};
 }
 

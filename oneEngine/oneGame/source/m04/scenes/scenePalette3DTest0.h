@@ -6,8 +6,7 @@
 class scenePalette3DTest0 : public CGameScene
 {
 public:
-	static const char* GetName ( void )
-	{ return "Palette3DTest0"; }
+	ER_DEFINE_SCENE_NAME( GAME_API, "Palette3DTest0" );
 protected:
 	GAME_API void LoadScene ( void );
 };

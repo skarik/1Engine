@@ -41,6 +41,11 @@ protected:
 	//	LoadScene() : Called when loading the new scene
 	ENGINE_API virtual void	LoadScene ( void ) =0;
 
+	//	GetSceneName() : Called to get the scene
+	ENGINE_API virtual const char*
+							GetSceneName ( void )
+		{ return "Unnamed Scene"; }
+
 public:
 	// Load next scene
 	ENGINE_API static void	SceneGoto ( CGameScene* );
@@ -60,5 +65,9 @@ private:
 	//	Load() : Called by the engine state when loading.
 	void					Load ( void );
 };
+
+#define ER_DEFINE_SCENE_NAME( Export, Name ) \
+	Export static const char* GetName ( void ) { return Name ; } \
+	Export virtual const char* GetSceneName ( void ) override { return Name ; }
 
 #endif

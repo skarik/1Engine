@@ -19,6 +19,10 @@
 #include "m04-editor/scenes/sceneEditorCutscene.h"
 #include "m04-editor/standalone/seqeditor/sceneEditorSequence.h"
 #include "m04-editor/standalone/noiseeditor/sceneEditorNoise.h"
+#include "m04-editor/standalone/modeleditor/sceneEditorModel.h"
+#include "m04-editor/standalone/materialeditor/sceneEditorMaterial.h"
+#include "m04-editor/standalone/materialbrowser/sceneEditorMaterialBrowser.h"
+#include "m04-editor/standalone/levelbuilder/sceneEditorLevelBuilder.h"
 
 namespace M04
 {
@@ -80,6 +84,10 @@ int GameInitialize ( void )
 		EngineCommon::RegisterScene<sceneEditorSequence>();
 		EngineCommon::RegisterScene<scenePalette3DTest0>();
 		EngineCommon::RegisterScene<sceneEditorNoise>();
+		EngineCommon::RegisterScene<sceneEditorModel>();
+		EngineCommon::RegisterScene<sceneEditorMaterial>();
+		EngineCommon::RegisterScene<sceneEditorMaterialBrowser>();
+		EngineCommon::RegisterScene<sceneEditorLevelBuilder>();
 	}
 
 

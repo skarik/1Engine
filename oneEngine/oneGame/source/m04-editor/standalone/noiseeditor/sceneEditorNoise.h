@@ -13,8 +13,7 @@ public:
 		bCanBeStreamed = false;
 	}
 
-	static const char*		GetName ( void )
-		{ return "NoiseEditor"; }
+	ER_DEFINE_SCENE_NAME( GAME_API, "NoiseEditor" );
 protected:
 	GAME_API void			LoadScene ( void );
 };

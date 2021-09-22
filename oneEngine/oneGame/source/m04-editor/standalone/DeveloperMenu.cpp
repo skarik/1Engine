@@ -75,6 +75,22 @@ void DeveloperMenu::uiCreate ( void )
 
 		ui_noise_editor = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect( 0, 0, 150, 25 )} );
 		ui_noise_editor->m_contents = "Noise Editor";
+
+		ui_material_editor = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect( 0, 0, 150, 25 )} );
+		ui_material_editor->m_contents = "Material Editor";
+		ui_material_editor->m_onActivation = []() { engine::Console->RunCommand( "scene MaterialEditor" ); };
+
+		ui_material_browser = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect( 0, 0, 150, 25 )} );
+		ui_material_browser->m_contents = "Material Browser";
+		ui_material_browser->m_onActivation = []() { engine::Console->RunCommand( "scene MaterialBrowser" ); };
+
+		ui_model_editor = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect( 0, 0, 150, 25 )} );
+		ui_model_editor->m_contents = "Model Editor";
+		ui_model_editor->m_onActivation = []() { engine::Console->RunCommand( "scene ModelEditor" ); };
+
+		ui_level_builder = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect( 0, 0, 150, 25 )} );
+		ui_level_builder->m_contents = "Level Builder";
+		ui_level_builder->m_onActivation = []() { engine::Console->RunCommand( "scene LevelBuilder" ); };
 	}
 }
 

@@ -116,7 +116,7 @@ void dusk::elements::Slider<NumberType>::Render(UIRendererContext* uir)
 	Vector3f center = m_absoluteRect.pos + m_absoluteRect.size * 0.5F;
 	Rect centerLineRect(Vector2f(m_absoluteRect.pos.x, center.y - centerLineHalfWidth), Vector2f(m_absoluteRect.size.x, centerLineHalfWidth * 2.0F));
 	uir->setColor(dusk::kColorStyleShapeNormal);
-	uir->drawRectangle(this, centerLineRect);
+	uir->drawRectangle(this, centerLineRect, {true, true});
 
 	// Draw the selection cursor
 	const Real32 cursorRectWidth = 4.0F;
@@ -127,8 +127,8 @@ void dusk::elements::Slider<NumberType>::Render(UIRendererContext* uir)
 		Vector2f(cursorRectWidth, cursorRectHalfHeight * 2)
 	);
 	uir->setColor(dusk::kColorStyleShapeAccented);
-	uir->drawRectangle(this, Rect(centerLineRect.pos.x, centerLineRect.pos.y, centerLineRect.size.x * cursorParametricPosition, centerLineRect.size.y));
-	uir->drawRectangle(this, cursorRect);
+	uir->drawRectangle(this, Rect(centerLineRect.pos.x, centerLineRect.pos.y, centerLineRect.size.x * cursorParametricPosition, centerLineRect.size.y), {true, false});
+	uir->drawRectangle(this, cursorRect, {true, true});
 
 
 	// Gather target precision, prepare string buffer

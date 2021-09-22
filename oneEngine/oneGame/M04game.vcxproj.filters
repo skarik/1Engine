@@ -91,6 +91,18 @@
     <Filter Include="SOURCE\M04-Editor\Standalone\NoiseEditor">
       <UniqueIdentifier>{d1445056-13e9-40ca-a2dc-72748897b8a3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\M04-Editor\Standalone\MaterialEditor">
+      <UniqueIdentifier>{8577821a-f715-4802-b0d9-b39f23945771}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\M04-Editor\Standalone\MaterialBrowser">
+      <UniqueIdentifier>{80086feb-47ca-4cdc-895c-da8f1f7c492b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\M04-Editor\Standalone\LevelBuilder">
+      <UniqueIdentifier>{706d0d23-4fb0-4576-aaca-4ae8191b4ec7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\M04-Editor\Standalone\ModelEditor">
+      <UniqueIdentifier>{63fa1aa6-481b-490e-965f-628998d7618c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\m04\m04-common.h">
@@ -315,6 +327,18 @@
     <ClInclude Include="source\m04-editor\standalone\noiseeditor\Display3D.h">
       <Filter>SOURCE\M04-Editor\Standalone\NoiseEditor</Filter>
     </ClInclude>
+    <ClInclude Include="source\m04-editor\standalone\materialeditor\sceneEditorMaterial.h">
+      <Filter>SOURCE\M04-Editor\Standalone\MaterialEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="source\m04-editor\standalone\materialbrowser\sceneEditorMaterialBrowser.h">
+      <Filter>SOURCE\M04-Editor\Standalone\MaterialBrowser</Filter>
+    </ClInclude>
+    <ClInclude Include="source\m04-editor\standalone\levelbuilder\sceneEditorLevelBuilder.h">
+      <Filter>SOURCE\M04-Editor\Standalone\LevelBuilder</Filter>
+    </ClInclude>
+    <ClInclude Include="source\m04-editor\standalone\modeleditor\sceneEditorModel.h">
+      <Filter>SOURCE\M04-Editor\Standalone\ModelEditor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\m04\m04-common.cpp">
@@ -517,6 +541,18 @@
     </ClCompile>
     <ClCompile Include="source\m04-editor\standalone\noiseeditor\EditPanel.cpp">
       <Filter>SOURCE\M04-Editor\Standalone\NoiseEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04-editor\standalone\materialeditor\sceneEditorMaterial.cpp">
+      <Filter>SOURCE\M04-Editor\Standalone\MaterialEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04-editor\standalone\materialbrowser\sceneEditorMaterialBrowser.cpp">
+      <Filter>SOURCE\M04-Editor\Standalone\MaterialBrowser</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04-editor\standalone\levelbuilder\sceneEditorLevelBuilder.cpp">
+      <Filter>SOURCE\M04-Editor\Standalone\LevelBuilder</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04-editor\standalone\modeleditor\sceneEditorModel.cpp">
+      <Filter>SOURCE\M04-Editor\Standalone\ModelEditor</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -226,17 +226,19 @@ void dusk::UIRendererContext::drawRectangle ( Element* source, const Rect& recta
 
 	// TODO: Make this less of a hack
 	// Add the mouse key area hover
-
-	tVertexCount = m_mb2->getModelDataVertexCount();
-	if (params.interactible)
-		m_mb2->addRect(rectangle, m_dsColorBackground, true);
-
-	for (uint16_t i = tVertexCount; i < m_mb2->getModelDataVertexCount(); ++i)
+	if ( !params.disable_hover_outline )
 	{
-		// Zero out normals to disable texture use on this shape
-		m_modeldata->normal[i] = Vector3f(0.0F, 0.0F, 0.0F);
-		// Disable mouse glow effects
-		m_modeldata->texcoord2[i] = ErVertexEffectParams(0.0F, 1.0F);
+		tVertexCount = m_mb2->getModelDataVertexCount();
+		if (params.interactible)
+			m_mb2->addRect(rectangle, m_dsColorBackground, true);
+
+		for (uint16_t i = tVertexCount; i < m_mb2->getModelDataVertexCount(); ++i)
+		{
+			// Zero out normals to disable texture use on this shape
+			m_modeldata->normal[i] = Vector3f(0.0F, 0.0F, 0.0F);
+			// Disable mouse glow effects
+			m_modeldata->texcoord2[i] = ErVertexEffectParams(0.0F, 1.0F);
+		}
 	}
 }
 

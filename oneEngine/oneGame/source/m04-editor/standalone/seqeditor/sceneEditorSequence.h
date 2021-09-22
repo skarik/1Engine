@@ -13,8 +13,7 @@ public:
 		bCanBeStreamed = false;
 	}
 
-	static const char* GetName ( void )
-		{ return "SequenceEditor"; }
+	ER_DEFINE_SCENE_NAME( GAME_API, "SequenceEditor" );
 protected:
 	GAME_API void LoadScene ( void );
 };

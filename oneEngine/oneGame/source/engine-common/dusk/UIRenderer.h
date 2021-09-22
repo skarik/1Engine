@@ -189,6 +189,7 @@ namespace dusk
 	struct DrawRectParams
 	{
 		bool				interactible = false;
+		bool				disable_hover_outline = false;
 	};
 
 	class UIRendererContext

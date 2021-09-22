@@ -302,6 +302,8 @@ void CGameState::LateUpdate ( void )
 	// Now, AFTER everything is updated, then do a new scene
 	if ( pNextScene != NULL )
 	{
+		debug::Console->PrintMessage( "Loading scene \"%s\"\n", pNextScene->GetSceneName() );
+
 		if ( pScene != NULL )
 		{
 			if ( !pNextScene->bIsAdditive )
@@ -314,7 +316,8 @@ void CGameState::LateUpdate ( void )
 				for ( i = 0; i < iCurrentIndex; i += 1 )
 				{
 					pBehavior = pBehaviors[i];
-					if ( pBehavior != NULL ) {
+					if ( pBehavior != NULL )
+					{
 						pBehaviors[i] = NULL;
 						pBehaviors[newIndex] = pBehavior;
 						pBehavior->id = newIndex;
@@ -322,6 +325,10 @@ void CGameState::LateUpdate ( void )
 					}
 				}
 				iCurrentIndex = newIndex;
+			}
+			else
+			{
+				debug::Console->PrintWarning( "Scene is additive. Additive scenes currently leak, be aware of your available resources.\n" );
 			}
 			// Remove old scene
 			delete pScene;
