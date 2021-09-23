@@ -80,6 +80,8 @@
     <ClInclude Include="source\m04-editor\scenes\sceneDeveloperMenu.h" />
     <ClInclude Include="source\m04-editor\scenes\sceneEditorCutscene.h" />
     <ClInclude Include="source\m04-editor\scenes\sceneEditorMain.h" />
+    <ClInclude Include="source\m04-editor\standalone\bottler\sceneEditorBottler.h" />
+    <ClInclude Include="source\m04-editor\standalone\common-editor\EditorWindowBase.h" />
     <ClInclude Include="source\m04-editor\standalone\ctseditor\CtsNodeBase.h" />
     <ClInclude Include="source\m04-editor\standalone\CutsceneEditor.h" />
     <ClInclude Include="source\m04-editor\standalone\CutsceneEditor.Renderers.h" />
@@ -161,6 +163,8 @@
     <ClCompile Include="source\m04-editor\scenes\sceneDeveloperMenu.cpp" />
     <ClCompile Include="source\m04-editor\scenes\sceneEditorCutscene.cpp" />
     <ClCompile Include="source\m04-editor\scenes\sceneEditorMain.cpp" />
+    <ClCompile Include="source\m04-editor\standalone\bottler\sceneEditorBottler.cpp" />
+    <ClCompile Include="source\m04-editor\standalone\common-editor\EditorWindowBase.cpp" />
     <ClCompile Include="source\m04-editor\standalone\CutsceneEditor.cpp" />
     <ClCompile Include="source\m04-editor\standalone\CutsceneEditor.Renderers.cpp" />
     <ClCompile Include="source\m04-editor\standalone\DeveloperMenu.cpp" />

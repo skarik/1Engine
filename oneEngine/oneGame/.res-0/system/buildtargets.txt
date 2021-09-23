@@ -2,11 +2,8 @@
 bottle "A:/Projects/EHS/E01-Builds/Bottle"
 {
 	mode copy
+	script buildShaders.py
 	rebuild images
 	rebuild models
-}
-// by recommendation of piano
-butthole
-{
-	mode curse
+	rebuild materials
 }

@@ -22,11 +22,13 @@ namespace core
 	static const char*	kModelFormat_Header			= "MPD\0";
 
 	static const int	kModelFormat_VersionMajor	= 0;
-	static const int	kModelFormat_VersionMinor	= 3;
+	static const int	kModelFormat_VersionMinor	= 4;
 
 	static const char*	kModelFormat_HeadSegmentInfo	= "INF\0";
 
 	static const char*	kModelFormat_HeadGeometryInfo	= "GEO\0";
+
+	static const char*	kModelFormat_HeadMaterialInfo	= "MAT\0";
 
 	enum class ModelFmtSegmentType : uint8
 	{
@@ -35,6 +37,8 @@ namespace core
 		kGeometryInfo				= 1,
 		kGeometryIndices			= 2,
 		kGeometryVertexData			= 3,
+
+		kMaterialInfo				= 4,
 
 		kMAX,
 	};
@@ -154,6 +158,24 @@ namespace core
 	public:
 		char		head[4];	// Always "GEO\0"
 	};*/
+
+	struct modelFmtSegmentMaterial_Info
+	{
+	public:
+		// Always "MAT\0"
+		char		head[4] = {kModelFormat_HeadMaterialInfo[0], kModelFormat_HeadMaterialInfo[1], kModelFormat_HeadMaterialInfo[2], kModelFormat_HeadMaterialInfo[3]};
+		// 128-character string of the material
+		arstring128 material; // This is limited in length and constant in order to simplify the IO.
+
+	public:
+		const bool		IsValid ( void )
+		{
+			return head[0] == kModelFormat_HeadMaterialInfo[0]
+				&& head[1] == kModelFormat_HeadMaterialInfo[1]
+				&& head[2] == kModelFormat_HeadMaterialInfo[2]
+				&& head[3] == kModelFormat_HeadMaterialInfo[3];
+		}
+	};
 
 	//	class MpdInterface : IO for Models.
 	// Because Mpd's need to only have certain aspects readable or writable, the interface for input and output is the same.

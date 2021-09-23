@@ -38,7 +38,7 @@ public:
 						m_meshNames;
 
 	// TODO: Associated materials are also part of meshgroups.
-	std::vector<ArMaterial>
+	std::vector<ArMaterialContainer*>
 						m_materials;
 
 	std::vector<rrMeshBuffer*>

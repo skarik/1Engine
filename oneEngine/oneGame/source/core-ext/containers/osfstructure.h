@@ -324,7 +324,7 @@ namespace osf
 			{}
 
 		//	FreeKeyValues() : Recursively frees all keyvalues.
-		OSF_API void			FreeKeyValues ( void );
+		void				FreeKeyValues ( void );
 	};
 
 	class KeyValueTree : public ObjectValue
@@ -332,13 +332,13 @@ namespace osf
 	public:
 
 		//	LoadKeyValues( reader ) : Loads entire OSF file in as a keyvalue structure.
-		void					LoadKeyValues ( io::OSFReader* reader );
+		void				LoadKeyValues ( io::OSFReader* reader );
 
 		//	SaveKeyValues( writer ) : Writes entire keyvalue tree to file.
-		void					SaveKeyValues ( io::OSFWriter* writer );
+		void				SaveKeyValues ( io::OSFWriter* writer );
 
 		//	FreeKeyValues() : Recursively frees all keyvalues.
-		void					FreeKeyValues ( void )
+		void				FreeKeyValues ( void )
 		{
 			for (KeyValue* kv : values)
 			{

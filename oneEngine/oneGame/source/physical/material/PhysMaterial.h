@@ -32,6 +32,8 @@ enum PrPhysMaterialType : int8_t
 };
 
 PHYS_API const char*	PrGetPhysMaterialName ( const PrPhysMaterialType type );
+PHYS_API const PrPhysMaterialType
+						PrGetPhysMaterialTypeFromName ( const char* name );
 
 namespace physical
 {

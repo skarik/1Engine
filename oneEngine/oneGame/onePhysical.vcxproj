@@ -346,6 +346,7 @@
     </ClInclude>
     <ClInclude Include="source\physical\interface\tobt.h" />
     <ClInclude Include="source\physical\material\ArMaterial.h" />
+    <ClInclude Include="source\physical\material\ArMaterialMasterSubsystem.h" />
     <ClInclude Include="source\physical\material\PhysMaterial.h" />
     <ClInclude Include="source\physical\mode.h" />
     <ClInclude Include="source\physical\module_physical.h" />
@@ -696,6 +697,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="source\physical\material\ArMaterial.Loader.cpp" />
+    <ClCompile Include="source\physical\material\ArMaterialMasterSubsystem.cpp" />
     <ClCompile Include="source\physical\material\PhysMaterial.cpp" />
     <ClCompile Include="source\physical\module_physical.cpp" />
     <ClCompile Include="source\physical\physics\cast\PrCast.cpp" />

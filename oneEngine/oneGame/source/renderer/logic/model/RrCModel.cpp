@@ -127,9 +127,29 @@ static bool LoadModelToMeshGroup ( const rrModelLoadParams& load_params, RrAnima
 			mesh_group->m_meshes.push_back(meshBuffer);
 			mesh_group->m_meshBounds.push_back(meshBounds);
 			mesh_group->m_meshNames.push_back(meshName);
+		}
 
-			// Add an empty material for now
-			mesh_group->m_materials.push_back(ArMaterial());
+		for (uint meshIndex = 0; meshIndex < mpd.GetSegmentCount(core::ModelFmtSegmentType::kMaterialInfo); ++meshIndex)
+		{
+			arstring128			materialName;
+
+			// First pull in the geometry general information
+			core::modelFmtSegmentMaterial_Info* matInfo = (core::modelFmtSegmentMaterial_Info*)mpd.GetSegmentData(core::ModelFmtSegmentType::kMaterialInfo, meshIndex);
+			ARCORE_ASSERT(matInfo->IsValid());
+			{
+				materialName = matInfo->material;
+			}
+			mpd.ReleaseSegmentData(core::ModelFmtSegmentType::kMaterialInfo, meshIndex);
+
+			// Add material to the Meshgroup
+			if (materialName.length() > 0)
+			{
+				mesh_group->m_materials.push_back(ArLoadMaterial(materialName));
+			}
+			else
+			{
+				mesh_group->m_materials.push_back(ArLoadMaterial(NULL));
+			}
 		}
 
 		mesh_group->m_loadState.meshes = true;
@@ -245,6 +265,55 @@ static core::math::Cubic CalculateTotalMeshBounds ( RrAnimatedMeshGroup* mesh_gr
 	}
 }
 
+#include "renderer/material/ArMaterial.Renderer.h"
+#include "renderer/material/RrShaderProgram.h"
+// TODO: make this less dirty
+static void ApplyMaterialToMesh ( renderer::Mesh* mesh, ArMaterial* material )
+{
+	RrPass pass;
+	pass.utilSetupAsDefault();
+
+	pass.m_type = kPassTypeDeferred;
+	pass.m_alphaMode = material->render_info.alpha_test > 0.0F ? renderer::kAlphaModeAlphatest : renderer::kAlphaModeNone;
+	pass.m_cullMode = (material->render_info.cull == ArFacingCullMode::kNone) ? gpu::kCullModeNone : ((material->render_info.cull == ArFacingCullMode::kBack) ? gpu::kCullModeBack : gpu::kCullModeFront);
+	pass.m_surface.diffuseColor = material->render_info.diffuse_color;
+	pass.m_surface.alphaCutoff = material->render_info.alpha_test;
+
+	pass.m_surface.textureScale = material->render_info.repeat_factor;
+
+	pass.m_surface.shadingModel = material->render_info.render_mode == ArRenderMode::kLitFoliage ? kShadingModelThinFoliage : kShadingModelNormal;
+
+	pass.m_surface.baseSmoothness = material->render_info.smoothness_bias;
+	pass.m_surface.scaledSmoothness = material->render_info.smoothness_scale;
+	pass.m_surface.baseMetallicness = material->render_info.metallicness_bias;
+	pass.m_surface.scaledMetallicness = material->render_info.metallicness_scale;
+
+	pass.setTexture( TEX_DIFFUSE, ArMaterialGetTexture(material->render_info.texture_diffuse) );
+	pass.setTexture( TEX_NORMALS, ArMaterialGetTexture(material->render_info.texture_normals) );
+	pass.setTexture( TEX_SURFACE, ArMaterialGetTexture(material->render_info.texture_surface) );
+	pass.setTexture( TEX_OVERLAY, ArMaterialGetTexture(material->render_info.texture_overlay) );
+
+	gpu::SamplerCreationDescription pointFilter;
+	pointFilter.minFilter = material->render_info.sampling;
+	pointFilter.magFilter = material->render_info.sampling;
+	pass.setSampler(rrTextureSlot::TEX_DIFFUSE, &pointFilter);
+	pass.setSampler(rrTextureSlot::TEX_NORMALS, &pointFilter);
+	pass.setSampler(rrTextureSlot::TEX_SURFACE, &pointFilter);
+	pass.setSampler(rrTextureSlot::TEX_OVERLAY, &pointFilter);
+
+	pass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{(material->render_info.shader_vv + ".spv"), (material->render_info.shader_p + ".spv")}) );
+	renderer::shader::Location t_vspec[] = {renderer::shader::Location::kPosition,
+		renderer::shader::Location::kUV0,
+		renderer::shader::Location::kColor,
+		renderer::shader::Location::kNormal,
+		renderer::shader::Location::kTangent,
+		renderer::shader::Location::kBinormal};
+	pass.setVertexSpecificationByCommonList(t_vspec, sizeof(t_vspec) / sizeof(renderer::shader::Location));
+	pass.m_primitiveType = gpu::kPrimitiveTopologyTriangleList;
+
+	mesh->PassInitWithInput(0, &pass);
+}
+
 RrCModel::RrCModel ( RrAnimatedMeshGroup* mesh_group, const rrModelLoadParams& params, RrWorld* world_to_add_to )
 	: RrLogicObject()
 {
@@ -257,10 +326,21 @@ RrCModel::RrCModel ( RrAnimatedMeshGroup* mesh_group, const rrModelLoadParams& p
 	}
 
 	// Instiantiate the RrMeshes we use to render:
-	for (rrMeshBuffer* mesh_buffer : mesh_group->m_meshes)
+	ARCORE_ASSERT( mesh_group->m_meshes.size() == mesh_group->m_materials.size() );
+	for ( int i = 0; i < (int)mesh_group->m_meshes.size(); ++i )
 	{
-		renderer::Mesh* mesh = new renderer::Mesh(mesh_buffer, false);
+		rrMeshBuffer* mesh_buffer = mesh_group->m_meshes[i];
+		ArMaterialContainer* mesh_material = mesh_group->m_materials[i];
 
+		renderer::Mesh* mesh = new renderer::Mesh(mesh_buffer, false);
+		// Set up the materials for the mesh
+		// TODO: Make this less dirty
+		if (mesh_material != nullptr)
+		{
+			ApplyMaterialToMesh( mesh, mesh_material->m_material );
+		}
+
+		// Add mesh to a given world
 		if (world_to_add_to != nullptr)
 		{
 			mesh->AddToWorld(world_to_add_to);

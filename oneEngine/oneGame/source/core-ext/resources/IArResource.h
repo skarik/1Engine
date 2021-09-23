@@ -17,9 +17,12 @@ namespace core
 		kResourceTypeHitbox,
 		kResourceTypeAnimation,
 
+		// Material type.
+		// Has extensions of interfaces in other modules that use the data.
+		kResourceTypeArMaterial,
+
 		kResourceTypeRawImage,
 		kResourceTypeRrTexture,
-		//kResourceTypeRrMesh,
 		kResourceTypeRrShader,
 		// stores a collection of RrMesh, skeleton, and morpher
 		kResourceTypeRrMeshGroup,

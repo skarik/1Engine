@@ -1164,6 +1164,9 @@
     <ClInclude Include="source\physical\material\ArMaterial.h">
       <Filter>SOURCE\Physical\Material</Filter>
     </ClInclude>
+    <ClInclude Include="source\physical\material\ArMaterialMasterSubsystem.h">
+      <Filter>SOURCE\Physical\Material</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\physical\animation\CHKAnimation.cpp">
@@ -1728,6 +1731,12 @@
       <Filter>SOURCE\Physical\Physics\Shapes</Filter>
     </ClCompile>
     <ClCompile Include="source\physical\material\PhysMaterial.cpp">
+      <Filter>SOURCE\Physical\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="source\physical\material\ArMaterialMasterSubsystem.cpp">
+      <Filter>SOURCE\Physical\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="source\physical\material\ArMaterial.Loader.cpp">
       <Filter>SOURCE\Physical\Material</Filter>
     </ClCompile>
   </ItemGroup>

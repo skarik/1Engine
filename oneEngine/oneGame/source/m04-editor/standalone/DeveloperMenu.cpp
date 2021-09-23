@@ -91,6 +91,10 @@ void DeveloperMenu::uiCreate ( void )
 		ui_level_builder = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect( 0, 0, 150, 25 )} );
 		ui_level_builder->m_contents = "Level Builder";
 		ui_level_builder->m_onActivation = []() { engine::Console->RunCommand( "scene LevelBuilder" ); };
+
+		auto ui_bottler = dusk->Add<dusk::elements::Button>( dusk::ElementCreationDescription{layout, Rect( 0, 0, 150, 25 )} );
+		ui_bottler->m_contents = "Bottler";
+		ui_bottler->m_onActivation = []() { engine::Console->RunCommand( "scene BottlerUI" ); };
 	}
 }
 

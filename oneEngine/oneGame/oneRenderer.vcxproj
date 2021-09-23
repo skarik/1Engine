@@ -90,6 +90,7 @@
     </ClCompile>
     <ClCompile Include="source\renderer\logic\model\morpher\CMorpher.cpp" />
     <ClCompile Include="source\renderer\logic\model\morpher\CMorpherSet.cpp" />
+    <ClCompile Include="source\renderer\material\ArMaterial.Renderer.cpp" />
     <ClCompile Include="source\renderer\material\RrPass.cpp" />
     <ClCompile Include="source\renderer\material\RrPass.Presets.cpp" />
     <ClCompile Include="source\renderer\material\RrShaderMasterSubsystem.cpp" />
@@ -198,6 +199,7 @@
     <ClInclude Include="source\renderer\logic\model\morpher\CMorphAction.h" />
     <ClInclude Include="source\renderer\logic\model\morpher\CMorpher.h" />
     <ClInclude Include="source\renderer\logic\model\morpher\CMorpherSet.h" />
+    <ClInclude Include="source\renderer\material\ArMaterial.Renderer.h" />
     <ClInclude Include="source\renderer\material\Material.h" />
     <ClInclude Include="source\renderer\material\RrPass.h" />
     <ClInclude Include="source\renderer\material\RrPass.Presets.h" />

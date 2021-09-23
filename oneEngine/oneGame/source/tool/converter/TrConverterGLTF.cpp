@@ -1,6 +1,7 @@
 #include "TrConverterGLTF.h"
 
 #include "core-ext/system/io/assets/ModelIO.h"
+#include "core/system/io/FileUtils.h"
 #include "core/debug/console.h"
 
 #include "core/types/ModelData.h"
@@ -8,9 +9,23 @@
 #include "core/math/vect3d_template.h"
 #include "core/math/vect4d_template.h"
 
+#include "core-ext/system/io/osf.h"
+#include "core-ext/containers/osfstructure.h"
+
 #include "fx/gltf.h"
 
 #include <type_traits>
+
+// This is copied from ArMaterial.Loader.cpp. Maybe those could be moved into osfstructure?
+static void ReadKeyValue ( osf::ObjectValue* object, const char* keyvalue, arstring128& value )
+{
+	auto read_keyvalue = object->GetKeyValue(keyvalue);
+	if (read_keyvalue != NULL)
+	{
+		auto read_value = read_keyvalue->value->As<osf::StringValue>();
+		value = read_value->value.c_str();
+	}
+}
 
 static bool LoadGLTF(fx::gltf::Document& document, const char* filename)
 {
@@ -45,6 +60,8 @@ struct trMeshInfo
 {
 	arstring256 name;
 	arModelData data;
+
+	arstring128 material;
 };
 
 template <typename TypeTo, typename TypeFrom>
@@ -315,6 +332,37 @@ bool TrConverterGLTF::Convert(const char* inputFilename, const char* outputFilen
 		}
 	}
 
+	// Load in the MT file if it exists.
+	{
+		std::string mt_filename = core::utils::string::GetFileStemLeaf(inputFilename) + ".mt";
+		FILE* mt_file = fopen( mt_filename.c_str(), "rb" );
+
+		if (mt_file != nullptr)
+		{
+			// Load in the OSF file
+			osf::KeyValueTree model_keys;
+			{
+				io::OSFReader osf_reader ( mt_file );
+				model_keys.LoadKeyValues(&osf_reader);
+			}
+			fclose( mt_file );
+
+			// Loop through all meshes to find matching keys
+			for ( auto& mesh : loadedMeshes )
+			{
+				auto mesh_kv = model_keys.GetKeyValue( mesh.name );
+				if (mesh_kv != NULL)
+				{
+					auto mesh_content = mesh_kv->object;
+					ReadKeyValue( mesh_content, "material", mesh.material );
+				}
+			}
+
+			// Done with keys, free the tree
+			model_keys.FreeKeyValues();
+		}
+	}
+
 	// 
 	{
 		// Open up the MPD file.
@@ -334,6 +382,10 @@ bool TrConverterGLTF::Convert(const char* inputFilename, const char* outputFilen
 		while (mpd.GetSegmentCount(core::ModelFmtSegmentType::kGeometryVertexData) > 0)
 		{
 			mpd.RemoveSegment(core::ModelFmtSegmentType::kGeometryVertexData, 0);
+		}
+		while (mpd.GetSegmentCount(core::ModelFmtSegmentType::kMaterialInfo) > 0)
+		{
+			mpd.RemoveSegment(core::ModelFmtSegmentType::kMaterialInfo, 0);
 		}
 
 		// Add in the new geometry info
@@ -374,6 +426,16 @@ bool TrConverterGLTF::Convert(const char* inputFilename, const char* outputFilen
 			AddMPDVertexAttribute<core::ModelFmtVertexAttribute::kUV1>(mpd, meshIndex, mesh.data.texcoord1, mesh.data.vertexNum);
 			AddMPDVertexAttribute<core::ModelFmtVertexAttribute::kBoneWeight>(mpd, meshIndex, mesh.data.weight, mesh.data.vertexNum);
 			AddMPDVertexAttribute<core::ModelFmtVertexAttribute::kBoneIndices>(mpd, meshIndex, mesh.data.bone, mesh.data.vertexNum);
+
+			// Create material information
+			{
+				core::modelFmtSegmentMaterial_Info material_info;
+				material_info.material = mesh.material;
+
+				header.type = core::ModelFmtSegmentType::kMaterialInfo;
+				header.dataSize = sizeof(core::modelFmtSegmentMaterial_Info);
+				mpd.AddSegment(header, &material_info);
+			}
 		}
 
 		// TODO: clear off the temporarily allocated arModelData arrays

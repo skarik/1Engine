@@ -23,6 +23,7 @@
 #include "m04-editor/standalone/materialeditor/sceneEditorMaterial.h"
 #include "m04-editor/standalone/materialbrowser/sceneEditorMaterialBrowser.h"
 #include "m04-editor/standalone/levelbuilder/sceneEditorLevelBuilder.h"
+#include "m04-editor/standalone/bottler/sceneEditorBottler.h"
 
 namespace M04
 {
@@ -88,6 +89,7 @@ int GameInitialize ( void )
 		EngineCommon::RegisterScene<sceneEditorMaterial>();
 		EngineCommon::RegisterScene<sceneEditorMaterialBrowser>();
 		EngineCommon::RegisterScene<sceneEditorLevelBuilder>();
+		EngineCommon::RegisterScene<sceneEditorBottler>();
 	}
 
 

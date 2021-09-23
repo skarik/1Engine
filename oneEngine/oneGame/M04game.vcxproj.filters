@@ -103,6 +103,12 @@
     <Filter Include="SOURCE\M04-Editor\Standalone\ModelEditor">
       <UniqueIdentifier>{63fa1aa6-481b-490e-965f-628998d7618c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\M04-Editor\Standalone\Bottler">
+      <UniqueIdentifier>{19e00c9f-c478-4be0-9956-cd8018d7e1e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\M04-Editor\Standalone\Common-Editor">
+      <UniqueIdentifier>{e39e19e3-c452-46de-a657-0814a391c2ba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\m04\m04-common.h">
@@ -339,6 +345,12 @@
     <ClInclude Include="source\m04-editor\standalone\modeleditor\sceneEditorModel.h">
       <Filter>SOURCE\M04-Editor\Standalone\ModelEditor</Filter>
     </ClInclude>
+    <ClInclude Include="source\m04-editor\standalone\bottler\sceneEditorBottler.h">
+      <Filter>SOURCE\M04-Editor\Standalone\Bottler</Filter>
+    </ClInclude>
+    <ClInclude Include="source\m04-editor\standalone\common-editor\EditorWindowBase.h">
+      <Filter>SOURCE\M04-Editor\Standalone\Common-Editor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\m04\m04-common.cpp">
@@ -553,6 +565,12 @@
     </ClCompile>
     <ClCompile Include="source\m04-editor\standalone\modeleditor\sceneEditorModel.cpp">
       <Filter>SOURCE\M04-Editor\Standalone\ModelEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04-editor\standalone\bottler\sceneEditorBottler.cpp">
+      <Filter>SOURCE\M04-Editor\Standalone\Bottler</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04-editor\standalone\common-editor\EditorWindowBase.cpp">
+      <Filter>SOURCE\M04-Editor\Standalone\Common-Editor</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

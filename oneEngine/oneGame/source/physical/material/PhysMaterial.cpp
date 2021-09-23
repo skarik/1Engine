@@ -99,6 +99,24 @@ const char* PrGetPhysMaterialName ( const PrPhysMaterialType type )
 	}
 }
 
+const PrPhysMaterialType PrGetPhysMaterialTypeFromName ( const char* name )
+{
+		 if (strncmp(name, "Dirt", 4))		return kPhysMatDirt;
+	else if (strncmp(name, "Grass", 5))		return kPhysMatGrass;
+	else if (strncmp(name, "Rock", 4))		return kPhysMatRock;
+	else if (strncmp(name, "Mud", 3))		return kPhysMatMud;
+	else if (strncmp(name, "Gravel", 6))	return kPhysMatGravel;
+	else if (strncmp(name, "Sand", 4))		return kPhysMatSand;
+	else if (strncmp(name, "Crystal", 7))	return kPhysMatCrystal;
+	else if (strncmp(name, "Wood", 4))		return kPhysMatWood;
+	else if (strncmp(name, "Water", 5))		return kPhysMatWater;
+	else if (strncmp(name, "Ice", 3))		return kPhysMatIce;
+	else if (strncmp(name, "Snow", 4))		return kPhysMatSnow;
+	else if (strncmp(name, "Blood", 5))		return kPhysMatBlood;
+	else if (strncmp(name, "Metal", 5))		return kPhysMatMetal;
+	return kPhysMatDefault;
+}
+
 const physical::PrPhysMaterial* PrGetPhysMaterial ( const PrPhysMaterialType type )
 {
 	ARCORE_ASSERT(material::g_PhysMaterials[(int)type].type == type);

@@ -1,0 +1,45 @@
+//!/osf/material/1
+//
+// Example material definition file.
+// Used when created materials.
+//
+
+// Optional name. Is useful for debugging purposes.
+name "Black"
+
+// Physics options
+physics
+{
+	// The type of material used
+	physmat				Default
+}
+
+// Rendering options
+render
+{
+	render_mode			LitOpaque
+	
+	shader_vv			"shaders/deferred_env/simple_vv"
+	shader_p			"shaders/deferred_env/simple_p"
+	
+	// Shader constant offsets
+	diffuse_color		1 1 1 1
+	smoothness_bias		0.0
+	smoothness_scale	1.0
+	metallicness_bias	0.0
+	metallicness_scale	1.0
+	
+	texture_diffuse		"textures/white"
+	texture_normals		default
+	texture_surface		default
+	texture_overlay		default
+	texture_detail		none
+	
+	repeat_factor		1 1
+}
+
+// Lighting options
+lighting
+{
+	emissive			0 0 0
+}

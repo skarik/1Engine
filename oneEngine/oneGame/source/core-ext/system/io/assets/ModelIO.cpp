@@ -48,6 +48,7 @@ bool core::MpdInterface::Open ( const char* n_resource_name, const bool n_conver
 		bool bMpdFound = false;
 		bool bGltfFound = false;
 		bool bGlbFound = false;
+		bool bMtFound = false;
 
 		arstring256 model_rezname (n_resource_name);
 
@@ -82,11 +83,19 @@ bool core::MpdInterface::Open ( const char* n_resource_name, const bool n_conver
 			}
 		}
 
+		// Find a MT file.
+		std::string mt_filename = model_rezname + ".mt";
+		if (core::Resources::MakePathTo(mt_filename.c_str(), mt_filename))
+		{
+			bMtFound = true;
+		}
+
 		// If MPD is found, and GLTF found, compare the times in them to check
 		if (bMpdFound && (bGltfFound || bGlbFound))
 		{
 			bool bMpdCorrupted = false;
 			bool bMpdOutOfDate = false;
+			bool bMtOutOfDate = false;
 
 			// Read in the MPD header
 			FILE* l_fileMpd = fopen(mpd_filename.c_str(), "rb");
@@ -104,9 +113,13 @@ bool core::MpdInterface::Open ( const char* n_resource_name, const bool n_conver
 			// Grab the GLTF's age
 			uint64 gltf_datetime = bGltfFound ? io::file::GetLastWriteTime(gltf_filename.c_str()) : io::file::GetLastWriteTime(glb_filename.c_str());
 
+			// Grab the MT's age
+			uint64 mt_datetime = bMtFound ? io::file::GetLastWriteTime(mt_filename.c_str()) : 0;
+
 			// If the GLTF is newer, then we need to convert before we continue
 			if (bMpdCorrupted || bMpdOutOfDate
-				|| gltf_datetime > mpd_datetime)
+				|| gltf_datetime > mpd_datetime
+				|| mt_datetime > mpd_datetime)
 			{
 				bRequiresConvert = true;
 			}

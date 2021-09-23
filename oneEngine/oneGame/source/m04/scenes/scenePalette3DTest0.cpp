@@ -533,7 +533,7 @@ void scenePalette3DTest0::LoadScene ( void )
 		model->SetIsStatic(true);
 		model->transform.position = Vector3f(-1.4F, 3.1F, 0.3F);
 
-		{
+		/*{
 			// Set up tree material
 			RrPass pass;
 			pass.utilSetupAsDefault();
@@ -602,7 +602,7 @@ void scenePalette3DTest0::LoadScene ( void )
 			pass.m_primitiveType = gpu::kPrimitiveTopologyTriangleList;
 
 			model->GetMesh(1)->PassInitWithInput(0, &pass);
-		}
+		}*/
 	} loadScreen->loadStep();
 
 	// Add Go!
