@@ -448,6 +448,9 @@
     <ClInclude Include="source\core\system\io\FileWin32Stream.h">
       <Filter>SOURCE\Core\System\IO</Filter>
     </ClInclude>
+    <ClInclude Include="source\core-ext\containers\osfstructureparsers.h">
+      <Filter>SOURCE\Core-ext\Containers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core\math\Color.cpp">

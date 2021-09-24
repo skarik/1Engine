@@ -1,5 +1,5 @@
-#ifndef M04_IO_OSF_STRUCTURE_H_
-#define M04_IO_OSF_STRUCTURE_H_
+#ifndef CORE_EXT_IO_OSF_STRUCTURE_H_
+#define CORE_EXT_IO_OSF_STRUCTURE_H_
 
 #include <vector>
 #include <string>
@@ -351,4 +351,4 @@ namespace osf
 	};
 };
 
-#endif//M04_IO_OSF_STRUCTURE_H_
+#endif//CORE_EXT_IO_OSF_STRUCTURE_H_

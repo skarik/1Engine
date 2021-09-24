@@ -165,6 +165,7 @@
     <ClInclude Include="source\core-ext\containers\ExtendibleMap2D.h" />
     <ClInclude Include="source\core-ext\containers\arKDTree.h" />
     <ClInclude Include="source\core-ext\containers\osfstructure.h" />
+    <ClInclude Include="source\core-ext\containers\osfstructureparsers.h" />
     <ClInclude Include="source\core-ext\math\MathQEF.h" />
     <ClInclude Include="source\core-ext\math\noise\MidpointNoiseBuffer.h" />
     <ClInclude Include="source\core-ext\math\noise\MidpointWrappedNoise.h" />

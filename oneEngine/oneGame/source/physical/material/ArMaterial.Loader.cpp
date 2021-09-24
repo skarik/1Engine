@@ -8,134 +8,75 @@
 
 #include "core-ext/system/io/osf.h"
 #include "core-ext/containers/osfstructure.h"
+#include "core-ext/containers/osfstructureparsers.h"
 
-static void ReadKeyValue ( osf::ObjectValue* object, const char* keyvalue, PrPhysMaterialType& value )
+namespace osf
 {
-	auto read_keyvalue = object->GetKeyValue(keyvalue);
-	if (read_keyvalue != NULL)
+	static void ReadKeyValue ( osf::ObjectValue* object, const char* keyvalue, PrPhysMaterialType& value )
 	{
-		auto read_value = read_keyvalue->value->As<osf::StringValue>();
-		value = PrGetPhysMaterialTypeFromName(read_value->value.c_str());
-	}
-}
-
-static void ReadKeyValue ( osf::ObjectValue* object, const char* keyvalue, float& value )
-{
-	auto read_keyvalue = object->Convert<osf::FloatValue>(keyvalue);
-	if (read_keyvalue != NULL)
-	{
-		auto read_value = read_keyvalue->value->As<osf::FloatValue>();
-		value = read_value->value;
-	}
-}
-
-static void ReadKeyValue ( osf::ObjectValue* object, const char* keyvalue, bool& value )
-{
-	auto read_keyvalue = object->Convert<osf::BooleanValue>(keyvalue);
-	if (read_keyvalue != NULL)
-	{
-		auto read_value = read_keyvalue->value->As<osf::BooleanValue>();
-		value = read_value->value;
-	}
-}
-
-static void ReadKeyValue ( osf::ObjectValue* object, const char* keyvalue, arstring128& value )
-{
-	auto read_keyvalue = object->GetKeyValue(keyvalue);
-	if (read_keyvalue != NULL)
-	{
-		auto read_value = read_keyvalue->value->As<osf::StringValue>();
-		value = read_value->value.c_str();
-	}
-}
-
-static void ReadKeyValue ( osf::ObjectValue* object, const char* keyvalue, ArRenderMode& value )
-{
-	auto read_keyvalue = object->GetKeyValue(keyvalue);
-	if (read_keyvalue != NULL)
-	{
-		auto read_value = read_keyvalue->value->As<osf::StringValue>();
-
-			 if (read_value->value == "LitOpaque")		value = ArRenderMode::kLitOpaque;
-		else if (read_value->value == "FastDecal")		value = ArRenderMode::kFastDecal;
-		else if (read_value->value == "LitFoliage")		value = ArRenderMode::kLitFoliage;
-		else
-			ARCORE_ERROR("Unrecognized key-value");
-	}
-}
-
-static void ReadKeyValue ( osf::ObjectValue* object, const char* keyvalue, ArFacingCullMode& value )
-{
-	auto read_keyvalue = object->GetKeyValue(keyvalue);
-	if (read_keyvalue != NULL)
-	{
-		auto read_value = read_keyvalue->value->As<osf::StringValue>();
-
-			 if (read_value->value == "None")		value = ArFacingCullMode::kNone;
-		else if (read_value->value == "Front")		value = ArFacingCullMode::kFront;
-		else if (read_value->value == "Back")		value = ArFacingCullMode::kBack;
-		else
-			ARCORE_ERROR("Unrecognized key-value");
-	}
-}
-
-static void ReadKeyValue ( osf::ObjectValue* object, const char* keyvalue, core::gfx::tex::arSamplingFilter& value )
-{
-	auto read_keyvalue = object->GetKeyValue(keyvalue);
-	if (read_keyvalue != NULL)
-	{
-		auto read_value = read_keyvalue->value->As<osf::StringValue>();
-
-			 if (read_value->value == "Point")		value = core::gfx::tex::kSamplingPoint;
-		else if (read_value->value == "Nearest")	value = core::gfx::tex::kSamplingPoint;
-		else if (read_value->value == "Linear")		value = core::gfx::tex::kSamplingLinear;
-		else
-			ARCORE_ERROR("Unrecognized key-value");
-	}
-}
-
-static void ReadKeyValue ( osf::ObjectValue* object, const char* keyvalue, ArMaterial::RenderInfo::TextureEntry& value )
-{
-	auto read_keyvalue = object->GetKeyValue(keyvalue);
-	if (read_keyvalue != NULL)
-	{
-		auto read_value = read_keyvalue->value->As<osf::StringValue>();
-		value.resource_name = read_value->value.c_str();
-	}
-}
-
-static void ReadKeyValue ( osf::ObjectValue* object, const char* keyvalue, Vector3f& value )
-{
-	auto read_keyvalue = object->GetKeyValue(keyvalue);
-	if (read_keyvalue != NULL)
-	{
-		auto read_value = read_keyvalue->value->As<osf::StringValue>();
-		std::string set_string = read_value->value;
-		auto set_values = core::utils::string::Split(set_string, core::utils::string::kWhitespace);
-
-		for (int i = 0; i < std::min<int>(3, (int)set_values.size()); ++i)
+		auto read_keyvalue = object->GetKeyValue(keyvalue);
+		if (read_keyvalue != NULL)
 		{
-			value[i] = std::stof(set_values[i]);
+			auto read_value = read_keyvalue->value->As<osf::StringValue>();
+			value = PrGetPhysMaterialTypeFromName(read_value->value.c_str());
+		}
+	}
+
+	static void ReadKeyValue ( osf::ObjectValue* object, const char* keyvalue, ArRenderMode& value )
+	{
+		auto read_keyvalue = object->GetKeyValue(keyvalue);
+		if (read_keyvalue != NULL)
+		{
+			auto read_value = read_keyvalue->value->As<osf::StringValue>();
+
+				 if (read_value->value == "LitOpaque")		value = ArRenderMode::kLitOpaque;
+			else if (read_value->value == "FastDecal")		value = ArRenderMode::kFastDecal;
+			else if (read_value->value == "LitFoliage")		value = ArRenderMode::kLitFoliage;
+			else
+				ARCORE_ERROR("Unrecognized key-value");
+		}
+	}
+
+	static void ReadKeyValue ( osf::ObjectValue* object, const char* keyvalue, ArFacingCullMode& value )
+	{
+		auto read_keyvalue = object->GetKeyValue(keyvalue);
+		if (read_keyvalue != NULL)
+		{
+			auto read_value = read_keyvalue->value->As<osf::StringValue>();
+
+				 if (read_value->value == "None")		value = ArFacingCullMode::kNone;
+			else if (read_value->value == "Front")		value = ArFacingCullMode::kFront;
+			else if (read_value->value == "Back")		value = ArFacingCullMode::kBack;
+			else
+				ARCORE_ERROR("Unrecognized key-value");
+		}
+	}
+
+	static void ReadKeyValue ( osf::ObjectValue* object, const char* keyvalue, core::gfx::tex::arSamplingFilter& value )
+	{
+		auto read_keyvalue = object->GetKeyValue(keyvalue);
+		if (read_keyvalue != NULL)
+		{
+			auto read_value = read_keyvalue->value->As<osf::StringValue>();
+
+				 if (read_value->value == "Point")		value = core::gfx::tex::kSamplingPoint;
+			else if (read_value->value == "Nearest")	value = core::gfx::tex::kSamplingPoint;
+			else if (read_value->value == "Linear")		value = core::gfx::tex::kSamplingLinear;
+			else
+				ARCORE_ERROR("Unrecognized key-value");
+		}
+	}
+
+	static void ReadKeyValue ( osf::ObjectValue* object, const char* keyvalue, ArMaterial::RenderInfo::TextureEntry& value )
+	{
+		auto read_keyvalue = object->GetKeyValue(keyvalue);
+		if (read_keyvalue != NULL)
+		{
+			auto read_value = read_keyvalue->value->As<osf::StringValue>();
+			value.resource_name = read_value->value.c_str();
 		}
 	}
 }
-
-static void ReadKeyValue ( osf::ObjectValue* object, const char* keyvalue, Vector4f& value )
-{
-	auto read_keyvalue = object->GetKeyValue(keyvalue);
-	if (read_keyvalue != NULL)
-	{
-		auto read_value = read_keyvalue->value->As<osf::StringValue>();
-		std::string set_string = read_value->value;
-		auto set_values = core::utils::string::Split(set_string, core::utils::string::kWhitespace);
-
-		for (int i = 0; i < std::min<int>(4, (int)set_values.size()); ++i)
-		{
-			value[i] = std::stof(set_values[i]);
-		}
-	}
-}
-
 
 static bool LoadMaterialFromResource ( ArMaterial* material, const char* resource_name )
 {
@@ -174,46 +115,46 @@ static bool LoadMaterialFromResource ( ArMaterial* material, const char* resourc
 			{
 				auto contents = kv->object->As<osf::ObjectValue>();
 
-				ReadKeyValue(contents, "physmat", material->physMat);
+				osf::ReadKeyValue(contents, "physmat", material->physMat);
 			}
 			else if (kv->key.compare("render"))
 			{
 				auto contents = kv->object->As<osf::ObjectValue>();
 
-				ReadKeyValue(contents, "render_mode", material->render_info.render_mode);
+				osf::ReadKeyValue(contents, "render_mode", material->render_info.render_mode);
 
-				ReadKeyValue(contents, "shader_vv", material->render_info.shader_vv);
-				ReadKeyValue(contents, "shader_h", material->render_info.shader_h);
-				ReadKeyValue(contents, "shader_d", material->render_info.shader_d);
-				ReadKeyValue(contents, "shader_g", material->render_info.shader_g);
-				ReadKeyValue(contents, "shader_p", material->render_info.shader_p);
+				osf::ReadKeyValue(contents, "shader_vv", material->render_info.shader_vv);
+				osf::ReadKeyValue(contents, "shader_h", material->render_info.shader_h);
+				osf::ReadKeyValue(contents, "shader_d", material->render_info.shader_d);
+				osf::ReadKeyValue(contents, "shader_g", material->render_info.shader_g);
+				osf::ReadKeyValue(contents, "shader_p", material->render_info.shader_p);
 
-				ReadKeyValue(contents, "cull", material->render_info.cull);
-				ReadKeyValue(contents, "alpha_test", material->render_info.alpha_test);
+				osf::ReadKeyValue(contents, "cull", material->render_info.cull);
+				osf::ReadKeyValue(contents, "alpha_test", material->render_info.alpha_test);
 
-				ReadKeyValue(contents, "diffuse_color", material->render_info.diffuse_color);
-				ReadKeyValue(contents, "smoothness_bias", material->render_info.smoothness_bias);
-				ReadKeyValue(contents, "smoothness_scale", material->render_info.smoothness_scale);
-				ReadKeyValue(contents, "metallicness_bias", material->render_info.metallicness_bias);
-				ReadKeyValue(contents, "metallicness_scale", material->render_info.metallicness_scale);
+				osf::ReadKeyValue(contents, "diffuse_color", material->render_info.diffuse_color);
+				osf::ReadKeyValue(contents, "smoothness_bias", material->render_info.smoothness_bias);
+				osf::ReadKeyValue(contents, "smoothness_scale", material->render_info.smoothness_scale);
+				osf::ReadKeyValue(contents, "metallicness_bias", material->render_info.metallicness_bias);
+				osf::ReadKeyValue(contents, "metallicness_scale", material->render_info.metallicness_scale);
 
-				ReadKeyValue(contents, "texture_diffuse", material->render_info.texture_diffuse);
-				ReadKeyValue(contents, "texture_normals", material->render_info.texture_normals);
-				ReadKeyValue(contents, "texture_surface", material->render_info.texture_surface);
-				ReadKeyValue(contents, "texture_overlay", material->render_info.texture_overlay);
-				ReadKeyValue(contents, "texture_detail", material->render_info.texture_detail);
+				osf::ReadKeyValue(contents, "texture_diffuse", material->render_info.texture_diffuse);
+				osf::ReadKeyValue(contents, "texture_normals", material->render_info.texture_normals);
+				osf::ReadKeyValue(contents, "texture_surface", material->render_info.texture_surface);
+				osf::ReadKeyValue(contents, "texture_overlay", material->render_info.texture_overlay);
+				osf::ReadKeyValue(contents, "texture_detail", material->render_info.texture_detail);
 
-				ReadKeyValue(contents, "sampling", material->render_info.sampling);
+				osf::ReadKeyValue(contents, "sampling", material->render_info.sampling);
 
-				ReadKeyValue(contents, "repeat_factor", material->render_info.repeat_factor);
+				osf::ReadKeyValue(contents, "repeat_factor", material->render_info.repeat_factor);
 
 			}
 			else if (kv->key.compare("lighting"))
 			{
 				auto contents = kv->object->As<osf::ObjectValue>();
 
-				ReadKeyValue(contents, "emits", material->lighting_info.emits);
-				ReadKeyValue(contents, "emissive", material->lighting_info.emissive);
+				osf::ReadKeyValue(contents, "emits", material->lighting_info.emits);
+				osf::ReadKeyValue(contents, "emissive", material->lighting_info.emissive);
 			}
 			else
 			{

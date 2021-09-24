@@ -11,21 +11,11 @@
 
 #include "core-ext/system/io/osf.h"
 #include "core-ext/containers/osfstructure.h"
+#include "core-ext/containers/osfstructureparsers.h"
 
 #include "fx/gltf.h"
 
 #include <type_traits>
-
-// This is copied from ArMaterial.Loader.cpp. Maybe those could be moved into osfstructure?
-static void ReadKeyValue ( osf::ObjectValue* object, const char* keyvalue, arstring128& value )
-{
-	auto read_keyvalue = object->GetKeyValue(keyvalue);
-	if (read_keyvalue != NULL)
-	{
-		auto read_value = read_keyvalue->value->As<osf::StringValue>();
-		value = read_value->value.c_str();
-	}
-}
 
 static bool LoadGLTF(fx::gltf::Document& document, const char* filename)
 {
@@ -354,7 +344,7 @@ bool TrConverterGLTF::Convert(const char* inputFilename, const char* outputFilen
 				if (mesh_kv != NULL)
 				{
 					auto mesh_content = mesh_kv->object;
-					ReadKeyValue( mesh_content, "material", mesh.material );
+					osf::ReadKeyValue( mesh_content, "material", mesh.material );
 				}
 			}
 

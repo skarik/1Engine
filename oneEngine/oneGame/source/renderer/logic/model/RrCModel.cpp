@@ -133,7 +133,7 @@ static bool LoadModelToMeshGroup ( const rrModelLoadParams& load_params, RrAnima
 		{
 			arstring128			materialName;
 
-			// First pull in the geometry general information
+			// First pull in the material information (should just be a string)
 			core::modelFmtSegmentMaterial_Info* matInfo = (core::modelFmtSegmentMaterial_Info*)mpd.GetSegmentData(core::ModelFmtSegmentType::kMaterialInfo, meshIndex);
 			ARCORE_ASSERT(matInfo->IsValid());
 			{
@@ -147,7 +147,7 @@ static bool LoadModelToMeshGroup ( const rrModelLoadParams& load_params, RrAnima
 				mesh_group->m_materials.push_back(ArLoadMaterial(materialName));
 			}
 			else
-			{
+			{	// NULL or Empty material allows renderer to manually specify Pass w/o any needless data loaded.
 				mesh_group->m_materials.push_back(ArLoadMaterial(NULL));
 			}
 		}
@@ -265,55 +265,6 @@ static core::math::Cubic CalculateTotalMeshBounds ( RrAnimatedMeshGroup* mesh_gr
 	}
 }
 
-#include "renderer/material/ArMaterial.Renderer.h"
-#include "renderer/material/RrShaderProgram.h"
-// TODO: make this less dirty
-static void ApplyMaterialToMesh ( renderer::Mesh* mesh, ArMaterial* material )
-{
-	RrPass pass;
-	pass.utilSetupAsDefault();
-
-	pass.m_type = kPassTypeDeferred;
-	pass.m_alphaMode = material->render_info.alpha_test > 0.0F ? renderer::kAlphaModeAlphatest : renderer::kAlphaModeNone;
-	pass.m_cullMode = (material->render_info.cull == ArFacingCullMode::kNone) ? gpu::kCullModeNone : ((material->render_info.cull == ArFacingCullMode::kBack) ? gpu::kCullModeBack : gpu::kCullModeFront);
-	pass.m_surface.diffuseColor = material->render_info.diffuse_color;
-	pass.m_surface.alphaCutoff = material->render_info.alpha_test;
-
-	pass.m_surface.textureScale = material->render_info.repeat_factor;
-
-	pass.m_surface.shadingModel = material->render_info.render_mode == ArRenderMode::kLitFoliage ? kShadingModelThinFoliage : kShadingModelNormal;
-
-	pass.m_surface.baseSmoothness = material->render_info.smoothness_bias;
-	pass.m_surface.scaledSmoothness = material->render_info.smoothness_scale;
-	pass.m_surface.baseMetallicness = material->render_info.metallicness_bias;
-	pass.m_surface.scaledMetallicness = material->render_info.metallicness_scale;
-
-	pass.setTexture( TEX_DIFFUSE, ArMaterialGetTexture(material->render_info.texture_diffuse) );
-	pass.setTexture( TEX_NORMALS, ArMaterialGetTexture(material->render_info.texture_normals) );
-	pass.setTexture( TEX_SURFACE, ArMaterialGetTexture(material->render_info.texture_surface) );
-	pass.setTexture( TEX_OVERLAY, ArMaterialGetTexture(material->render_info.texture_overlay) );
-
-	gpu::SamplerCreationDescription pointFilter;
-	pointFilter.minFilter = material->render_info.sampling;
-	pointFilter.magFilter = material->render_info.sampling;
-	pass.setSampler(rrTextureSlot::TEX_DIFFUSE, &pointFilter);
-	pass.setSampler(rrTextureSlot::TEX_NORMALS, &pointFilter);
-	pass.setSampler(rrTextureSlot::TEX_SURFACE, &pointFilter);
-	pass.setSampler(rrTextureSlot::TEX_OVERLAY, &pointFilter);
-
-	pass.setProgram( RrShaderProgram::Load(rrShaderProgramVsPs{(material->render_info.shader_vv + ".spv"), (material->render_info.shader_p + ".spv")}) );
-	renderer::shader::Location t_vspec[] = {renderer::shader::Location::kPosition,
-		renderer::shader::Location::kUV0,
-		renderer::shader::Location::kColor,
-		renderer::shader::Location::kNormal,
-		renderer::shader::Location::kTangent,
-		renderer::shader::Location::kBinormal};
-	pass.setVertexSpecificationByCommonList(t_vspec, sizeof(t_vspec) / sizeof(renderer::shader::Location));
-	pass.m_primitiveType = gpu::kPrimitiveTopologyTriangleList;
-
-	mesh->PassInitWithInput(0, &pass);
-}
-
 RrCModel::RrCModel ( RrAnimatedMeshGroup* mesh_group, const rrModelLoadParams& params, RrWorld* world_to_add_to )
 	: RrLogicObject()
 {
@@ -333,11 +284,13 @@ RrCModel::RrCModel ( RrAnimatedMeshGroup* mesh_group, const rrModelLoadParams& p
 		ArMaterialContainer* mesh_material = mesh_group->m_materials[i];
 
 		renderer::Mesh* mesh = new renderer::Mesh(mesh_buffer, false);
+
 		// Set up the materials for the mesh
-		// TODO: Make this less dirty
 		if (mesh_material != nullptr)
 		{
-			ApplyMaterialToMesh( mesh, mesh_material->m_material );
+			RrPass pass;
+			pass.utilSetupFromMaterial( mesh_material->m_material );
+			mesh->PassInitWithInput(0, &pass);
 		}
 
 		// Add mesh to a given world

@@ -20,6 +20,7 @@ namespace gpu
 	class Texture;
 	class Sampler;
 }
+class ArMaterial;
 
 typedef void (*rrPassRenderFunction)(rrRenderContext*);
 
@@ -115,6 +116,8 @@ public:
 	//	utilSetupAs2D () : Sets properties of the pass to what all 2D passes typically use.
 	// In detail: depth write off, depth test always, no face culling, transparency on, lighting hinted off.
 	RENDER_API void			utilSetupAs2D ( void );
+	//	utilSetupFromMaterial () : Sets properties of the pass to what is defined in the given material.
+	RENDER_API void			utilSetupFromMaterial ( ArMaterial* material );
 
 public:
 	//	isTranslucent () : Is this pass to be considered as part of the translucent passgroup?
