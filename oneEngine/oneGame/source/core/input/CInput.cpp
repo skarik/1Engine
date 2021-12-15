@@ -53,8 +53,11 @@ static void InputState_Update_Mouse (
 	
 	// offset them real mouse posses, limiting to window
 	input_state->m_mouse += input_state->m_deltaMouse.mulComponents(input->m_mouseSensitivity);
-	input_state->m_mouse.x = math::clamp<Real>(input_state->m_mouse.x, 0.0F, (Real)core::GetFocusedScreen().GetWidth());
-	input_state->m_mouse.y = math::clamp<Real>(input_state->m_mouse.y, 0.0F, (Real)core::GetFocusedScreen().GetHeight());
+	if (core::GetScreenExists())
+	{
+		input_state->m_mouse.x = math::clamp<Real>(input_state->m_mouse.x, 0.0F, (Real)core::GetFocusedScreen().GetWidth());
+		input_state->m_mouse.y = math::clamp<Real>(input_state->m_mouse.y, 0.0F, (Real)core::GetFocusedScreen().GetHeight());
+	}
 
 	// update the mouse wheel changes
 	if ( !input_state->m_deltaMouseScrollChange )

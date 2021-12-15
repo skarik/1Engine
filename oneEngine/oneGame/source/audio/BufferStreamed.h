@@ -9,6 +9,8 @@
 #include "vorbis/vorbisenc.h"
 #include "vorbis/vorbisfile.h"
 
+#include <mutex>
+
 namespace audio
 {
 	class BufferStreamed : public Buffer
@@ -36,6 +38,7 @@ namespace audio
 		// Streaming state
 		FILE*				m_file = NULL;
 		OggVorbis_File		m_oggStream;
+		std::mutex			m_oggStreamLock;
 		vorbis_info*		m_vorbisInfo = NULL;
 		vorbis_comment*		m_vorbisComment = NULL;
 		double				m_vorbisLength = 0.0;

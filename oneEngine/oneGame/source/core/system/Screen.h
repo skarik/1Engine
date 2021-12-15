@@ -46,6 +46,7 @@ private:
 
 namespace core
 {
+	CORE_API bool		GetScreenExists ( void );
 	CORE_API ArScreen&	GetScreen ( const int index );
 	CORE_API ArScreen&	GetFocusedScreen ( void );
 	CORE_API void		SetScreenCount ( const int count );

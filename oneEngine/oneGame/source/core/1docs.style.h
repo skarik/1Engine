@@ -38,6 +38,7 @@ namespace core
 		//	int: Success code.
 		EXAMPLE_API int			InterfaceImplementation ( Vector3f a, Quaternion b ) override;
 	private:
+		int					exampleVariable;
 	};
 }
 

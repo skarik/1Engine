@@ -72,12 +72,20 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	// Create the music track to loop
 	audio::Buffer* l_musicBuffer = audio::BufferManager::Active()->GetSound(".resbackup-0/sounds/music/princess-loop.ogg");
 	//audio::Buffer* l_musicBuffer = audio::BufferManager::Active()->GetSound(".resbackup-0/sounds/music/Theme07-snippet.ogg");
+
 	audio::Source* l_musicSource = new audio::Source(l_musicBuffer);
 	l_musicSource->state.looped = true;
 	l_musicSource->state.position = Vector3f(0, 1, 0);
 	l_musicSource->state.pitch = 1.0F;
 	l_musicSource->state.channel = audio::MixChannel::kMusic;
 	l_musicSource->Play(true);
+
+	audio::Source* l_musicSourceB = new audio::Source(l_musicBuffer);
+	l_musicSourceB->state.looped = true;
+	l_musicSourceB->state.position = Vector3f(0, 1, 0);
+	l_musicSourceB->state.pitch = 0.9F;
+	l_musicSourceB->state.channel = audio::MixChannel::kMusic;
+	l_musicSourceB->Play(true);
 
 	audio::effect::LowPass1* l_lowPass = new audio::effect::LowPass1 (audio::MixChannel::kMusic);
 	l_lowPass->m_state.m_cutoffFade = 400;
@@ -184,6 +192,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 
 	l_listener->Destroy();
 	l_musicSource->Destroy();
+	l_musicSourceB->Destroy();
 	l_lowPass->Destroy();
 	if (l_soundSource != NULL)
 	{

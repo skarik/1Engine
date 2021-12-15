@@ -151,14 +151,14 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Platform)'=='Win32'">
     <Link>
-      <AdditionalDependencies>libvorbisfile_static.lib;libvorbis_static.lib;libogg_static.lib;muFFT.lib;muFFT-avx.lib;muFFT-sse.lib;muFFT-sse3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>vorbisfile.lib;vorbis.lib;ogg.lib;muFFT.lib;muFFT-avx.lib;muFFT-sse.lib;muFFT-sse3.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMT;LIBCMTD.lib;LIBCPMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <AdditionalLibraryDirectories>libs\core\win32x86;libs\basic\win32x86;libs\render\win32x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Platform)'=='x64'">
     <Link>
-      <AdditionalDependencies>libvorbisfile_static.lib;libvorbis_static.lib;libogg_static.lib;muFFT.lib;muFFT-avx.lib;muFFT-sse.lib;muFFT-sse3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>vorbisfile.lib;vorbis.lib;ogg.lib;muFFT.lib;muFFT-avx.lib;muFFT-sse.lib;muFFT-sse3.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBCMT;LIBCMTD.lib;LIBCPMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <AdditionalLibraryDirectories>libs\core\win32x64;libs\basic\win32x64;libs\render\win32x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>

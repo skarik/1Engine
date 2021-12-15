@@ -284,7 +284,7 @@ void osf::KeyValueTree::LoadKeyValues( io::OSFReader* reader )
 			}
 			else
 			{
-				ARCORE_ASSERT(stackParentKeyvalue.back()->object != NULL)
+				ARCORE_ASSERT(stackParentKeyvalue.back()->object != NULL);
 				stackParentKeyvalue.back()->object->values.push_back(kv);
 			}
 

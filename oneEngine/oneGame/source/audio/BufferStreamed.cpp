@@ -132,38 +132,42 @@ void audio::BufferStreamed::Sample ( uint32_t& inout_sample_position, uint32_t s
 	int out_bitstream = 0;
 	int result = 0;
 
-	int64_t current_sample = ov_pcm_tell( &m_oggStream );
-	int64_t seeking_sample = (int64_t)std::round(inout_sample_position * frameScale);
-	if (abs(current_sample - seeking_sample) > 2)
+	// Critical area, using m_oggStream
 	{
-		ov_pcm_seek( &m_oggStream, seeking_sample );
-		debug::Console->PrintWarning("OGG Reader: Samples got a little bit too out of sync!\n");
+		const std::lock_guard<std::mutex> localLock(m_oggStreamLock);
+
+		int64_t current_sample = ov_pcm_tell( &m_oggStream );
+		int64_t seeking_sample = (int64_t)std::round(inout_sample_position * frameScale);
+		if (abs(current_sample - seeking_sample) > 2)
+		{
+			ov_pcm_seek( &m_oggStream, seeking_sample );
+		}
+
+		// Read in remaining data info buffer
+		while ( size < read_buffer_size - 4 )
+		{
+			result = ov_read( &m_oggStream, read_buffer + size, read_buffer_size - size, 0, 2, 1, &out_bitstream );
+
+			if ( result > 0 )
+			{
+				size += result;
+			}
+			else if ( result == 0 )
+			{
+				// Set the rest of the data to zeros and quit
+				std::fill(read_buffer + size, read_buffer + read_buffer_size, 0);
+				break;
+			}
+			else if ( result == OV_HOLE || result == OV_EBADLINK || result == OV_EINVAL )
+			{
+				debug::Console->PrintError("Bad data in OGG stream!\n");
+				break;
+			}
+		}
+
+		// Output new rawtime position
+		inout_sample_position = (uint32_t)std::round(ov_pcm_tell( &m_oggStream ) / frameScale);
 	}
-
-	// Read in remaining data info buffer
-	while ( size < read_buffer_size - 4 )
-	{
-		result = ov_read( &m_oggStream, read_buffer + size, read_buffer_size - size, 0, 2, 1, &out_bitstream );
-
-		if ( result > 0 )
-		{
-			size += result;
-		}
-		else if ( result == 0 )
-		{
-			// Set the rest of the data to zeros and quit
-			std::fill(read_buffer + size, read_buffer + read_buffer_size, 0);
-			break;
-		}
-		else if ( result == OV_HOLE || result == OV_EBADLINK || result == OV_EINVAL )
-		{
-			debug::Console->PrintError("Bad data in OGG stream!\n");
-			break;
-		}
-	}
-
-	// Output new rawtime position
-	inout_sample_position = (uint32_t)std::round(ov_pcm_tell( &m_oggStream ) / frameScale);
 
 	{	// Now, we resample the data to the correct format:
 		const uint8_t channelCount = (uint8_t)m_sound->channels;

@@ -4,18 +4,13 @@
 
 #include <vector>
 
-//namespace Screen
-//{
-//	_screen_info_t Info;
-//
-//	void _screen_info_t::Update ( void )
-//	{
-//		aspect = double( width )/ height;
-//	}
-//}
+static std::vector<ArScreen>	gScreenList;
+static int						gScreenFocused = 0;
 
-static std::vector<ArScreen> gScreenList;
-static int gScreenFocused = 0;
+bool core::GetScreenExists ( void )
+{
+	return !gScreenList.empty();
+}
 
 void ArScreen::SetFocused ( bool focused )
 {
