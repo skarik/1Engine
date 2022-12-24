@@ -249,6 +249,9 @@
     <ClCompile Include="source\core-ext\system\io\FileWatcher.cpp">
       <Filter>SOURCE\Core-ext\System\IO</Filter>
     </ClCompile>
+    <ClCompile Include="source\core-ext\system\io\assets\texloader\qoi.cpp">
+      <Filter>SOURCE\Core-ext\System\IO\Assets\TexLoader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\core\settings\CGameSettings.h">
@@ -433,6 +436,9 @@
     </ClInclude>
     <ClInclude Include="source\core-ext\system\io\FileWatcher.h">
       <Filter>SOURCE\Core-ext\System\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core-ext\system\io\assets\texloader\qoi.hpp">
+      <Filter>SOURCE\Core-ext\System\IO\Assets\TexLoader</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

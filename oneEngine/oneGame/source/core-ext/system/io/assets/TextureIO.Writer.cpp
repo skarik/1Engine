@@ -11,6 +11,7 @@
 #include "core-ext/system/io/assets/Conversion.h"
 
 #include "zlib/zlib.h"
+#include "core-ext/system/io/assets/texloader/qoi.hpp"
 
 core::BpdWriter::BpdWriter()
 	: m_generateMipmaps(false), m_writeAnimation(false), m_convertAndEmbedPalette(false),
@@ -107,6 +108,7 @@ bool core::BpdWriter::patchHeader( void )
 	l_header.flags		|= rawImageFormat & 0x000000FF;
 	// Byte 1: Transparency & load modes
 	l_header.flags		|= (ALPHA_LOAD_MODE_DEFAULT << 8) & 0x0000FF00;
+	l_header.flags		|= (((int)m_compression) << 12) & 0x0000FF00; 
 	// Byte 2: Type of texture (animated, paletted?)
 	l_header.flags		|= ((m_writeAnimation ? 0x01 : 0) << 16) & 0x00FF0000;
 	l_header.flags		|= ((m_offsetPalette  ? 0x02 : 0) << 16) & 0x00FF0000;
@@ -320,8 +322,6 @@ bool core::BpdWriter::writeLevelData ( void )
 	const size_t	pixelByteSize = getTextureFormatByteSize(rawImageFormat);
 	const size_t	largestMipByteCount = pixelByteSize * info.width * info.height * info.depth;
 	void*			mipmapBuffer = m_generateMipmaps ? new char [largestMipByteCount] : NULL;
-	uint32_t		compressBufferLen = compressBound((uint32_t)largestMipByteCount);
-	uchar*			compressBuffer = new uchar [compressBufferLen + 1];
 
 	// Write the levels:
 	for ( int level = level_count - 1; level >= 0; --level ) 
@@ -457,37 +457,71 @@ bool core::BpdWriter::writeLevelData ( void )
 		} // End downsampling
 
 		// Compress the data into side buffer
-		unsigned long compressedSize = compressBufferLen;
-		size_t uncompressedSize = pixelByteSize * t_width * t_height * t_depth;
-		int z_result = compress(compressBuffer, &compressedSize, (uchar*)(m_generateMipmaps ? mipmapBuffer : mipmaps[level]), (uint32_t)(uncompressedSize));
+		uchar*			compressBuffer = NULL;
+		uint32_t		compressFinalSize = 0;
 
-		// Check the compress result
-		switch( z_result )
+		if (m_compression == kTextureCompressionTypeZlib)
 		{
-		case Z_OK:
-			break;
-		case Z_MEM_ERROR:
-			debug::Console->PrintError("BpdWriter::writeLevelData : zlib : out of memory\n");
-			throw std::out_of_range("Out of memory");
-			break;
-		case Z_BUF_ERROR:
-			debug::Console->PrintError("BpdWriter::writeLevelData : zlib : output buffer wasn't large enough\n");
-			throw std::out_of_range("Out of space");
-			break;
+			// Allocate buffer to compress into
+			uint32_t compressBufferLen = compressBound((uint32_t)largestMipByteCount);
+			compressBuffer = (uchar*)malloc(compressBufferLen + 1);
+
+			// Compress now
+			unsigned long compressedSize = compressBufferLen;
+			size_t uncompressedSize = pixelByteSize * t_width * t_height * t_depth;
+			int z_result = compress(compressBuffer, &compressedSize, (uchar*)(m_generateMipmaps ? mipmapBuffer : mipmaps[level]), (uint32_t)(uncompressedSize));
+			compressFinalSize = (uint32_t)compressedSize;
+
+			// Check the compress result
+			switch( z_result )
+			{
+			case Z_OK:
+				break;
+			case Z_MEM_ERROR:
+				debug::Console->PrintError("BpdWriter::writeLevelData : zlib : out of memory\n");
+				throw std::out_of_range("Out of memory");
+				break;
+			case Z_BUF_ERROR:
+				debug::Console->PrintError("BpdWriter::writeLevelData : zlib : output buffer wasn't large enough\n");
+				throw std::out_of_range("Out of space");
+				break;
+			}
+		}
+		else if (m_compression = kTextureCompressionTypeQOI)
+		{
+			qoi_desc desc;
+			desc.width = t_width;
+			desc.height = t_height * t_depth;
+			desc.channels = (uchar)pixelByteSize;
+			desc.colorspace = QOI_LINEAR;
+
+			// Compress now
+			int compressed_length = 0;
+			compressBuffer = (uchar*)core::texture::qoi::qoi_encode((uchar*)(m_generateMipmaps ? mipmapBuffer : mipmaps[level]), &desc, &compressed_length);
+			compressFinalSize = (uint32_t)compressed_length;
+
+			// Check the compress result
+			if (compressBuffer == NULL)
+			{
+				debug::Console->PrintError("BpdWriter::writeLevelData : qoi : error in compressing\n");
+				throw std::out_of_range("Unknown");
+			}
 		}
 
 		// Save the current offset and other data
 		m_levels[level].offset	= (uint32_t)mappedfile->GetCursor();
-		m_levels[level].size	= (uint32_t)compressedSize;
+		m_levels[level].size	= (uint32_t)compressFinalSize;
 		m_levels[level].level	= level;
 
 		// Write compressed image to the file
-		mappedfile->WriteBuffer(compressBuffer, compressedSize);
+		mappedfile->WriteBuffer(compressBuffer, compressFinalSize);
+
+		// Done with temp info
+		free(compressBuffer);
 	}
 
 	// Free temp info:
 	delete[] mipmapBuffer;
-	delete[] compressBuffer;
 
 	return true;
 }

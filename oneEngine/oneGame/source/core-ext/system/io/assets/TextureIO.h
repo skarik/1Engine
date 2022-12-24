@@ -24,7 +24,7 @@ namespace core
 	static const char*	kTextureFormat_Header		= "BPD\0";
 
 	static const int	kTextureFormat_VersionMajor	= 2;
-	static const int	kTextureFormat_VersionMinor	= 3;
+	static const int	kTextureFormat_VersionMinor	= 4;
 
 	static const char*	kTextureFormat_HeadLevel	= "TEX\0";
 	static const char*	kTextureFormat_HeadAnimation= "ANM\0";
@@ -56,6 +56,12 @@ namespace core
 		ALPHA_LOAD_MODE_DEFAULT	= 0x00,
 		ALPHA_LOAD_MODE_INDEXED	= 0x01,
 		ALPHA_LOAD_MODE_KEYED	= 0x02
+	};
+
+	enum ETextureCompressionType
+	{
+		kTextureCompressionTypeZlib	= 0x00,	// 2.3 default
+		kTextureCompressionTypeQOI	= 0x01,	// 2.4 default
 	};
 
 	//	getTextureFormatByteSize(type) : Given a format, returns the byte width of a single texel.
@@ -258,6 +264,9 @@ namespace core
 		// Loaded data's format
 		ETextureFormatTypes
 						format;
+		// Loaded compression type
+		core::ETextureCompressionType
+						compression;
 		// Number of mipmaps.
 		uint8_t			mipmapCount;
 		gfx::tex::arImageInfo
@@ -301,6 +310,9 @@ namespace core
 		bool			m_writeAnimation;
 		// Controls if image is converted to the the palette given before saved. This will prevent mipmaps from being generated.
 		bool			m_convertAndEmbedPalette;
+		// Kind of compression we want to save with?
+		core::ETextureCompressionType
+						m_compression = core::kTextureCompressionTypeQOI;
 		// 
 
 		//	Save data:
@@ -404,6 +416,10 @@ namespace core
 };
 
 //===============================================================================================//
+//
+// BPD version 2.4
+//	• different compression support
+//	• QOI compression
 //
 // BPD version 2.3
 //	• optional mipmap generation

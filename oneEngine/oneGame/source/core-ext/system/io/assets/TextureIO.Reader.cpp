@@ -12,6 +12,7 @@
 #include "core-ext/system/io/Files.h"
 
 #include "zlib/zlib.h"
+#include "core-ext/system/io/assets/texloader/qoi.hpp"
 
 core::BpdLoader::BpdLoader()
 	: m_loadOnlySuperlow(false), m_loadImageInfo(false), m_loadMipmapMask(0), m_loadPalette(false), m_loadAnimation(false),
@@ -244,6 +245,7 @@ bool core::BpdLoader::loadBpdCommon ( void )
 			}
 
 			format		= (ETextureFormatTypes)(header.flags & 0x000000FF);
+			compression	= (ETextureCompressionType)((header.flags & 0x0000F000) >> 12);
 		}
 
 		// Check format
@@ -312,34 +314,55 @@ bool core::BpdLoader::loadBpdCommon ( void )
 				m_liveStream->Read(t_sideBuffer, levelInfo.size, 1);
 			
 				// Decompress the data directly into target pointer:
+				const size_t	pixelByteSize = getTextureFormatByteSize(format);
 				const unsigned long t_effectiveWidth	= std::max<unsigned long>(1, header.width / math::exp2(i));
 				const unsigned long t_effectiveHeight	= std::max<unsigned long>(1, header.height / math::exp2(i));
 				const unsigned long t_effectiveDepth	= std::max<unsigned long>(1, header.depth / math::exp2(i));
-				const unsigned long t_mipmapByteCount	= (uint32_t)core::getTextureFormatByteSize(format) * t_effectiveWidth * t_effectiveHeight * t_effectiveDepth;
+				const unsigned long t_mipmapByteCount	= (uint32_t)pixelByteSize * t_effectiveWidth * t_effectiveHeight * t_effectiveDepth;
 				unsigned long t_mipmapByteCountDecompressed = t_mipmapByteCount;
-				int z_result = uncompress( (uchar*)m_buffer_Mipmaps[i], &t_mipmapByteCountDecompressed, (uchar*)t_sideBuffer, levelInfo.size );
+				
+				if (compression == kTextureCompressionTypeZlib)
+				{
+					int z_result = uncompress( (uchar*)m_buffer_Mipmaps[i], &t_mipmapByteCountDecompressed, (uchar*)t_sideBuffer, levelInfo.size );
+
+					// Check decompress result
+					switch( z_result )
+					{
+					case Z_OK:
+						break;
+					case Z_MEM_ERROR:
+						debug::Console->PrintError("BpdLoader::loadBpdCommon : zlib : out of memory\n");
+						break;
+					case Z_BUF_ERROR:
+						debug::Console->PrintError("BpdLoader::loadBpdCommon : zlib : output buffer wasn't large enough\n");
+						break;
+					case Z_DATA_ERROR:
+						debug::Console->PrintError("BpdLoader::loadBpdCommon : zlib : corrupted data\n");
+						break;
+					}
+				}
+				else if (compression == kTextureCompressionTypeQOI)
+				{
+					qoi_desc desc;
+					desc.width = t_effectiveWidth;
+					desc.height = t_effectiveHeight * t_effectiveDepth;
+					desc.channels = (uchar)pixelByteSize;
+					desc.colorspace = QOI_LINEAR;
+					
+					void* result = core::texture::qoi::qoi_decode2( (uchar*)t_sideBuffer, t_mipmapByteCountDecompressed, &desc, (int)pixelByteSize, m_buffer_Mipmaps[i]);
+					
+					// Check decompress result
+					if (result == NULL)
+					{
+						debug::Console->PrintError("BpdLoader::loadBpdCommon : zlib : corrupted data\n");
+					}
+				}
 
 				// Ensure data decompressed actually fills the mip.
 				ARCORE_ASSERT(t_mipmapByteCountDecompressed == t_mipmapByteCount);
 
 				// Delete the side buffer
 				delete [] t_sideBuffer;
-
-				// Check decompress result
-				switch( z_result )
-				{
-				case Z_OK:
-					break;
-				case Z_MEM_ERROR:
-					debug::Console->PrintError("BpdLoader::loadBpdCommon : zlib : out of memory\n");
-					break;
-				case Z_BUF_ERROR:
-					debug::Console->PrintError("BpdLoader::loadBpdCommon : zlib : output buffer wasn't large enough\n");
-					break;
-				case Z_DATA_ERROR:
-					debug::Console->PrintError("BpdLoader::loadBpdCommon : zlib : corrupted data\n");
-					break;
-				}
 			}
 		}
 	}

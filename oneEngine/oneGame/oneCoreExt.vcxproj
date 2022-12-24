@@ -65,6 +65,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugClang|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="source\core-ext\system\io\assets\texloader\qoi.cpp" />
     <ClCompile Include="source\core-ext\system\io\assets\TextureIO.Reader.cpp" />
     <ClCompile Include="source\core-ext\system\io\assets\TextureIO.Writer.cpp" />
     <ClCompile Include="source\core-ext\system\io\Files.cpp" />
@@ -136,6 +137,7 @@
     <ClInclude Include="source\core-ext\system\io\assets\texloader\bpd.hpp" />
     <ClInclude Include="source\core-ext\system\io\assets\texloader\jpg.hpp" />
     <ClInclude Include="source\core-ext\system\io\assets\texloader\png.hpp" />
+    <ClInclude Include="source\core-ext\system\io\assets\texloader\qoi.hpp" />
     <ClInclude Include="source\core-ext\system\io\assets\texloader\tga.hpp" />
     <ClInclude Include="source\core-ext\system\io\assets\TextureIO.h" />
     <ClInclude Include="source\core-ext\system\io\Files.h" />
