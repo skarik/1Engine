@@ -49,5 +49,10 @@ echo Running build-scripts/prebuildSetWindowsSDK.py
 echo.
 "./oneGame/build-scripts/prebuildSetWindowsSDK.py"
 
+echo.
+echo Installing git lfs...
+echo.
+git lfs install
+
 echo Press any key to Continue.
 pause > nul
