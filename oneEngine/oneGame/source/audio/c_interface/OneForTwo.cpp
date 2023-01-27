@@ -9,6 +9,7 @@
 
 #include "core-ext/threads/Jobs.h"
 #include "core-ext/system/shell/Message.h"
+#include "core-ext/std/filesystem.h"
 
 #include "audio/Manager.h"
 #include "audio/Buffer.h"
@@ -18,6 +19,7 @@
 #include "audio/Effect.h"
 #include "audio/effects/LowPass1.h"
 
+#include <chrono>
 #include <unordered_map>
 
 // Settings system required for the job system settings
@@ -525,6 +527,23 @@ double AR_CALL AudioEffectLowPass1GetCutoffStrength ( double effect )
 		return effectRef->m_state.m_strength;
 	}
 	return NIL;
+}
+
+//
+// Misc utils:
+//
+
+double AR_CALL UtilGetCurrentTime ( void )
+{
+	return (double)(uint64_t)std::chrono::system_clock::now().time_since_epoch().count();
+}
+
+double AR_CALL UtilGetFileLastEditTime ( const char* filename )
+{
+	std::error_code error;
+	auto timestamp = fs::last_write_time(filename, error);
+
+	return (double)(uint64_t)timestamp.time_since_epoch().count();
 }
 
 #endif//ONEFORTWO_ENABLED

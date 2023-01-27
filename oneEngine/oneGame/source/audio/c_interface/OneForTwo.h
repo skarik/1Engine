@@ -93,6 +93,13 @@ AR_CEXPORT double AR_CALL AudioEffectLowPass1GetCutoffPitch ( double effect );
 AR_CEXPORT double AR_CALL AudioEffectLowPass1GetCutoffFade ( double effect );
 AR_CEXPORT double AR_CALL AudioEffectLowPass1GetCutoffStrength ( double effect );
 
+//
+// Misc utils:
+//
+
+AR_CEXPORT double AR_CALL UtilGetCurrentTime ( void );
+AR_CEXPORT double AR_CALL UtilGetFileLastEditTime ( const char* filename );
+
 #endif
 
 #endif//AUDIO_C_INTERFACE_INITIALIZATION_H_
