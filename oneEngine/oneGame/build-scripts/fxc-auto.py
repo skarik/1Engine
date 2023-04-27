@@ -32,7 +32,7 @@ def main():
 	if l_hlslCompiler is None:
 		print(bcolors.FAIL + "Could not find \"fxc.exe\". Please install a Windows SDK with DirectX support." + bcolors.ENDC)
 		return -1;
-	print(bcolors.OKGREEN + f"Found \"{l_hlslCompiler}\"" + bcolors.ENDC)
+	print(bcolors.OKGREEN + f'Found "{l_hlslCompiler}"' + bcolors.ENDC)
 	
 	# Pass all script arguments to the compiler
 	return subprocess.call([l_hlslCompiler, *sys.argv[1:]])

@@ -155,7 +155,7 @@ def TranspileShader(shaderFilePath, displayName):
 	stream = subprocess.Popen(
 		' '.join([g_spirvTranspiler,
 				  *g_spirvParameters.split(),
-				  f"--output \"{l_outputFileHLSL}\"",
+				  f'--output "{l_outputFileHLSL}"',
 				  l_inputFileSpirV]),
 		stdout=subprocess.PIPE)
 
@@ -221,14 +221,14 @@ def CompileShader(shaderFilePath, nakedFilePath, displayName):
 		l_hlslCompilerProfile = "ds"
 	elif nakedFilePath.endswith("_c"):
 		l_hlslCompilerProfile = "cs"
-	l_hlslCompilerProfile = f"{l_hlslCompilerProfile}_{g_hlslBaseProfile}"
+	l_hlslCompilerProfile = f'{l_hlslCompilerProfile}_{g_hlslBaseProfile}'
 
 	# Start up the compiler
 	stream = subprocess.Popen(
 		' '.join([g_hlslCompiler,
-				  f"/T {l_hlslCompilerProfile}",
-				  f"/Fc \"{l_outputFileAsm}\"",
-				  f"/Fo \"{l_outputFileObj}\"",
+				  f'/T {l_hlslCompilerProfile}',
+				  f'/Fc "{l_outputFileAsm}"',
+				  f'/Fo "{l_outputFileObj}"',
 				  l_inputFileHLSL]),
 		stdout=subprocess.PIPE,
 		shell=True)
