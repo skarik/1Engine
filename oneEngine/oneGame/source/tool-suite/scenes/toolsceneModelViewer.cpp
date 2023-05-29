@@ -1,13 +1,13 @@
 #include "toolsceneModelViewer.h"
 
 #include "core/settings/CGameSettings.h"
-#include "core/debug/CDebugConsole.h"
+#include "core/debug/Console.h"
 #include "core-ext/system/io/Resources.h"
 
 #include "engine/utils/CDeveloperConsole.h"
 
-#include "renderer/camera/CCamera.h"
-#include "renderer/object/shapes/CPrimitiveCube.h"
+#include "renderer/camera/RrCamera.h"
+#include "renderer/object/shapes/RrShapeCube.h"
 #include "renderer/object/model/Model.h"
 
 #include "engine-common/entities/CPlayer.h"

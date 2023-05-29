@@ -109,20 +109,20 @@ namespace math
 	inline
 		uint32_t log2 ( const uint32_t x ) noexcept
 	{
-#ifdef _MSC_VER
+#	ifdef _MSC_VER
 		unsigned long result = 0;
 		_BitScanReverse( &result, (unsigned long)(x) );
 		return uint32_t(result);
-		/*uint32_t y;
+#	elif __clang__
+		return __builtin_ctz (x); // should work on ARM
+#	else
+		uint32_t y;
 		__asm {
 			bsr eax, x
 			mov y, eax
 		};
-		return y;*/
-#endif
-#ifdef __clang__
-		return __builtin_ctz (x); // should work on ARM
-#endif
+		return y;
+#	endif
 	}
 
 	//	exp2 ( integer ) : pretty fast integer Exp2.

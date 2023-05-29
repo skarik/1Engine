@@ -109,6 +109,9 @@
     <Filter Include="SOURCE\M04-Editor\Standalone\Common-Editor">
       <UniqueIdentifier>{e39e19e3-c452-46de-a657-0814a391c2ba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\M04\Standalone\LoZ Worldgen Test">
+      <UniqueIdentifier>{237a9501-579e-4763-a12a-4f1f3ba834a8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\m04\m04-common.h">
@@ -351,6 +354,9 @@
     <ClInclude Include="source\m04-editor\standalone\common-editor\EditorWindowBase.h">
       <Filter>SOURCE\M04-Editor\Standalone\Common-Editor</Filter>
     </ClInclude>
+    <ClInclude Include="source\m04\standalone\worldgen-loz-test\noisetest.h">
+      <Filter>SOURCE\M04\Standalone\LoZ Worldgen Test</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\m04\m04-common.cpp">
@@ -571,6 +577,9 @@
     </ClCompile>
     <ClCompile Include="source\m04-editor\standalone\common-editor\EditorWindowBase.cpp">
       <Filter>SOURCE\M04-Editor\Standalone\Common-Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04\standalone\worldgen-loz-test\noisetest.cpp">
+      <Filter>SOURCE\M04\Standalone\LoZ Worldgen Test</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

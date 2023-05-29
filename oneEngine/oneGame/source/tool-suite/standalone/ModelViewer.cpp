@@ -1,7 +1,7 @@
 #include "ModelViewer.h"
 
 #include "core/settings/CGameSettings.h"
-#include "core/debug/CDebugConsole.h"
+#include "core/debug/Console.h"
 #include "core/math/Math.h"
 #include "core/input/CInput.h"
 #include "core/input/CXboxController.h"
@@ -14,7 +14,7 @@
 #include "engine/utils/CDeveloperConsole.h"
 
 #include "renderer/camera/CCamera.h"
-#include "renderer/object/shapes/CPrimitiveCube.h"
+#include "renderer/object/shapes/RrShapeCube.h"
 #include "renderer/object/model/Model.h"
 #include "renderer/object/mesh/CMesh.h"
 #include "renderer/material/RrMaterial.h"

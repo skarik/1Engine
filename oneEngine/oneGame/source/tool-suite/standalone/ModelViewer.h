@@ -1,8 +1,9 @@
 #ifndef TOOL_SUITE_STANDALONE_MODEL_VIEWER_H_
 #define TOOL_SUITE_STANDALONE_MODEL_VIEWER_H_
 
+#include "core/math/Vector3.h"
 #include "engine/behavior/CGameBehavior.h"
-#include "engine-common/dusk/CDuskGUIHandle.h"
+#include "engine-common/dusk/Handle.h"
 
 class CCamera;
 class CModel;
@@ -41,26 +42,26 @@ namespace toolsuite
 		CDuskGUI*		dusk;
 
 		// Position camera orbits around.
-		Vector3d		cameraCenter;
+		Vector3f		cameraCenter;
 		// Rotated offset of the camera.
-		Vector3d		cameraPanning;
+		Vector3f		cameraPanning;
 		// Camera's current rotation.
 		Rotator			cameraRotation;
 		// Camera's persistent velocity for mouse input.
-		Vector3d		cameraRotationVelocity;
+		Vector3f		cameraRotationVelocity;
 
 	private:
 		// Dusk UI Elements:
 
-		Dusk::Handle	ui_lbl_startHint;
+		dusk::Handle	ui_lbl_startHint;
 
 		struct UIBlockMesh
 		{
-			Dusk::Handle	lbl_meshName;
-			Dusk::Handle	btn_texDiffuse;
-			Dusk::Handle	btn_texNormals;
-			Dusk::Handle	btn_texSurface;
-			Dusk::Handle	btn_texOverlay;
+			dusk::Handle	lbl_meshName;
+			dusk::Handle	btn_texDiffuse;
+			dusk::Handle	btn_texNormals;
+			dusk::Handle	btn_texSurface;
+			dusk::Handle	btn_texOverlay;
 		};
 
 		UIBlockMesh*	ui_meshblocks;

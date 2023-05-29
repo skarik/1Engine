@@ -145,6 +145,7 @@
     <ClInclude Include="source\m04\scenes\sceneGameLuvPpl.h" />
     <ClInclude Include="source\m04\scenes\scenePalette3DTest0.h" />
     <ClInclude Include="source\m04\scenes\sceneTilesetTest.h" />
+    <ClInclude Include="source\m04\standalone\worldgen-loz-test\noisetest.h" />
     <ClInclude Include="source\m04\states\MapInformation.h" />
   </ItemGroup>
   <ItemGroup>
@@ -221,6 +222,7 @@
     <ClCompile Include="source\m04\scenes\sceneGameLuvPpl.cpp" />
     <ClCompile Include="source\m04\scenes\scenePalette3DTest0.cpp" />
     <ClCompile Include="source\m04\scenes\sceneTilesetTest.cpp" />
+    <ClCompile Include="source\m04\standalone\worldgen-loz-test\noisetest.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectName>M04 Game</ProjectName>
