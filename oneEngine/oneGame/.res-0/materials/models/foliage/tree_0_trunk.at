@@ -1,0 +1,21 @@
+//!/osf/material/1
+
+name "Models/Tree0/Trunk"
+
+physics
+{
+	physmat				Wood
+}
+
+render
+{
+	render_mode			LitOpaque
+
+	texture_diffuse		"textures/foliage/tree0_ts0"
+	texture_normals		default_normal
+	texture_surface		default_surface
+	texture_overlay		default_overlay
+	texture_detail		none
+	
+	sampling			Point
+}

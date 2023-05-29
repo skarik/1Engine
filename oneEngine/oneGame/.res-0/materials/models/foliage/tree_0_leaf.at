@@ -1,0 +1,26 @@
+//!/osf/material/1
+
+name "Models/Tree0/Leaf"
+
+physics
+{
+	physmat				Default
+}
+
+render
+{
+	render_mode			LitFoliage
+	
+	alpha_test			0.5
+	cull				None
+	
+	smoothness_bias		0.1
+	
+	texture_diffuse		"textures/foliage/tree0_ts1"
+	texture_normals		default_normal
+	texture_surface		default_surface
+	texture_overlay		default_overlay
+	texture_detail		none
+	
+	sampling			Point
+}
