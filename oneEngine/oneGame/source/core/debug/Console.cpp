@@ -76,6 +76,7 @@ public:
 
 enum class arMessageType : uint8
 {
+	kInfo,
 	kMessage,
 	kWarning,
 	kError,
@@ -140,7 +141,9 @@ static void PrintOutputRoutine ( void )
 		{
 		#ifdef _WIN32
 			HANDLE lStdHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-			if (g_QueueMessage.current().type == arMessageType::kMessage)
+			if (g_QueueMessage.current().type == arMessageType::kInfo)
+				SetConsoleTextAttribute( lStdHandle, 7 );
+			else if (g_QueueMessage.current().type == arMessageType::kMessage)
 				SetConsoleTextAttribute( lStdHandle, 15 );
 			else if (g_QueueMessage.current().type == arMessageType::kWarning)
 				SetConsoleTextAttribute( lStdHandle, 14 );
@@ -277,44 +280,48 @@ void debug::ConsoleWindow::Free ( void )
 	Console = NULL;
 }
 
+static void VPrintGeneral ( arMessageType type, const char* fmt, va_list argp )
+{
+	arstring<2047> buffer;
+	vsnprintf(buffer.data, 2047, fmt, argp);
+
+	g_QueueMessage.push(arMessageRequest{type, std::move(buffer)});
+	g_OuptutWaitCV.notify_one();
+}
+
+void debug::ConsoleWindow::VPrintMessage ( const char* fmt, va_list argp )
+{
+	VPrintGeneral(arMessageType::kMessage, fmt, argp);
+}
+void debug::ConsoleWindow::VPrintWarning ( const char* fmt, va_list argp )
+{
+	VPrintGeneral(arMessageType::kWarning, fmt, argp);
+}
+void debug::ConsoleWindow::VPrintError ( const char* fmt, va_list argp )
+{
+	VPrintGeneral(arMessageType::kError, fmt, argp);
+}
 
 void debug::ConsoleWindow::PrintMessage ( const char* fmt, ... )
 {
-	arstring<2047> buffer;
-
 	va_list argptr;
 	va_start(argptr, fmt);
-	vsnprintf(buffer.data, 2048, fmt, argptr);
+	VPrintMessage(fmt, argptr);
 	va_end(argptr);
-
-	g_QueueMessage.push(arMessageRequest{arMessageType::kMessage, std::move(buffer)});
-	g_OuptutWaitCV.notify_one();
 }
-
 void debug::ConsoleWindow::PrintWarning ( const char* fmt, ... )
 {
-	arstring<2047> buffer;
-
 	va_list argptr;
 	va_start(argptr, fmt);
-	vsnprintf(buffer.data, 2048, fmt, argptr);
+	VPrintWarning(fmt, argptr);
 	va_end(argptr);
-
-	g_QueueMessage.push(arMessageRequest{arMessageType::kWarning, std::move(buffer)});
-	g_OuptutWaitCV.notify_one();
 }
-
 void debug::ConsoleWindow::PrintError ( const char* fmt, ... )
 {
-	arstring<2048> buffer;
-
 	va_list argptr;
 	va_start(argptr, fmt);
-	vsnprintf(buffer.data, 2048, fmt, argptr);
+	VPrintError(fmt, argptr);
 	va_end(argptr);
-
-	g_QueueMessage.push(arMessageRequest{arMessageType::kError, std::move(buffer)});
-	g_OuptutWaitCV.notify_one();
 }
 
 void debug::ConsoleWindow::PrintMessage ( const std::string& str )
@@ -329,6 +336,37 @@ void debug::ConsoleWindow::PrintError ( const std::string& str )
 {
 	PrintError(str.c_str());
 }
+
+
+void debug::Log ( const char* fmt, ... )
+{
+	va_list argptr;
+	va_start(argptr, fmt);
+	VPrintGeneral(arMessageType::kInfo, fmt, argptr);
+	va_end(argptr);
+}
+void debug::LogMsg ( const char* fmt, ... )
+{
+	va_list argptr;
+	va_start(argptr, fmt);
+	debug::Console->VPrintMessage(fmt, argptr);
+	va_end(argptr);
+}
+void debug::LogWarn ( const char* fmt, ... )
+{
+	va_list argptr;
+	va_start(argptr, fmt);
+	debug::Console->VPrintWarning(fmt, argptr);
+	va_end(argptr);
+}
+void debug::LogErr ( const char* fmt, ... )
+{
+	va_list argptr;
+	va_start(argptr, fmt);
+	debug::Console->VPrintError(fmt, argptr);
+	va_end(argptr);
+}
+
 
 void debug::ConsoleWindow::DisableOutput ( void )
 {

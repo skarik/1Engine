@@ -43,10 +43,13 @@ namespace debug
 		CORE_API static void	Free ( void );
 
 		CORE_API static void	PrintMessage ( const char* fmt, ... ); 
+		CORE_API static void	VPrintMessage ( const char* fmt, va_list argp ); 
 		CORE_API static void	PrintMessage ( const std::string& str ); 
 		CORE_API static void	PrintWarning ( const char* fmt, ... );
+		CORE_API static void	VPrintWarning ( const char* fmt, va_list argp );
 		CORE_API static void	PrintWarning ( const std::string& str ); 
 		CORE_API static void	PrintError ( const char* fmt, ... );
+		CORE_API static void	VPrintError ( const char* fmt, va_list argp );
 		CORE_API static void	PrintError ( const std::string& str ); 
 
 		CORE_API static void	DisableOutput ( void );
@@ -55,6 +58,11 @@ namespace debug
 
 	CORE_API extern ConsoleWindow*
 							Console;
+
+	CORE_API void Log ( const char* fmt, ... );
+	CORE_API void LogMsg ( const char* fmt, ... );
+	CORE_API void LogWarn ( const char* fmt, ... );
+	CORE_API void LogErr ( const char* fmt, ... );
 }
 
 #endif//C_DEBUG_CONSOLE_
