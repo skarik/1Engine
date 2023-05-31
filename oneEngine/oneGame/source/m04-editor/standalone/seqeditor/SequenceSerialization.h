@@ -89,6 +89,23 @@ namespace sequence {
 
 	class JsonSerializer : public ISequenceSerializer
 	{
+	public:
+		struct TopLevelDecorator
+		{
+			arstring64 key;
+			arstring64 value;
+		};
+
+		// Name of the array that the top-level object uses.
+		arstring64			topLevelArrayName = "nodes";
+		// Additional lines placed in the top-level object.
+		std::vector<TopLevelDecorator>
+							topLevelDecorators;
+
+		EDITOR_API explicit		JsonSerializer ( const char* filename );
+		EDITOR_API				~JsonSerializer ( void );
+
+		EDITOR_API virtual bool IsValid ( void ) override;
 	};
 
 	class OsfDeserializer : public ISequenceDeserializer
@@ -111,6 +128,10 @@ namespace sequence {
 
 		io::OSFEntryInfoLarge
 							osf_lastEntry;
+	};
+
+	class JsonDeserializer : public ISequenceSerializer
+	{
 	};
 
 }}}

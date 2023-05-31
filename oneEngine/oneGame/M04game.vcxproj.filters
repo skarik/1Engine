@@ -581,5 +581,8 @@
     <ClCompile Include="source\m04\standalone\worldgen-loz-test\noisetest.cpp">
       <Filter>SOURCE\M04\Standalone\LoZ Worldgen Test</Filter>
     </ClCompile>
+    <ClCompile Include="source\m04-editor\standalone\seqeditor\SequenceEditorListing.cpp">
+      <Filter>SOURCE\M04-Editor\Standalone\SeqEditor</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

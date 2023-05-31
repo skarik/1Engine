@@ -1,0 +1,110 @@
+// Sequence Editor Listing for LDR (Legend of Dragonspell)
+// This is used to iterate things
+
+settings
+{
+	category "ldr"
+
+	// Define default output as JSON
+	outputDefault json
+	
+	// We want to use UUID4. This can be "uuid4" or "guid32" (default)
+	guidType uuid4
+	
+	// Set up the jump style. This can be "jump" or "link".
+	// Link means that instead of creating jumps on save, we instead reference "next nodes" directly using the uuids.
+	jumpStyle link
+	
+	jsonTopLevel
+	{
+		// All nodes will be stored in an array named "nodes"
+		arrayName "nodes"
+		// The top level structure will also have the following key-values
+		decorators
+		{
+			structType "SCTSNodeTree"
+		}
+	}
+	
+	jsonNodeLevel
+	{
+		// what the node GUID is stored under
+		guid "uuid"
+		// If defined, node contents are wrapped in the given value.
+		wrapper "data"
+		// If defined, node contents typename is mirrored into the value
+		type "type"
+	
+		// Decorators added to each node
+		decorators
+		{
+			structType "SCTSNode"
+		}
+	}
+	
+}
+
+enumtype Character
+{
+	0 noone Noone
+	1 inherit Inherit From Previous
+	2 valda Valda
+}
+
+enumtype CloseStyle
+{
+	0 NormalByUser Normal By User
+	1 AutoByReadTime Auto By Readtime
+	2 AutoImmediately Auto Immediately
+}
+
+nodetype SGUIDialogueParamsChain
+{
+	displayAs "Dialogue Box"
+	outputCount 1
+
+	chain
+	{
+		type array
+		{
+			owner
+			{
+			}
+			text
+			{
+				displayAs "Text"
+				type scriptText
+			}
+			speaker
+			{
+				displayAs "Speaker"
+				type list
+				enum Character
+				default inherit
+			}
+			callbacks
+			{
+				displayAs Callbacks
+				type text
+			}
+			closeStyle
+			{
+				displayAs "Close Style"
+				type list
+				enum CloseStyle
+			}
+		}
+	}
+}
+
+nodetype SCTSWaitParams
+{
+	displayAs "Wait"
+	outputCount 1
+	
+	time
+	{
+		displayAs "Time in Seconds"
+		type float
+	}
+}

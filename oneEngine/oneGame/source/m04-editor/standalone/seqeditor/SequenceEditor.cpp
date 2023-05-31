@@ -76,8 +76,10 @@ m04::editor::SequenceEditor::SequenceEditor ( void )
 	// Create board state
 	board_state = new m04::editor::sequence::NodeBoardState(this);
 
+	// TODO: select the SEL with a dropdown somewhere. we wanna query this at the start....
+
 	// Initialize with "system/kingfisher.sel" for now
-	LoadSequenceEditorListing("system/kingfisher.sel");
+	sel.LoadSequenceEditorListing("system/kingfisher.sel");
 
 	// Load prefs
 	save_target_filename = gPSetLastSavedTarget;
@@ -107,85 +109,6 @@ m04::editor::SequenceEditor::~SequenceEditor ( void )
 	delete window;
 
 	debug::Console->PrintMessage("SequenceEditor shutdown.\n");
-}
-
-void m04::editor::SequenceEditor::LoadSequenceEditorListing( const char* sel_path )
-{
-	// first find the file via resources
-	FILE* sel_fp = core::Resources::Open(sel_path, "rb");
-	if (sel_fp == NULL)
-	{
-		throw core::InvalidArgumentException();
-		return;
-	}
-	
-	// create OSF for reading
-	io::OSFReader reader (sel_fp);
-
-	// the sel has enum types and node types.
-	// for now we skip the node types because that's a pain to define properly
-
-	// read in the osf entry-by-entry
-	io::OSFEntryInfo entry;
-	do
-	{
-		reader.GetNext(entry);
-		if (entry.type == io::kOSFEntryTypeObject)
-		{
-			if (entry.name.compare("enumtype"))
-			{
-				printf("SEL: found enumtype \"%s\"\n", entry.value.c_str());
-
-				std::string enumtypeName = entry.value;
-				core::utils::string::ToLower(enumtypeName);
-
-				std::vector<arStringEnumDefinition::NameValue> nameValues;
-				reader.GoInto(entry);
-				do
-				{
-					reader.GetNext(entry);
-					if (entry.type == io::kOSFEntryTypeNormal)
-					{
-						// The first value is the value of the enum entry
-						int32_t value = atoi(entry.name);
-					
-						std::string parsed_nameEntry, parsed_readableEntry;
-						std::string unparsed_nameEntry = entry.value;
-						// Split on the first space
-						auto unparsed_firstSpace = unparsed_nameEntry.find_first_of(core::utils::string::kWhitespace, 0);
-						if (unparsed_firstSpace != string::npos)
-						{	
-							// If space, then we have a readable name
-							parsed_nameEntry = unparsed_nameEntry.substr(0, unparsed_firstSpace);
-							parsed_readableEntry = unparsed_nameEntry.substr(unparsed_firstSpace + 1);
-							parsed_readableEntry = core::utils::string::FullTrim(parsed_readableEntry);
-						}
-						// No readable name yet?
-						if (unparsed_firstSpace == string::npos || parsed_readableEntry.size() <= 0)
-						{	
-							parsed_nameEntry = unparsed_nameEntry;
-							parsed_readableEntry = unparsed_nameEntry;
-						}
-						// Modify first level of the readable name to be capital.
-						ARCORE_ASSERT(parsed_readableEntry.size() > 0);
-						parsed_readableEntry[0] = ::toupper(parsed_readableEntry[0]);
-
-						printf("SEL: %d -> \"%s\", readable \"%s\"\n", value, parsed_nameEntry.c_str(), parsed_readableEntry.c_str());
-
-						nameValues.push_back({parsed_nameEntry, value});
-					}
-				}
-				while (entry.type != io::kOSFEntryTypeEnd);
-
-				// Save new enumtype
-				enum_definitions[enumtypeName.c_str()] = arStringEnumDefinition::CreateNew(nameValues);
-			}
-		}
-	}
-	while (entry.type != io::kOSFEntryTypeEoF);
-
-	// close file
-	fclose(sel_fp);
 }
 
 void m04::editor::SequenceEditor::Update ( void )
@@ -228,11 +151,11 @@ void m04::editor::SequenceEditor::UpdateCameraControl ( void )
 			// TODO: make a better peek & camera control option
 			if (core::Input::Key(core::kVkAlt) && core::Input::Key(core::kVkControl))
 			{
-				editor_camera->transform.rotation = Rotator( 0.0, -90, -90 ) * Rotator(0, -(mouseScreenPosition.y - 0.5) * 45.0, (mouseScreenPosition.x - 0.5) * 45.0);
+				editor_camera->transform.rotation = Rotator( 0.0F, -90, -90 ) * Rotator(0, -(mouseScreenPosition.y - 0.5F) * 45.0F, (mouseScreenPosition.x - 0.5F) * 45.0F);
 			}
 			else
 			{
-				editor_camera->transform.rotation = Rotator( 0.0, -90, -90 );
+				editor_camera->transform.rotation = Rotator( 0.0F, -90, -90 );
 			}
 
 			// Use the zoom control to...zoom in and out around the mouse

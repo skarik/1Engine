@@ -56,7 +56,7 @@ void m04::editor::sequence::EnumPropertyRenderer::OnClicked ( const ui::eventide
 			}
 			else
 			{
-				auto enumValue = m_enumDefinition->CreateValue(str);
+				auto enumValue = m_enumDefinition->enumDefinition->CreateValue(str);
 				if (enumValue.IsValid())
 				{
 					currentEnumIndex = enumValue.GetEnumIndex();
@@ -69,14 +69,14 @@ void m04::editor::sequence::EnumPropertyRenderer::OnClicked ( const ui::eventide
 
 			// scroll thru values
 			currentEnumIndex++;
-			auto enumValue = m_enumDefinition->CreateValueFromIndex(currentEnumIndex);
+			auto enumValue = m_enumDefinition->enumDefinition->CreateValueFromIndex(currentEnumIndex);
 			if (enumValue.IsValid())
 			{
 				GetNode()->view->SetProperty(m_property->identifier, enumValue.GetName());
 			}
 			else
 			{
-				GetNode()->view->SetProperty(m_property->identifier, m_enumDefinition->CreateValueFromIndex(0).GetName());
+				GetNode()->view->SetProperty(m_property->identifier, m_enumDefinition->enumDefinition->CreateValueFromIndex(0).GetName());
 			}
 		}
 	}
@@ -122,26 +122,39 @@ void m04::editor::sequence::EnumPropertyRenderer::BuildMesh ( void )
 	// Now, render the current setting
 	if (m_enumDefinition != NULL)
 	{
+		bool makeReadable = false;
+
 		// find matching enum name
 		const char* str = GetNode()->view->GetPropertyAsString(m_property->identifier);
 		if (str == NULL || strlen(str) == 0)
 		{
-			str = m_enumDefinition->GetEnumName(0); //todo
+			str = m_enumDefinition->enumDefinition->GetEnumName(0); //todo
+			makeReadable = true;
 		}
 		else
 		{
-			auto enumValue = m_enumDefinition->CreateValue(str);
+			auto enumValue = m_enumDefinition->enumDefinition->CreateValue(str);
 			if (enumValue.IsValid())
 			{
-				str = enumValue.GetName();
+				auto enumDisplayName = m_enumDefinition->displayNames[enumValue.GetEnumIndex()];
+				if (enumDisplayName.length() <= 0)
+				{
+					str = enumValue.GetName();
+					makeReadable = true;
+				}
+				else
+				{
+					str = enumDisplayName;
+				}
 			}
 			else
 			{
-				str = m_enumDefinition->GetEnumName(0); //todo
+				str = m_enumDefinition->enumDefinition->GetEnumName(0); //todo
+				makeReadable = true;
 			}
 		}
 
-		arstring256 camelCasedValue = core::utils::string::CamelCaseToReadable(str, strlen(str));
+		arstring256 camelCasedValue = makeReadable ? core::utils::string::CamelCaseToReadable(str, strlen(str)) : str;
 		camelCasedValue[0] = ::toupper(camelCasedValue[0]);
 
 		textParams = ParamsForText();

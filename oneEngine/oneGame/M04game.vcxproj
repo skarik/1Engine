@@ -195,6 +195,7 @@
     <ClCompile Include="source\m04-editor\standalone\seqeditor\RightClickListMenu.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\sceneEditorSequence.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\SequenceEditor.cpp" />
+    <ClCompile Include="source\m04-editor\standalone\seqeditor\SequenceEditorListing.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\SequenceNodeViews.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\SequenceSerialization.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\TopMenu.cpp" />

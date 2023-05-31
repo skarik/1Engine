@@ -41,7 +41,7 @@ public:
 							CreateNew ( std::vector<NameValue>& enumInfo );
 
 	//	Free(definition) : Frees specific string enum definition.
-	CORE_API void			Free ( arStringEnumDefinition* definition );
+	CORE_API static void	Free ( arStringEnumDefinition* definition );
 
 private:
 	CORE_API explicit		arStringEnumDefinition (std::vector<NameValue>& enumInfo); // Hidden constructor.

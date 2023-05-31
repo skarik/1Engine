@@ -6,6 +6,9 @@
 
 namespace m04 {
 namespace editor {
+
+	class SequenceEnumDefinition;
+
 namespace sequence {
 
 	class EnumPropertyRenderer : public IPropertyRenderer
@@ -21,7 +24,7 @@ namespace sequence {
 		virtual void			UpdateLayout ( const Vector3f& upper_left_corner, const Real left_column_width, const core::math::BoundingBox& node_bbox ) override;
 
 	private:
-		arStringEnumDefinition*
+		SequenceEnumDefinition*
 							m_enumDefinition = nullptr;
 	};
 

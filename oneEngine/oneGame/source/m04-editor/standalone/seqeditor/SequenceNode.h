@@ -108,6 +108,9 @@ namespace editor {
 		// A generic color input
 		kColor,
 
+		// A generic array. Usually used only for externally-defined nodes.
+		kArray,
+
 		// Dropdown that appears as the character speaking text.
 		kScriptCharacter,
 		// Text that the character speaks.

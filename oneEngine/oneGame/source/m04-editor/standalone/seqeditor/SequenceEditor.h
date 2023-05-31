@@ -28,6 +28,79 @@ namespace editor {
 	{
 	};
 
+	class SequenceNodeDefinition
+	{
+		arstring64			displayName;
+		arstring64			category;
+		// Number of outputs to the node. Negative means the number of outputs is automatically determined.
+		int					outputCount = 1;
+	};
+
+	struct SequenceNodePropertyDefinition
+	{
+		arstring64			displayName;
+		PropertyRenderStyle	type;
+		arstring64			enumName;
+		arstring64			defaultValue;
+		std::vector<SequenceNodePropertyDefinition>
+							arraySubproperties;
+	};
+
+	enum class SequenceOutputPreference
+	{
+		kOsf,
+		kJson,
+	};
+
+	enum class SequenceGUIDType
+	{
+		kGUID32,
+		kUUID4,
+	};
+
+	enum class SequenceJumpStyle
+	{
+		kJump,
+		kLink,
+	};
+
+	class SequenceEnumDefinition
+	{
+	public:
+		SequenceEnumDefinition ( arStringEnumDefinition* def, std::vector<arstring64>&& names )
+			: enumDefinition(def)
+			, displayNames(names)
+		{}
+		~SequenceEnumDefinition ( void );
+
+		arStringEnumDefinition*	enumDefinition = nullptr;
+		std::vector<arstring64> displayNames;
+	};
+
+	class SELInfo
+	{
+	public:
+		//	LoadSequenceEditorListing(filepath) : Loads the given editor info.
+		void					LoadSequenceEditorListing ( const char* sel_path );
+
+		void					Free ( void );
+
+	public:
+		// Settings about data generated
+		arstring64			next_node_category = "";
+		SequenceOutputPreference
+							output_preference = SequenceOutputPreference::kOsf;
+		SequenceGUIDType	guid_preference = SequenceGUIDType::kGUID32;
+		SequenceJumpStyle	jump_style = SequenceJumpStyle::kJump;
+
+		// List of all available externally-loaded enums
+		std::map<arstring128, SequenceEnumDefinition*>
+							enum_definitions;
+		// List of all available externally-loaded nodes
+		std::map<arstring128, SequenceNodeDefinition*>
+							node_definitions;
+	};
+
 	class SequenceEditor : public CGameBehavior
 	{
 	public:
@@ -55,9 +128,9 @@ namespace editor {
 			{ return board_state; }
 
 		//	GetEnums() : Returns the enum definitions loaded for the current SEL.
-		EDITOR_API const std::map<arstring128, arStringEnumDefinition*>&
+		EDITOR_API const std::map<arstring128, SequenceEnumDefinition*>&
 								GetEnums ( void )
-			{ return enum_definitions; }
+			{ return sel.enum_definitions; }
 
 		//	GetGridState() : Returns the grid state for the editor.
 		EDITOR_API m04::editor::sequence::GridState&
@@ -92,11 +165,8 @@ namespace editor {
 		dusk::UserInterface*
 							dusk_interface = NULL;
 
-		//	LoadSequenceEditorListing(filepath) : Loads the given editor info.
-		void					LoadSequenceEditorListing( const char* sel_path );
-		// List of all available externally-loaded enums
-		std::map<arstring128, arStringEnumDefinition*>
-							enum_definitions;
+		// Current information about the available nodes loaded in.
+		SELInfo				sel;
 
 		// Top menu with all the dropdowns and associated logic.
 		m04::editor::sequence::TopMenu*
