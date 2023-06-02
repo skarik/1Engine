@@ -11,6 +11,7 @@
 #define CORE_AR_STRING_H_
 
 #include "core/types/types.h"
+#include "core/utils/stringhash.h"
 #include <cstring>
 
 template <unsigned short Ln>
@@ -132,13 +133,8 @@ namespace std
 	struct hash<arstring<128>>
 	{
 		size_t operator()(const arstring<128>& str) const
-		{	// http://www.cse.yorku.ca/~oz/hash.html
-			char* s = (char*)str.c_str();
-			size_t h = 5381;
-			int c;
-			while ((c = *s++))
-				h = ((h << 5) + h) + c;
-			return h;
+		{	
+			return arHashString(str.c_str());
 		}
 	};
 	template <>

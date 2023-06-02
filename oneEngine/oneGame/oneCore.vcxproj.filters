@@ -451,6 +451,12 @@
     <ClInclude Include="source\core-ext\containers\osfstructureparsers.h">
       <Filter>SOURCE\Core-ext\Containers</Filter>
     </ClInclude>
+    <ClInclude Include="source\core\utils\stringcase.h">
+      <Filter>SOURCE\Core\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\utils\stringhash.h">
+      <Filter>SOURCE\Core\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core\math\Color.cpp">

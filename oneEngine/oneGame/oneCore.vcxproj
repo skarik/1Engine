@@ -270,6 +270,8 @@
     <ClInclude Include="source\core\utils\armodule.h" />
     <ClInclude Include="source\core\utils\string.h" />
     <ClInclude Include="source\core\utils\string.hpp" />
+    <ClInclude Include="source\core\utils\stringcase.h" />
+    <ClInclude Include="source\core\utils\stringhash.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core-ext\containers\arguid.cpp" />
