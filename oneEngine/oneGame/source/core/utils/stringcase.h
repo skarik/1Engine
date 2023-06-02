@@ -7,6 +7,7 @@
 #define CORE_UTIL_STRINGCASE_H_
 
 #include "core/common.h"
+#include "core/containers/arstring.h"
 #include "core/utils/stringhash.h"
 
 namespace core
@@ -16,6 +17,12 @@ namespace core
 		constexpr size_t			arStringSwitchHash ( const char* str )
 		{
 			return arHashString(str);
+		}
+
+		template <unsigned short Ln>
+		constexpr size_t			arStringSwitchHash ( arstring<Ln> str )
+		{
+			return arHashString(str.c_str());
 		}
 	}
 }
