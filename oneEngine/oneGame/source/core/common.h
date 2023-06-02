@@ -29,6 +29,14 @@ constexpr const char* kEngineAppName = "1Engine_Application";
 #endif
 
 //
+// PRAGMA HELPER
+#if		defined(_MSC_VER)
+#	define PRAGMA(ARGUMENT) __pragma(ARGUMENT)
+#else
+#	define PRAGMA(ARGUMENT) _Pragma(#ARGUMENT)
+#endif
+
+//
 // ENGINE STRING USAGE
 #include <string>
 // Using string
