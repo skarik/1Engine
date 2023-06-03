@@ -79,7 +79,8 @@ m04::editor::SequenceEditor::SequenceEditor ( void )
 	// TODO: select the SEL with a dropdown somewhere. we wanna query this at the start....
 
 	// Initialize with "system/kingfisher.sel" for now
-	sel.LoadSequenceEditorListing("system/kingfisher.sel");
+	//sel.LoadSequenceEditorListing("system/kingfisher.sel");
+	sel.LoadSequenceEditorListing("system/ldr.sel");
 
 	// Load prefs
 	save_target_filename = gPSetLastSavedTarget;

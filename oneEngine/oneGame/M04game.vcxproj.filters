@@ -584,5 +584,8 @@
     <ClCompile Include="source\m04-editor\standalone\seqeditor\SequenceEditorListing.cpp">
       <Filter>SOURCE\M04-Editor\Standalone\SeqEditor</Filter>
     </ClCompile>
+    <ClCompile Include="source\m04-editor\standalone\seqeditor\SequenceNodeEnums.cpp">
+      <Filter>SOURCE\M04-Editor\Standalone\SeqEditor</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

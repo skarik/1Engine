@@ -62,14 +62,12 @@ nodetype SGUIDialogueParamsChain
 {
 	displayAs "Dialogue Box"
 	outputCount 1
-
+	
 	chain
 	{
+		displayAs ""
 		type array
 		{
-			owner
-			{
-			}
 			text
 			{
 				displayAs "Text"
@@ -82,16 +80,22 @@ nodetype SGUIDialogueParamsChain
 				enum Character
 				default inherit
 			}
-			callbacks
-			{
-				displayAs Callbacks
-				type text
-			}
 			closeStyle
 			{
 				displayAs "Close Style"
 				type list
 				enum CloseStyle
+			}
+			owner
+			{
+				displayAs "[owner]"
+				type text
+				default "auto"
+			}
+			callbacks
+			{
+				displayAs Callbacks
+				type text
 			}
 		}
 	}
