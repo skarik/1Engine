@@ -166,7 +166,7 @@ bool io::OSFReader::GetNext ( OSFEntryType& nextEntry, char* output_value, const
 			// If there are quotes, remove them
 			if ( m_linebuffer[0] == '"' ) {
 				memcpy( m_linebuffer, &(m_linebuffer[1]), line_length-fins-2 );
-				for ( i = 1; i < line_length-fins-2; ++i ) {
+				for ( i = 0; i < line_length-fins-2; ++i ) {
 					if ( m_linebuffer[i] == '"' ) {
 						m_linebuffer[i] = 0;
 					}
