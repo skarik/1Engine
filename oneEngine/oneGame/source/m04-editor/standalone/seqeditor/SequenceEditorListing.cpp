@@ -66,6 +66,7 @@ static void LoadSettings ( m04::editor::SELInfo& sel, io::OSFReader& reader, io:
 	io::OSFEntryInfo entry;
 	for (reader.GetNext(entry); entry.type != io::kOSFEntryTypeEnd; reader.GetNext(entry))
 	{
+		string_switch_begin_suppress_warnings();
 		string_switch(entry.name)
 		{
 			string_case("category"):
@@ -92,6 +93,7 @@ static void LoadSettings ( m04::editor::SELInfo& sel, io::OSFReader& reader, io:
 				}
 				break;
 		}
+		string_switch_end_suppress_warnings();
 	}
 }
 

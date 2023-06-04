@@ -56,9 +56,13 @@ namespace editor {
 			{ return board_state; }
 
 		//	GetEnums() : Returns the enum definitions loaded for the current SEL.
-		EDITOR_API const std::map<arstring128, SequenceEnumDefinition*>&
+		EDITOR_API const SequenceEnumDefinitionMap&
 								GetEnums ( void )
 			{ return sel.enum_definitions; }
+		//	GetNodeTypes() : Returns the enum definitions loaded for the current SEL.
+		EDITOR_API const SequenceNodeDefinitionMap&
+								GetNodeTypes ( void )
+			{ return sel.node_definitions; }
 
 		//	GetGridState() : Returns the grid state for the editor.
 		EDITOR_API m04::editor::sequence::GridState&

@@ -99,6 +99,9 @@ namespace editor {
 		std::vector<arstring64> displayNames;
 	};
 
+	typedef std::map<arstring128, SequenceEnumDefinition*> SequenceEnumDefinitionMap;
+	typedef std::map<arstring128, SequenceNodeDefinition*> SequenceNodeDefinitionMap;
+
 	class SELInfo
 	{
 	public:

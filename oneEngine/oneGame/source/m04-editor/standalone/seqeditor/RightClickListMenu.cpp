@@ -70,12 +70,22 @@ m04::editor::sequence::RightClickListMenu::RightClickListMenu ( SequenceEditor* 
 
 		std::vector<std::string> l_choiceList;
 		l_choiceList.push_back("Cancel");
+		// Add all the hard-coded registered classes:
 		for (auto& registryEntry : ISequenceNodeClassInfo::m_ordereredRegistry)
 		{
 			m_classnameListing.push_back(registryEntry->m_classname);
 
 			std::string choiceDisplayName = registryEntry->m_displayname;
 			std::replace(choiceDisplayName.begin(), choiceDisplayName.end(), '_', '/');
+
+			l_choiceList.push_back(choiceDisplayName.c_str());
+		}
+		// Add all the loaded ones from file:
+		for (auto& definitionEntry : editor->GetNodeTypes())
+		{
+			m_classnameListing.push_back(definitionEntry.first);
+			
+			std::string choiceDisplayName = std::string(definitionEntry.second->category) + "/" + definitionEntry.second->displayName.c_str();
 
 			l_choiceList.push_back(choiceDisplayName.c_str());
 		}
