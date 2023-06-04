@@ -357,6 +357,9 @@
     <ClInclude Include="source\m04\standalone\worldgen-loz-test\noisetest.h">
       <Filter>SOURCE\M04\Standalone\LoZ Worldgen Test</Filter>
     </ClInclude>
+    <ClInclude Include="source\m04-editor\standalone\seqeditor\SequenceEditorListing.h">
+      <Filter>SOURCE\M04-Editor\Standalone\SeqEditor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\m04\m04-common.cpp">

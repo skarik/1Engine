@@ -123,7 +123,7 @@ namespace editor {
 		kSequenceNode,
 	};
 
-	PropertyRenderStyle StringToPropertyRenderStyle (const char* str);
+	PropertyRenderStyle StringToPropertyRenderStyle ( const char* str );
 
 	class SequenceViewProperty
 	{

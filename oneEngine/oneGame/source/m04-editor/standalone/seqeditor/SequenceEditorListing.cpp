@@ -8,8 +8,51 @@
 #include "core-ext/containers/arStringEnum.h"
 #include "core-ext/system/io/osf.h"
 
+#include "SequenceEditorListing.h"
+
 // NOTE: SEL's will be created by users, so none of these can error out.
 
+m04::editor::SequenceOutputPreference m04::editor::StringToSequenceOutputPreference ( const char* str )
+{
+	string_switch_begin_suppress_warnings();
+	string_switch(str)
+	{
+		string_case("osf"):		return SequenceOutputPreference::kOsf;
+		string_case("json"):	return SequenceOutputPreference::kJson;
+		default:
+			debug::LogWarn("Invalid SequenceOutputPreference value \"%s\", defaulting to kOsf.\n", str);
+			return SequenceOutputPreference::kOsf;
+	};
+	string_switch_end_suppress_warnings();
+}
+m04::editor::SequenceGUIDType m04::editor::StringToSequenceGUIDType ( const char* str )
+{
+	string_switch_begin_suppress_warnings();
+	string_switch(str)
+	{
+		string_case("guid32"):	return SequenceGUIDType::kGUID32;
+		string_case("uuid4"):	return SequenceGUIDType::kUUID4;
+		default:
+			debug::LogWarn("Invalid SequenceGUIDType value \"%s\", defaulting to GUID32.\n", str);
+			return SequenceGUIDType::kGUID32;
+	};
+	string_switch_end_suppress_warnings();
+}
+m04::editor::SequenceJumpStyle m04::editor::StringToSequenceJumpStyle ( const char* str )
+{
+	string_switch_begin_suppress_warnings();
+	string_switch(str)
+	{
+		string_case("jump"):	return SequenceJumpStyle::kJump;
+		string_case("link"):	return SequenceJumpStyle::kLink;
+		default:
+			debug::LogWarn("Invalid SequenceJumpStyle value \"%s\", defaulting to kLink.\n", str);
+			return SequenceJumpStyle::kLink;
+	};
+	string_switch_end_suppress_warnings();
+}
+
+//	LoadSettings() : Loads the entire settings structure to the SEL.
 static void LoadSettings ( m04::editor::SELInfo& sel, io::OSFReader& reader, io::OSFEntryInfo& entrySettings )
 {
 	if (entrySettings.type != io::kOSFEntryTypeObject)
@@ -17,8 +60,42 @@ static void LoadSettings ( m04::editor::SELInfo& sel, io::OSFReader& reader, io:
 		debug::LogWarn("SEL: found settings structure but it was not an object!\n");
 		return;
 	}
+	debug::Log("SEL: loading settings\n");
+
+	reader.GoInto(entrySettings);
+	io::OSFEntryInfo entry;
+	for (reader.GetNext(entry); entry.type != io::kOSFEntryTypeEnd; reader.GetNext(entry))
+	{
+		string_switch(entry.name)
+		{
+			string_case("category"):
+				sel.next_node_category = entry.value;
+				break;
+			string_case("outputDefault"):
+				sel.output_preference = m04::editor::StringToSequenceOutputPreference(entry.value);
+				break;
+			string_case("guidType"):
+				sel.guid_preference = m04::editor::StringToSequenceGUIDType(entry.value);
+				break;
+			string_case("jumpStyle"):
+				sel.jump_style = m04::editor::StringToSequenceJumpStyle(entry.value);
+				break;
+
+			string_case("jsonTopLevel"):
+				{
+					debug::LogMsg("SEL:  -> not yet loading in topLevel parameters.\n");
+				}
+				break;
+			string_case("jsonNodeLevel"):
+				{
+					debug::LogMsg("SEL:  -> not yet loading in nodeLevel parameters.\n");
+				}
+				break;
+		}
+	}
 }
 
+//	LoadEnumType() : Loads the entire enumtype.
 static void LoadEnumType ( m04::editor::SELInfo& sel, io::OSFReader& reader, io::OSFEntryInfo& entryEnumtype )
 {
 	if (entryEnumtype.type != io::kOSFEntryTypeObject)
@@ -35,10 +112,8 @@ static void LoadEnumType ( m04::editor::SELInfo& sel, io::OSFReader& reader, io:
 	std::vector<arstring64> displayValues;
 
 	reader.GoInto(entryEnumtype);
-	
 	io::OSFEntryInfo entry;
-	reader.GetNext(entry);
-	do
+	for (reader.GetNext(entry); entry.type != io::kOSFEntryTypeEnd; reader.GetNext(entry))
 	{
 		if (entry.type == io::kOSFEntryTypeNormal)
 		{
@@ -71,18 +146,18 @@ static void LoadEnumType ( m04::editor::SELInfo& sel, io::OSFReader& reader, io:
 			nameValues.push_back({parsed_nameEntry, value});
 			displayValues.push_back(parsed_readableEntry.c_str());
 		}
-
-		reader.GetNext(entry);
 	}
-	while (entry.type != io::kOSFEntryTypeEnd);
 
 	// Save new enumtype
 	sel.enum_definitions[enumtypeName.c_str()] = new m04::editor::SequenceEnumDefinition(arStringEnumDefinition::CreateNew(nameValues), std::move(displayValues));
 }
 
+// Forward declare since the following can call each other:
+
 static void LoadNodeProperty ( m04::editor::SequenceNodePropertyDefinition* outProperty, io::OSFReader& reader, const io::OSFEntryInfo& parentNode );
 static void LoadNodeArray ( m04::editor::SequenceNodePropertyDefinition* outProperty, io::OSFReader& reader, const io::OSFEntryInfo& parentNode );
 
+//	LoadNodeProperty() : Reads in a node defintion from the OSF reader into the given property.
 static void LoadNodeProperty ( m04::editor::SequenceNodePropertyDefinition* outProperty, io::OSFReader& reader, const io::OSFEntryInfo& parentNode )
 {
 	if (parentNode.type != io::kOSFEntryTypeObject)
@@ -119,6 +194,7 @@ static void LoadNodeProperty ( m04::editor::SequenceNodePropertyDefinition* outP
 	}
 }
 
+//	LoadNodeArray() : Reads in an array property from the OSF reader into the given property.
 static void LoadNodeArray ( m04::editor::SequenceNodePropertyDefinition* outProperty, io::OSFReader& reader, const io::OSFEntryInfo& parentNode )
 {
 	if (parentNode.type != io::kOSFEntryTypeObject)
@@ -148,6 +224,7 @@ static void LoadNodeArray ( m04::editor::SequenceNodePropertyDefinition* outProp
 	}
 }
 
+//	LoadNodeType() : Reads in an entire node type.
 static void LoadNodeType ( m04::editor::SELInfo& sel, io::OSFReader& reader, const io::OSFEntryInfo& entryNodeType )
 {
 	if (entryNodeType.type != io::kOSFEntryTypeObject)
@@ -158,14 +235,12 @@ static void LoadNodeType ( m04::editor::SELInfo& sel, io::OSFReader& reader, con
 	debug::Log("SEL: found nodetype \"%s\"\n", entryNodeType.value.c_str());
 
 	m04::editor::SequenceNodeDefinition* node_definition = new m04::editor::SequenceNodeDefinition();
+	// Set the category, pulling from the last read settings:
+	node_definition->category = sel.next_node_category;
 
 	reader.GoInto(entryNodeType);
-	//io::OSFEntryInfo entry;
-	//reader.GetNext(entry);
-	
 	io::OSFEntryInfo entry;
 	for (reader.GetNext(entry); entry.type != io::kOSFEntryTypeEnd; reader.GetNext(entry))
-	//do
 	{
 		if (entry.name.compare("displayAs"))
 		{
@@ -197,10 +272,7 @@ static void LoadNodeType ( m04::editor::SELInfo& sel, io::OSFReader& reader, con
 		{
 			debug::LogWarn("SEL:  -> unrecognized name \"%s\".\n", entry.name.c_str());
 		}
-
-		//reader.GetNext(entry);
 	}
-	//while (entry.type != io::kOSFEntryTypeEnd);
 
 	// Save new nodetype
 	sel.node_definitions[entryNodeType.value] = node_definition;
@@ -223,13 +295,9 @@ void m04::editor::SELInfo::LoadSequenceEditorListing ( const char* sel_path )
 	// for now we skip the node types because that's a pain to define properly
 
 	// read in the osf entry-by-entry
-	//io::OSFEntryInfo entry;
-	//do
 	io::OSFEntryInfo entry;
 	for (reader.GetNext(entry); entry.type != io::kOSFEntryTypeEoF; reader.GetNext(entry))
 	{
-		//reader.GetNext(entry);
-
 		string_switch(entry.name)
 		{
 			string_case("settings"):
@@ -243,7 +311,6 @@ void m04::editor::SELInfo::LoadSequenceEditorListing ( const char* sel_path )
 				break;
 		}
 	}
-	//while (entry.type != io::kOSFEntryTypeEoF);
 
 	// close file
 	fclose(sel_fp);

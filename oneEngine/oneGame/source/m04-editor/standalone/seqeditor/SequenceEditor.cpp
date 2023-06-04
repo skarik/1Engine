@@ -19,6 +19,8 @@
 #include "m04/eventide/elements/Button.h"
 #include "m04/eventide/elements/ListMenu.h"
 
+#include "./SequenceEditorListing.h"
+
 static core::settings::PersistentSetting<std::string> gPSetLastSavedTarget (
 	"seqedit_lastSavedTarget",
 	"",

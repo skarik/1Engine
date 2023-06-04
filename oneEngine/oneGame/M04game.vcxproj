@@ -115,6 +115,7 @@
     <ClInclude Include="source\m04-editor\standalone\seqeditor\RightClickListMenu.h" />
     <ClInclude Include="source\m04-editor\standalone\seqeditor\sceneEditorSequence.h" />
     <ClInclude Include="source\m04-editor\standalone\seqeditor\SequenceEditor.h" />
+    <ClInclude Include="source\m04-editor\standalone\seqeditor\SequenceEditorListing.h" />
     <ClInclude Include="source\m04-editor\standalone\seqeditor\SequenceNode.h" />
     <ClInclude Include="source\m04-editor\standalone\seqeditor\SequenceNodeViews.h" />
     <ClInclude Include="source\m04-editor\standalone\seqeditor\SequenceSerialization.h" />
