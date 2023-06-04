@@ -46,23 +46,11 @@ m04::editor::sequence::NodeRenderer::NodeRenderer (m04::editor::sequence::NodeBo
 	ARCORE_ASSERT(in_node->sequenceInfo != NULL); // Must ensure node exists
 	ARCORE_ASSERT(in_node->sequenceInfo->view != NULL); // Must ensure view is valid
 
-	// Set position & bbox
-	SetBBox(core::math::BoundingBox(Rotator(), node->position + m_halfsizeOnBoard, m_halfsizeOnBoard));
-
-	// Set up the style infos
-	m_bbox_flow_input = core::math::BoundingBox(
-		Rotator(), 
-		Vector3f(-m_halfsizeOnBoard.x, 0.0F - m_connectionHalfsize.y - m_margins.y, 0), 
-		Vector3f(m_connectionHalfsize.x, m_connectionHalfsize.y, 4)
-		);
-	m_bbox_flow_output = core::math::BoundingBox(
-		Rotator(),
-		Vector3f(m_halfsizeOnBoard.x, 0.0F - m_connectionHalfsize.y - m_margins.y, 0),
-		Vector3f(m_connectionHalfsize.x, m_connectionHalfsize.y, 4)
-		);
-
 	UpdateCachedVisualInfo();
 	UpdateNextNode();
+
+	// Set position & bbox
+	SetBBox(core::math::BoundingBox(Rotator(), node->position + m_halfsizeOnBoard, m_halfsizeOnBoard));
 
 	// Set up the properties and extra
 	auto& nodeProperties = node->sequenceInfo->view->PropertyList();
@@ -139,7 +127,7 @@ void m04::editor::sequence::NodeRenderer::UpdateCachedVisualInfo ( void )
 	}
 	else
 	{
-		// Pul information from the internally held class definition
+		// Pull information from the internally held class definition
 		ARCORE_ASSERT(node->sequenceInfo->view->externalClass != nullptr);
 		std::string l_displayNameModified = node->sequenceInfo->view->externalClass->displayName;
 
@@ -586,6 +574,29 @@ void m04::editor::sequence::NodeRenderer::UpdateHalfsize ( void )
 {
 	// Update size of the board
 	m_halfsizeOnBoard.y = std::max(40.0F, (GetBboxOfAllProperties() + ui::eventide::DefaultStyler.text.headingSize + m_padding.y * 2.0F + m_margins.y * 2.0F) * 0.5F);
+
+	// todo: properly grab x-size
+	m_halfsizeOnBoard.x = 80.0F;
+	auto& nodePropertyList = node->sequenceInfo->view->PropertyList();
+	for (uint32_t propertyIndex = 0; propertyIndex < (uint32_t)nodePropertyList.size(); ++propertyIndex)
+	{
+		if (nodePropertyList[propertyIndex].renderstyle == PropertyRenderStyle::kArray)
+			m_halfsizeOnBoard.x = std::max(m_halfsizeOnBoard.x, 140.0f);
+		else if (nodePropertyList[propertyIndex].renderstyle == PropertyRenderStyle::kScriptText)
+			m_halfsizeOnBoard.x = std::max(m_halfsizeOnBoard.x, 140.0f);
+	}
+
+	// Set up the style infos
+	m_bbox_flow_input = core::math::BoundingBox(
+		Rotator(), 
+		Vector3f(-m_halfsizeOnBoard.x, 0.0F - m_connectionHalfsize.y - m_margins.y, 0), 
+		Vector3f(m_connectionHalfsize.x, m_connectionHalfsize.y, 4)
+		);
+	m_bbox_flow_output = core::math::BoundingBox(
+		Rotator(),
+		Vector3f(m_halfsizeOnBoard.x, 0.0F - m_connectionHalfsize.y - m_margins.y, 0),
+		Vector3f(m_connectionHalfsize.x, m_connectionHalfsize.y, 4)
+		);
 }
 
 void m04::editor::sequence::NodeRenderer::UpdateBboxSize ( void )

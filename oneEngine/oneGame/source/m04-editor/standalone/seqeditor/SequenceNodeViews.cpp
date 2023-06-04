@@ -1,4 +1,5 @@
 #include "SequenceNodeViews.h"
+#include "SequenceNodeExternalDefinition.h"
 
 std::unordered_map<arstring128,m04::editor::ISequenceNodeClassInfo*> m04::editor::ISequenceNodeClassInfo::m_registry;
 std::vector<m04::editor::ISequenceNodeClassInfo*> m04::editor::ISequenceNodeClassInfo::m_ordereredRegistry;
@@ -29,10 +30,8 @@ m04::editor::SequenceNode* m04::editor::SequenceNode::CreateWithEditorView ( con
 {
 	ARCORE_ASSERT((definition != nullptr) && (className != nullptr));
 	m04::editor::SequenceNode* node = new m04::editor::SequenceNode;
-	node->view = new m04::editor::sequence::BarebonesSequenceNodeView(node);
+	node->view = new m04::editor::sequence::ExternallyDefinedSeqNodeView(node, definition);
 	node->view->classname = className;
-	node->view->isExternalClass = true;
-	node->view->externalClass = definition;
 	return node;
 }
 
@@ -179,6 +178,8 @@ Color m04::editor::sequence::BarebonesSequenceNodeView::GetPropertyAsColor ( con
 	return ColorRGBA16(std::stoi(quadValues[0]), std::stoi(quadValues[0]), std::stoi(quadValues[0]), (quadValues.size() == 4) ? std::stoi(quadValues[0]) : 255).ToRGBAFloat();
 }
 
+//===============================================================================================//
+
 DECLARE_SEQUENCENODE_CLASS(MainTask, m04::editor::sequence::MainTaskSeqNodeView);
 DECLARE_SEQUENCENODE_CLASS(Sidetask, m04::editor::sequence::SidetaskSeqNodeView);
 
@@ -186,4 +187,37 @@ m04::editor::sequence::TaskSeqNodeView::TaskSeqNodeView ( SequenceNode* in_node 
 	: BarebonesSequenceNodeView(in_node)
 {
 	flowView.inputCount = 0;
+}
+
+//===============================================================================================//
+
+m04::editor::sequence::ExternallyDefinedSeqNodeView::ExternallyDefinedSeqNodeView ( SequenceNode* in_node, const SequenceNodeDefinition* definition )
+	: BarebonesSequenceNodeView(in_node)
+{
+	flowView.inputCount = 1;
+	isExternalClass = true;
+	externalClass = definition;
+
+	// Loop through all the inputs and set up properties
+	propertyViews.resize(externalClass->properties.size() + 1);
+	for (size_t propertyIndex = 0; propertyIndex < externalClass->properties.size(); ++propertyIndex)
+	{
+		auto& propertyView = propertyViews[propertyIndex + 1];
+		const auto& sourceProperty = externalClass->properties[propertyIndex];
+
+		propertyView.identifier = sourceProperty.name;
+		propertyView.renderstyle = sourceProperty.type;
+		propertyView.label = sourceProperty.displayName;
+		
+		SetProperty(propertyView.identifier, sourceProperty.defaultValue);
+		/*if (sourceProperty.defaultValue != "")
+		{
+			SetProperty((int)propertyIndex, sourceProperty.defaultValue);
+		}
+		else
+		{
+			// TODO: a correct default value for the type
+			SetProperty((int)propertyIndex, "");
+		}*/
+	}
 }

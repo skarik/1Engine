@@ -68,6 +68,12 @@ namespace sequence {
 			{}
 	};
 
+	class ExternallyDefinedSeqNodeView : public BarebonesSequenceNodeView
+	{
+	public:
+		EDITOR_API explicit		ExternallyDefinedSeqNodeView ( SequenceNode* in_node, const SequenceNodeDefinition* definition );
+	};
+
 }}}
 
 #endif//M04_EDITORS_SEQUENCE_EDITOR_SQUENCE_NODE_VIEWS_H_

@@ -4,6 +4,7 @@
 #include <vector>
 #include <map>
 
+#include "core/mem.h"
 #include "core/containers/arstring.h"
 #include "core-ext/containers/arStringEnum.h"
 
