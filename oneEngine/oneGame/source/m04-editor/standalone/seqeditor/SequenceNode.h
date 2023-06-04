@@ -21,6 +21,8 @@ namespace editor {
 	class SequenceViewOutput;
 	class SequenceViewProperty;
 
+	class SequenceNodeDefinition;
+
 	class SequenceNode
 	{
 	public:
@@ -45,6 +47,7 @@ namespace editor {
 
 	public:
 		static SequenceNode*	CreateWithEditorView ( const char* className );
+		static SequenceNode*	CreateWithEditorView ( const SequenceNodeDefinition* definition, const char* className );
 	};
 
 	class SequenceViewFlow
@@ -183,6 +186,9 @@ namespace editor {
 		SequenceNode*		node;
 
 		arstring128			classname;
+		bool				isExternalClass = false;
+		const SequenceNodeDefinition*
+							externalClass = nullptr;
 
 		//	FlowList() : Provides the flow information for this node.
 		// This is usually one input, and one or more outputs.

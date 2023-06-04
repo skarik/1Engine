@@ -25,6 +25,17 @@ m04::editor::SequenceNode* m04::editor::SequenceNode::CreateWithEditorView ( con
 	}
 }
 
+m04::editor::SequenceNode* m04::editor::SequenceNode::CreateWithEditorView ( const SequenceNodeDefinition* definition, const char* className )
+{
+	ARCORE_ASSERT((definition != nullptr) && (className != nullptr));
+	m04::editor::SequenceNode* node = new m04::editor::SequenceNode;
+	node->view = new m04::editor::sequence::BarebonesSequenceNodeView(node);
+	node->view->classname = className;
+	node->view->isExternalClass = true;
+	node->view->externalClass = definition;
+	return node;
+}
+
 
 void m04::editor::ISequenceNodeView::SetFlow ( const int flowOutputIndex, SequenceNode* newNodeValue )
 {

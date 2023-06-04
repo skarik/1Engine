@@ -364,7 +364,7 @@ void m04::editor::sequence::NodeBoardState::Load ( ISequenceDeserializer* deseri
 		if (l_nextItem.node != NULL)
 		{
 			// Create the node based on the input
-			m04::editor::SequenceNode* l_currentNode = m04::editor::SequenceNode::CreateWithEditorView(l_nextItem.node->c_str());
+			m04::editor::SequenceNode* l_currentNode = m04::editor::SequenceNode::CreateWithEditorView(l_nextItem.node->c_str()); // TODO
 
 			// Deserialize the rest of the node info
 			deserializer->DeserializeNode(l_currentNode);

@@ -73,7 +73,10 @@ m04::editor::sequence::RightClickListMenu::RightClickListMenu ( SequenceEditor* 
 		// Add all the hard-coded registered classes:
 		for (auto& registryEntry : ISequenceNodeClassInfo::m_ordereredRegistry)
 		{
-			m_classnameListing.push_back(registryEntry->m_classname);
+			m_classnameListing.push_back({
+				/*.isExternal = */ false,
+				/*.name = */ registryEntry->m_classname
+				});
 
 			std::string choiceDisplayName = registryEntry->m_displayname;
 			std::replace(choiceDisplayName.begin(), choiceDisplayName.end(), '_', '/');
@@ -83,7 +86,10 @@ m04::editor::sequence::RightClickListMenu::RightClickListMenu ( SequenceEditor* 
 		// Add all the loaded ones from file:
 		for (auto& definitionEntry : editor->GetNodeTypes())
 		{
-			m_classnameListing.push_back(definitionEntry.first);
+			m_classnameListing.push_back({
+				/*.isExternal = */ true,
+				/*.name = */ definitionEntry.first
+				});
 			
 			std::string choiceDisplayName = std::string(definitionEntry.second->category) + "/" + definitionEntry.second->displayName.c_str();
 
@@ -159,7 +165,15 @@ void m04::editor::sequence::RightClickListMenu::OnActivated ( int choiceIndex )
 			// create a view for the board node
 			//board_node->sequenceInfo.view = new m04::editor::sequence::BarebonesSequenceNodeView(&board_node->sequenceInfo);
 			//board_node->sequenceInfo = m04::editor::SequenceNode::CreateWithEditorView("Generic");
-			board_node->sequenceInfo = m04::editor::SequenceNode::CreateWithEditorView(m_classnameListing[choiceIndex - 1]);
+			const auto& classnameInfo = m_classnameListing[choiceIndex - 1];
+			if (!classnameInfo.isExternal)
+			{
+				board_node->sequenceInfo = m04::editor::SequenceNode::CreateWithEditorView(classnameInfo.name);
+			}
+			else
+			{
+				board_node->sequenceInfo = m04::editor::SequenceNode::CreateWithEditorView(m_editor->GetNodeTypes().find(classnameInfo.name)->second, classnameInfo.name);
+			}
 
 			m_editor->GetNodeBoardState()->AddDisplayNode(board_node);
 		}

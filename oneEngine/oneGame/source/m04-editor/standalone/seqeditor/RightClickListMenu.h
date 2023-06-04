@@ -48,7 +48,13 @@ namespace sequence {
 
 	protected:
 		// Listing of classnames for the right-click menu.
-		std::vector<arstring128>
+		struct ClassnameEntry
+		{
+			bool			isExternal = false;
+			arstring128		name;
+		};
+
+		std::vector<ClassnameEntry>
 							m_classnameListing;
 	};
 

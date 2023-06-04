@@ -13,6 +13,7 @@
 
 #include "NodeBoardRenderer.h"
 
+// TODO: define this in the node and/or externally!!!!
 const static std::unordered_map<arstring128, m04::editor::sequence::NodeDisplayInfo> g_NodeColors ({
 	{"MainTask",			{Color(1.0F, 1.0F, 0.0F)}},
 	{"Sidetask",			{Color(1.0F, 1.0F, 0.0F)}},
@@ -120,16 +121,31 @@ void m04::editor::sequence::NodeRenderer::UpdateCachedVisualInfo ( void )
 	using namespace ui::eventide;
 
 	// Cache all needed info
-	std::string l_displayNameModified = ISequenceNodeClassInfo::GetInfo(node->sequenceInfo->view->classname)->m_displayname;
+	if (!node->sequenceInfo->view->isExternalClass)
 	{
-		size_t l_lastUnderscore = l_displayNameModified.find_last_of('_');
-		if (l_lastUnderscore != string::npos)
+		// Pull information from the registry
+		ISequenceNodeClassInfo* nodeInfo = ISequenceNodeClassInfo::GetInfo(node->sequenceInfo->view->classname);
+
+		std::string l_displayNameModified = nodeInfo->m_displayname;
 		{
-			l_displayNameModified = l_displayNameModified.substr(l_lastUnderscore + 1);
+			size_t l_lastUnderscore = l_displayNameModified.find_last_of('_');
+			if (l_lastUnderscore != string::npos)
+			{
+				l_displayNameModified = l_displayNameModified.substr(l_lastUnderscore + 1);
+			}
 		}
+		m_display_text = l_displayNameModified.c_str();
+		m_guid_text = node->guid.toString().c_str();
 	}
-	m_display_text = l_displayNameModified.c_str();
-	m_guid_text = node->guid.toString().c_str();
+	else
+	{
+		// Pul information from the internally held class definition
+		ARCORE_ASSERT(node->sequenceInfo->view->externalClass != nullptr);
+		std::string l_displayNameModified = node->sequenceInfo->view->externalClass->displayName;
+
+		m_display_text = l_displayNameModified.c_str();
+		m_guid_text = node->guid.toString().c_str();
+	}
 
 	// Grab tint color from the node info
 	auto& tintColor = g_NodeColors.find(node->sequenceInfo->view->classname);
