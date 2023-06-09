@@ -6,7 +6,7 @@
 
 #include "core-ext/containers/arStringEnum.h"
 
-m04::editor::sequence::EnumPropertyRenderer::EnumPropertyRenderer ( const CreationParameters& params )
+m04::editor::sequence::EnumPropertyRenderer::EnumPropertyRenderer ( const PropertyRendererCreateParams& params )
 	: IPropertyRenderer(params)
 {
 	// Find the matching enum definition

@@ -10,7 +10,7 @@ namespace sequence {
 	class BooleanPropertyRenderer : public IPropertyRenderer
 	{
 	public:
-		explicit				BooleanPropertyRenderer ( const CreationParameters& params )
+		explicit				BooleanPropertyRenderer ( const PropertyRendererCreateParams& params )
 			: IPropertyRenderer(params)
 			{}
 

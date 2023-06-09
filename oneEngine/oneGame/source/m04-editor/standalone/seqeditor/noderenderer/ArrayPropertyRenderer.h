@@ -1,5 +1,5 @@
-#ifndef M04_EDITORS_SEQUENCE_EDITOR_PROPERTY_RENDERER_FLOAT_H_
-#define M04_EDITORS_SEQUENCE_EDITOR_PROPERTY_RENDERER_FLOAT_H_
+#ifndef M04_EDITORS_SEQUENCE_EDITOR_PROPERTY_RENDERER_ARRAY_H_
+#define M04_EDITORS_SEQUENCE_EDITOR_PROPERTY_RENDERER_ARRAY_H_
 
 #include "./IPropertyRenderer.h"
 
@@ -7,10 +7,10 @@ namespace m04 {
 namespace editor {
 namespace sequence {
 
-	class FloatPropertyRenderer : public IPropertyRenderer
+	class ArrayPropertyRenderer : public IPropertyRenderer
 	{
 	public:
-		explicit				FloatPropertyRenderer ( const PropertyRendererCreateParams& params )
+		explicit				ArrayPropertyRenderer ( const PropertyRendererCreateParams& params )
 			: IPropertyRenderer(params)
 			{}
 
@@ -22,8 +22,10 @@ namespace sequence {
 
 		virtual void			UpdateLayout ( const Vector3f& upper_left_corner, const Real left_column_width, const core::math::BoundingBox& node_bbox ) override;
 
+		std::vector<IPropertyRenderer*>
+							m_subproperties;
 	};
 
 }}}
 
-#endif//M04_EDITORS_SEQUENCE_EDITOR_PROPERTY_RENDERER_FLOAT_H_
+#endif//M04_EDITORS_SEQUENCE_EDITOR_PROPERTY_RENDERER_ARRAY_H_

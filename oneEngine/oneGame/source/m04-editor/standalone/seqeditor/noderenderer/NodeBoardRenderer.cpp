@@ -10,6 +10,7 @@
 #include "./BooleanPropertyRenderer.h"
 #include "./FloatPropertyRenderer.h"
 #include "./EnumPropertyRenderer.h"
+#include "./ArrayPropertyRenderer.h"
 
 #include "NodeBoardRenderer.h"
 
@@ -27,6 +28,39 @@ const static std::unordered_map<arstring128, m04::editor::sequence::NodeDisplayI
 
 	{"VN_Wait",				{Color(0.0F, 0.0F, 0.0F)}},
 });
+
+m04::editor::sequence::IPropertyRenderer* m04::editor::sequence::CreatePropertyRenderer ( m04::editor::PropertyRenderStyle propertyType, const PropertyRendererCreateParams& params )
+{
+	IPropertyRenderer* property_renderer = nullptr;
+	switch (propertyType)
+	{
+	case m04::editor::PropertyRenderStyle::kBoolean:
+		property_renderer = new m04::editor::sequence::BooleanPropertyRenderer(params);
+		break;
+
+	case m04::editor::PropertyRenderStyle::kFloat:
+		property_renderer = new m04::editor::sequence::FloatPropertyRenderer(params);
+		break;
+
+	case m04::editor::PropertyRenderStyle::kScriptText:
+		property_renderer = new m04::editor::sequence::ScriptTextPropertyRenderer(params);
+		break;
+
+	case m04::editor::PropertyRenderStyle::kEnumtypeDropdown:
+	case m04::editor::PropertyRenderStyle::kScriptCharacter:
+		property_renderer = new m04::editor::sequence::EnumPropertyRenderer(params);
+		break;
+
+	case m04::editor::PropertyRenderStyle::kArray:
+		property_renderer = new m04::editor::sequence::ArrayPropertyRenderer(params);
+		break;
+
+	default:
+		property_renderer = new m04::editor::sequence::InvalidPropertyRenderer(params);
+		break;
+	}
+	return property_renderer;
+}
 
 m04::editor::sequence::NodeRenderer::NodeRenderer (m04::editor::sequence::NodeBoardState* in_nbs, m04::editor::sequence::BoardNode* in_node, ui::eventide::UserInterface* ui)
 	: ui::eventide::elements::Button(ui)
@@ -61,31 +95,9 @@ m04::editor::sequence::NodeRenderer::NodeRenderer (m04::editor::sequence::NodeBo
 		
 		auto& nodeProperty = nodeProperties[nodePropertyIndex];
 
-		IPropertyRenderer::CreationParameters l_propCreateParams = {this, &nodeProperty, &m_propertyState[nodePropertyIndex]};
+		PropertyRendererCreateParams l_propCreateParams = {this, &nodeProperty, &m_propertyState[nodePropertyIndex]};
 
-		switch (nodeProperty.renderstyle)
-		{
-		case m04::editor::PropertyRenderStyle::kBoolean:
-			property_renderer = new m04::editor::sequence::BooleanPropertyRenderer(l_propCreateParams);
-			break;
-
-		case m04::editor::PropertyRenderStyle::kFloat:
-			property_renderer = new m04::editor::sequence::FloatPropertyRenderer(l_propCreateParams);
-			break;
-
-		case m04::editor::PropertyRenderStyle::kScriptText:
-			property_renderer = new m04::editor::sequence::ScriptTextPropertyRenderer(l_propCreateParams);
-			break;
-
-		case m04::editor::PropertyRenderStyle::kEnumtypeDropdown:
-		case m04::editor::PropertyRenderStyle::kScriptCharacter:
-			property_renderer = new m04::editor::sequence::EnumPropertyRenderer(l_propCreateParams);
-			break;
-
-		default:
-			property_renderer = new m04::editor::sequence::InvalidPropertyRenderer(l_propCreateParams);
-			break;
-		}
+		property_renderer = CreatePropertyRenderer(nodeProperty.renderstyle, l_propCreateParams);
 
 		m_propertyRenderers.push_back(property_renderer);
 	}

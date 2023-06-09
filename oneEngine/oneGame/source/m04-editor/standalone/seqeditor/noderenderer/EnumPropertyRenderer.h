@@ -14,7 +14,7 @@ namespace sequence {
 	class EnumPropertyRenderer : public IPropertyRenderer
 	{
 	public:
-		explicit				EnumPropertyRenderer ( const CreationParameters& params );
+		explicit				EnumPropertyRenderer ( const PropertyRendererCreateParams& params );
 
 	public:
 

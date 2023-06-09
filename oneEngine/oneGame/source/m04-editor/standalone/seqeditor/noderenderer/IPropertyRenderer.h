@@ -10,17 +10,19 @@ namespace sequence {
 
 	class NodeRenderer;
 
+	struct PropertyRendererCreateParams
+	{
+		NodeRenderer*		node_renderer;
+		const m04::editor::SequenceViewProperty*
+							property;
+		NodeRenderer::PropertyState*
+							property_state;
+	};
+
 	class IPropertyRenderer : public ui::eventide::Element::RenderContext
 	{
 	public:
-		struct CreationParameters
-		{
-			NodeRenderer* node_renderer;
-			const m04::editor::SequenceViewProperty* property;
-			NodeRenderer::PropertyState* property_state;
-		};
-
-		explicit				IPropertyRenderer ( const CreationParameters& params )
+		explicit				IPropertyRenderer ( const PropertyRendererCreateParams& params )
 			: ui::eventide::Element::RenderContext(params.node_renderer)
 			, m_nodeRenderer(params.node_renderer)
 			, m_propertyState(params.property_state)

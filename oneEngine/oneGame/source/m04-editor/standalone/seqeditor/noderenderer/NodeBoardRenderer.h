@@ -11,6 +11,7 @@ namespace sequence {
 	
 	class NodeBoardState;
 	class IPropertyRenderer;
+	struct PropertyRendererCreateParams;
 
 	struct DragState
 	{
@@ -37,6 +38,8 @@ namespace sequence {
 	{
 		Color				color;
 	};
+
+	IPropertyRenderer*	CreatePropertyRenderer ( m04::editor::PropertyRenderStyle propertyType, const PropertyRendererCreateParams& params );
 
 	// less renderer, more an interactable
 	class NodeRenderer : public m04::editor::sequence::INodeDisplay, public ui::eventide::elements::Button

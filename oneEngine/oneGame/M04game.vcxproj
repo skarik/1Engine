@@ -105,6 +105,7 @@
     <ClInclude Include="source\m04-editor\standalone\seqeditor\GridGizmo.h" />
     <ClInclude Include="source\m04-editor\standalone\seqeditor\MouseGizmo.h" />
     <ClInclude Include="source\m04-editor\standalone\seqeditor\NodeBoardState.h" />
+    <ClInclude Include="source\m04-editor\standalone\seqeditor\noderenderer\ArrayPropertyRenderer.h" />
     <ClInclude Include="source\m04-editor\standalone\seqeditor\noderenderer\BooleanPropertyRenderer.h" />
     <ClInclude Include="source\m04-editor\standalone\seqeditor\noderenderer\EnumPropertyRenderer.h" />
     <ClInclude Include="source\m04-editor\standalone\seqeditor\noderenderer\FloatPropertyRenderer.h" />
@@ -187,6 +188,7 @@
     <ClCompile Include="source\m04-editor\standalone\seqeditor\GridGizmo.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\MouseGizmo.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\NodeBoardState.cpp" />
+    <ClCompile Include="source\m04-editor\standalone\seqeditor\noderenderer\ArrayPropertyRenderer.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\noderenderer\BooleanPropertyRenderer.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\noderenderer\EnumPropertyRenderer.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\noderenderer\FloatPropertyRenderer.cpp" />

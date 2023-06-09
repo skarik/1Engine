@@ -10,7 +10,7 @@ namespace sequence {
 	class ScriptTextPropertyRenderer : public IPropertyRenderer
 	{
 	public:
-		explicit				ScriptTextPropertyRenderer ( const CreationParameters& params )
+		explicit				ScriptTextPropertyRenderer ( const PropertyRendererCreateParams& params )
 			: IPropertyRenderer(params)
 			{}
 

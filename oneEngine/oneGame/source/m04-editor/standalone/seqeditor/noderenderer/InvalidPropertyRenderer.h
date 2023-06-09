@@ -10,7 +10,7 @@ namespace sequence {
 	class InvalidPropertyRenderer : public IPropertyRenderer
 	{
 	public:
-		explicit				InvalidPropertyRenderer ( const CreationParameters& params )
+		explicit				InvalidPropertyRenderer ( const PropertyRendererCreateParams& params )
 			: IPropertyRenderer(params)
 		{}
 

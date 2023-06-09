@@ -209,7 +209,14 @@ m04::editor::sequence::ExternallyDefinedSeqNodeView::ExternallyDefinedSeqNodeVie
 		propertyView.renderstyle = sourceProperty.type;
 		propertyView.label = sourceProperty.displayName;
 		
-		SetProperty(propertyView.identifier, sourceProperty.defaultValue);
+		if (propertyView.renderstyle != m04::editor::PropertyRenderStyle::kArray)
+		{
+			SetProperty(propertyView.identifier, sourceProperty.defaultValue);
+		}
+		else
+		{
+			node->data.GetAdd<osf::ArrayValue>(propertyView.identifier);
+		}
 		/*if (sourceProperty.defaultValue != "")
 		{
 			SetProperty((int)propertyIndex, sourceProperty.defaultValue);
