@@ -33,6 +33,7 @@
 	template const Class* osf::BaseValue::As< Class > ( void ) const; 
 
 SpecializeOSFCastTemplate(osf::ObjectValue, kObject);
+SpecializeOSFCastTemplate(osf::ArrayValue, kArray);
 SpecializeOSFCastTemplate(osf::MarkerValue, kMarker);
 SpecializeOSFCastTemplate(osf::StringValue, kString);
 SpecializeOSFCastTemplate(osf::IntegerValue, kInteger);
@@ -97,6 +98,51 @@ size_t osf::ObjectValue::GetKeyIndex (const char* key_name)
 		}
 	}
 	return kNoIndex;
+}
+
+bool osf::ObjectValue::CanConvertValue (ValueType sourceType, ValueType targetType)
+{
+	if (targetType == ValueType::kString)
+	{
+		switch (sourceType)
+		{
+		case ValueType::kFloat:
+		case ValueType::kInteger:
+		case ValueType::kBoolean:
+		case ValueType::kString:
+				return true;
+		}
+	}
+	else if (targetType == ValueType::kBoolean)
+	{
+		switch (sourceType)
+		{
+		case ValueType::kInteger:
+		case ValueType::kString:
+		case ValueType::kBoolean:
+				return true;
+		}
+	}
+	else if (targetType == ValueType::kInteger)
+	{
+		switch (sourceType)
+		{
+		case ValueType::kInteger:
+		case ValueType::kBoolean:
+		case ValueType::kString:
+				return true;
+		}
+	}
+	else if (targetType == ValueType::kFloat)
+	{
+		switch (sourceType)
+		{
+		case ValueType::kFloat:
+		case ValueType::kString:
+				return true;
+		}
+	}
+	return false;
 }
 
 bool osf::ObjectValue::ConvertValue (const BaseValue* source, BaseValue* target)
@@ -252,6 +298,12 @@ void osf::KeyValue::FreeKeyValues ( void )
 		delete object;
 		object = NULL;
 	}
+}
+
+//	CanBeJSON() : Returns if can be represented by JSON. Must have a value XOR a object.
+bool osf::KeyValue::CanBeJSON ( void )
+{
+	return (value == NULL) != (object == NULL);
 }
 
 
