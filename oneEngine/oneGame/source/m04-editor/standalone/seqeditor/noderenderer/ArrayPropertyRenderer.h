@@ -24,6 +24,12 @@ namespace sequence {
 
 		std::vector<IPropertyRenderer*>
 							m_subproperties;
+		// Property hover state
+		std::vector<NodeRenderer::PropertyState>
+							m_subpropertyState;
+
+		std::vector<SequenceViewProperty>
+							m_subpropertyProperties;
 	};
 
 }}}

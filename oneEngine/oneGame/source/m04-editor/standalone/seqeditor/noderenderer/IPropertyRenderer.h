@@ -19,6 +19,9 @@ namespace sequence {
 							property_state;
 	};
 
+	// TODO: may want to move the state outside of the renderer, so that we don't need to instantiate renderers, just use em as a "view" of sorts
+	// m_nodeRenderer, m_property, and m_propertyState are all owned by someone else anyways...
+
 	class IPropertyRenderer : public ui::eventide::Element::RenderContext
 	{
 	public:

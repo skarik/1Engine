@@ -1,5 +1,6 @@
 #include "./ArrayPropertyRenderer.h"
 #include "./NodeBoardRenderer.h"
+#include "../SequenceNodeExternalDefinition.h"
 
 void m04::editor::sequence::ArrayPropertyRenderer::OnClicked ( const ui::eventide::Element::EventMouse& mouse_event )
 {
@@ -9,7 +10,15 @@ void m04::editor::sequence::ArrayPropertyRenderer::OnClicked ( const ui::eventid
 
 	if (mouse_event.button == core::kMBLeft)
 	{
-		m_propertyState->m_editing = true;
+		//m_propertyState->m_editing = true;
+		core::math::BoundingBox addRect(Rotator(), m_bboxKey.GetCenterPoint(), Vector3f(1, 1, 1) * ui::eventide::DefaultStyler.text.buttonSize);
+
+		if (addRect.IsPointInBox(mouse_event.position_world))
+		{
+			//GetNode()->view->SetProperty(m_property->identifier, !GetNode()->view->GetPropertyAsBool(m_property->identifier));
+			auto arrayValue = GetNode()->data.GetAdd<osf::ArrayValue>(m_property->identifier);
+			arrayValue->values.push_back(new osf::ObjectValue());
+		}
 	}
 }
 
@@ -23,10 +32,12 @@ void m04::editor::sequence::ArrayPropertyRenderer::BuildMesh ( void )
 
 	std::string tempString;
 
+	const Vector3f kZStep = Vector3f(0, 0, 0.1F);
+
 	textParams = ParamsForText();
 	textParams.string = m_property->label.c_str();
 	textParams.font_texture = &m_nodeRenderer->GetRenderResources().m_fontTexture;
-	textParams.position = m_bboxAll.GetCenterPoint() - Vector3f(m_bboxAll.GetExtents().x, m_bboxAll.GetExtents().y, 0) + Vector3f(0, 0, 0.1F);
+	textParams.position = m_bboxAll.GetCenterPoint() - Vector3f(m_bboxAll.GetExtents().x, m_bboxAll.GetExtents().y, 0) + kZStep;
 	textParams.rotation = m_nodeRenderer->GetBBoxAbsolute().m_M.getRotator();
 	textParams.size = math::lerp(0.0F, ui::eventide::DefaultStyler.text.buttonSize, ui::eventide::DefaultStyler.text.headingSize);
 	textParams.alignment = AlignHorizontal::kLeft;
@@ -40,18 +51,48 @@ void m04::editor::sequence::ArrayPropertyRenderer::BuildMesh ( void )
 	//auto arrayValue = 
 	// display size of the array
 
-	tempString = "Array Size<" + std::to_string(arrayValue->values.size()) + ">";
+	//tempString = "Array Size<" + std::to_string(arrayValue->values.size()) + ">";
 
+	// Display the size of the array.
 	textParams = ParamsForText();
+	tempString = "Array, " + std::to_string(arrayValue->values.size()) + " elements";
 	textParams.string = tempString.c_str();
 	textParams.font_texture = &m_nodeRenderer->GetRenderResources().m_fontTexture;
-	textParams.position = m_bboxKey.GetCenterPoint() - Vector3f(m_bboxKey.GetExtents().x, m_bboxKey.GetExtents().y, 0) + Vector3f(0, 0, 0.1F);
+	textParams.position = m_bboxKey.GetCenterPoint() - Vector3f(m_bboxKey.GetExtents().x, m_bboxKey.GetExtents().y, 0) + kZStep;
 	textParams.rotation = m_nodeRenderer->GetBBoxAbsolute().m_M.getRotator();
 	textParams.size = math::lerp(0.0F, ui::eventide::DefaultStyler.text.buttonSize, ui::eventide::DefaultStyler.text.headingSize);
 	textParams.alignment = AlignHorizontal::kLeft;
 	textParams.color = m_propertyState->m_hovered ? DefaultStyler.text.headingColor : DefaultStyler.text.headingColor.Lerp(DefaultStyler.box.defaultColor, 0.3F);
 	buildText(textParams);
 
+
+	for (auto subValue : arrayValue->values)
+	{
+		// Draw each object group, pull the elements from the property definition:
+		for (auto subProperty : *m_property->definition->arraySubproperties)
+		{
+
+		}
+	}
+
+	// Display the "add element" button
+	quadParams = ParamsForQuad();
+	quadParams.position = m_bboxKey.GetCenterPoint();
+	quadParams.size = Vector3f(1, 1, 1) * (ui::eventide::DefaultStyler.text.buttonSize);
+	quadParams.color = Color(1, 1, 1, 1).Lerp(DefaultStyler.box.defaultColor, 0.5F);
+	buildQuad(quadParams);
+
+	for (size_t elementIndex = 0; elementIndex < arrayValue->values.size(); ++elementIndex)
+	{
+		for (size_t subpropertyIndex = 0; subpropertyIndex < m_property->definition->arraySubproperties->size(); ++subpropertyIndex)
+		{
+			size_t subpropertyRendererIndex = elementIndex * m_property->definition->arraySubproperties->size() + subpropertyIndex;
+			if (subpropertyRendererIndex < m_subproperties.size() && m_subproperties[subpropertyRendererIndex] != nullptr)
+			{
+				m_subproperties[subpropertyRendererIndex]->BuildMesh();
+			}
+		}
+	}
 
 	/*quadParams = ParamsForQuad();
 	quadParams.position = m_bboxKey.GetCenterPoint();
@@ -139,16 +180,55 @@ void m04::editor::sequence::ArrayPropertyRenderer::OnGameFrameUpdate ( const ui:
 		// Forces the value to convert back to a floating point value.
 		GetNode()->view->GetPropertyAsFloat(m_property->identifier);
 	}*/
+
+	// Set up the needed renderers for all of the subproperties
+	auto arrayValue = GetNode()->data.GetAdd<osf::ArrayValue>(m_property->identifier);
+
+	size_t total_subproperties = arrayValue->values.size() * m_property->definition->arraySubproperties->size();
+	if (m_subproperties.size() != total_subproperties)
+	{
+		m_subproperties.resize(0, nullptr); // TODO: Leaks
+		m_subproperties.resize(total_subproperties, nullptr);
+		m_subpropertyState.resize(total_subproperties);
+		m_subpropertyProperties.resize(total_subproperties);
+	}
+
+	for (size_t elementIndex = 0; elementIndex < arrayValue->values.size(); ++elementIndex)
+	{
+		for (size_t subpropertyIndex = 0; subpropertyIndex < m_property->definition->arraySubproperties->size(); ++subpropertyIndex)
+		{
+			size_t subpropertyRendererIndex = elementIndex * m_property->definition->arraySubproperties->size() + subpropertyIndex;
+			if (m_subproperties[subpropertyRendererIndex] == nullptr)
+			{
+				m_subpropertyProperties[subpropertyIndex].definition = &m_property->definition->arraySubproperties->at(subpropertyIndex);
+				m_subpropertyProperties[subpropertyIndex].label = m_property->definition->arraySubproperties->at(subpropertyIndex).displayName;
+				m_subpropertyProperties[subpropertyIndex].identifier = m_property->definition->arraySubproperties->at(subpropertyIndex).name;
+				m_subpropertyProperties[subpropertyIndex].renderstyle = m_property->definition->arraySubproperties->at(subpropertyIndex).type;
+
+				PropertyRendererCreateParams params;
+				params.node_renderer = this->m_nodeRenderer;
+				params.property = &m_subpropertyProperties[subpropertyIndex];  //m_property->definition->arraySubproperties->at(subpropertyIndex);
+				params.property_state = &m_subpropertyState[subpropertyIndex];
+				m_subproperties[subpropertyRendererIndex] = m04::editor::sequence::CreatePropertyRenderer(m_property->definition->arraySubproperties->at(subpropertyIndex).type, params);
+			}
+		}
+	}
 }
 
 void m04::editor::sequence::ArrayPropertyRenderer::UpdateLayout ( const Vector3f& upper_left_corner, const Real left_column_width, const core::math::BoundingBox& node_bbox )
 {
-	m_bboxHeight = ui::eventide::DefaultStyler.text.buttonSize + m_nodeRenderer->GetPadding().y;
+	int line_height = 1;
+	// todo: don't hack this
+	auto arrayValue = GetNode()->data.GetAdd<osf::ArrayValue>(m_property->identifier);
+	line_height += (int)arrayValue->values.size() * (int)m_property->definition->arraySubproperties->size();
+
+	m_bboxHeight = (ui::eventide::DefaultStyler.text.buttonSize + m_nodeRenderer->GetPadding().y) * line_height;
 
 	m_bboxAll = core::math::BoundingBox(
 		Matrix4x4(),
 		upper_left_corner + Vector3f(m_nodeRenderer->GetPadding().x, 0, 0),
-		upper_left_corner + Vector3f((node_bbox.GetExtents().x - m_nodeRenderer->GetPadding().x) * 2.0F, -ui::eventide::DefaultStyler.text.buttonSize, 4.0F)
+		//upper_left_corner + Vector3f((node_bbox.GetExtents().x - m_nodeRenderer->GetPadding().x) * 2.0F, -ui::eventide::DefaultStyler.text.buttonSize, 4.0F)
+		upper_left_corner + Vector3f((node_bbox.GetExtents().x - m_nodeRenderer->GetPadding().x) * 2.0F, -m_bboxHeight, 4.0F)
 	);
 
 	m_bboxKey = core::math::BoundingBox(
@@ -156,4 +236,30 @@ void m04::editor::sequence::ArrayPropertyRenderer::UpdateLayout ( const Vector3f
 		upper_left_corner + Vector3f(left_column_width, 0, 0) + Vector3f(m_nodeRenderer->GetPadding().x, 0, 0),
 		upper_left_corner + Vector3f((node_bbox.GetExtents().x - m_nodeRenderer->GetPadding().x) * 2.0F, -ui::eventide::DefaultStyler.text.buttonSize, 4.0F)
 	);
+
+	// update layout of all the subproperties:
+	///m_subproperties
+	core::math::BoundingBox local_bbox = m_bboxAll;
+	Real lc_width = node_bbox.GetExtents().x - left_column_width;
+	Vector3f ul_corner = upper_left_corner - Vector3f(0, (ui::eventide::DefaultStyler.text.buttonSize + m_nodeRenderer->GetPadding().y), 0);
+
+	for (size_t elementIndex = 0; elementIndex < arrayValue->values.size(); ++elementIndex)
+	{
+		for (size_t subpropertyIndex = 0; subpropertyIndex < m_property->definition->arraySubproperties->size(); ++subpropertyIndex)
+		{
+			size_t subpropertyRendererIndex = elementIndex * m_property->definition->arraySubproperties->size() + subpropertyIndex;
+			if (subpropertyRendererIndex < m_subproperties.size() && m_subproperties[subpropertyRendererIndex] != nullptr)
+			{
+				//ul_corner = upper_left_corner;
+
+				m_subproperties[subpropertyRendererIndex]->UpdateLayout(
+					ul_corner,
+					lc_width,
+					local_bbox
+				);
+
+				ul_corner.y -= m_subproperties[subpropertyRendererIndex]->GetCachedBboxAll().GetExtents().y * 2.0F + m_nodeRenderer->GetPadding().y;
+			}
+		}
+	}
 }

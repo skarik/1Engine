@@ -376,6 +376,9 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 	ParamsForPath pathParams;
 
 	const Vector3f nodeExtents = GetBBoxAbsolute().GetExtents();
+	const Rect kUVsDot		= Rect(128.0F / 1024, 0.0F,				128.0F / 1024, 128.0F / 1024);
+	const Rect kUVsDotRight	= Rect((128.0F + 64.0F) / 1024, 0.0F,	64.0F / 1024, 128.0F / 1024);
+	const Rect kUVsDotLeft	= Rect(128.0F / 1024, 0.0F,				64.0F / 1024, 128.0F / 1024);
 
 	cubeParams = {};
 	cubeParams.box = core::math::Cubic::ConstructFromBBox(GetBBoxAbsolute());
@@ -451,7 +454,7 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 		quadParams = {};
 		quadParams.position = l_bbox_flow_input.GetCenterPoint() + Vector3f(l_bbox_flow_input.GetExtents().x * 0.5F, 0, 0);
 		quadParams.size = Vector2f(l_bbox_flow_input.GetExtents().x * 0.5F, l_bbox_flow_input.GetExtents().y);
-		quadParams.uvs = Rect((128.0F + 64.0F) / 1024, 0.0F, 64.0F / 1024, 128.0F / 1024);
+		quadParams.uvs = kUVsDotRight; // Semicircle on the inside of node
 		quadParams.texture = &m_renderResources.m_uiElementsTexture;
 		quadParams.color = DefaultStyler.box.defaultColor;
 		buildQuad(quadParams);
@@ -465,7 +468,7 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 		quadParams = {};
 		quadParams.position = l_bbox_flow_output.GetCenterPoint() - Vector3f(l_bbox_flow_output.GetExtents().x * 0.5F, 0, 0);
 		quadParams.size = Vector2f(l_bbox_flow_output.GetExtents().x * 0.5F, l_bbox_flow_output.GetExtents().y);
-		quadParams.uvs = Rect(128.0F / 1024, 0.0F, 64.0F / 1024, 128.0F / 1024);
+		quadParams.uvs = kUVsDotLeft; // Semicircle on the inside of node
 		quadParams.texture = &m_renderResources.m_uiElementsTexture;
 		quadParams.color = DefaultStyler.box.defaultColor;
 		buildQuad(quadParams);

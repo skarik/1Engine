@@ -34,7 +34,11 @@ m04::editor::sequence::EnumPropertyRenderer::EnumPropertyRenderer ( const Proper
 	}
 
 	//ARCORE_ASSERT(enumDefinitionName.length() > 0); // TODO
-	m_enumDefinition = editorEnums.find(enumDefinitionName)->second;
+	auto enumEntry = editorEnums.find(enumDefinitionName);
+	if (enumEntry != editorEnums.end())
+	{
+		m_enumDefinition = enumEntry->second;
+	}
 }
 
 void m04::editor::sequence::EnumPropertyRenderer::OnClicked ( const ui::eventide::Element::EventMouse& mouse_event )

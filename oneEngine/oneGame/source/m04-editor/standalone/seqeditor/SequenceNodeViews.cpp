@@ -208,6 +208,7 @@ m04::editor::sequence::ExternallyDefinedSeqNodeView::ExternallyDefinedSeqNodeVie
 		propertyView.identifier = sourceProperty.name;
 		propertyView.renderstyle = sourceProperty.type;
 		propertyView.label = sourceProperty.displayName;
+		propertyView.definition = &sourceProperty;
 		
 		if (propertyView.renderstyle != m04::editor::PropertyRenderStyle::kArray)
 		{

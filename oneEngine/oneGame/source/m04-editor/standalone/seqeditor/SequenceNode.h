@@ -21,6 +21,7 @@ namespace editor {
 	class SequenceViewOutput;
 	class SequenceViewProperty;
 
+	struct SequenceNodePropertyDefinition;
 	class SequenceNodeDefinition;
 
 	class SequenceNode
@@ -133,10 +134,12 @@ namespace editor {
 	public:
 		arstring64			label = "Property";
 		arstring64			identifier = "property";
-
 		PropertyRenderStyle	renderstyle = PropertyRenderStyle::kUnknown;
 
 		const char*			description = nullptr;
+
+		const SequenceNodePropertyDefinition*
+							definition = nullptr;
 	public:
 		// each property has information on how to render
 	};
