@@ -267,7 +267,8 @@ void m04::editor::sequence::ScriptTextPropertyRenderer::OnClicked ( const ui::ev
 		{
 			m_propertyState->m_editing = true;
 			// Move cursor to the end
-			std::string l_currentValue = GetNode()->view->GetPropertyAsString(m_property->identifier);
+			//std::string l_currentValue = GetNode()->view->GetPropertyAsString(m_property->identifier);
+			std::string l_currentValue = properties::GetProperty<const char*>(m_targetData, m_property->identifier);
 			m_cursorPosition = (int32_t)l_currentValue.length();
 		}
 		else
@@ -276,7 +277,8 @@ void m04::editor::sequence::ScriptTextPropertyRenderer::OnClicked ( const ui::ev
 			Vector2f l_clickInPenspace = mouse_event.position_world - (m_bboxAll.GetCenterPoint() - Vector3f(m_bboxAll.GetExtents().x, -m_bboxAll.GetExtents().y, m_bboxAll.GetExtents().z));
 			l_clickInPenspace.y = -l_clickInPenspace.y;
 
-			const char* str = GetNode()->view->GetPropertyAsString(m_property->identifier);
+			//const char* str = GetNode()->view->GetPropertyAsString(m_property->identifier);
+			const char* str = properties::GetProperty<const char*>(m_targetData, m_property->identifier);
 			if (str)
 			{
 				// Get the font info:
@@ -344,7 +346,8 @@ void m04::editor::sequence::ScriptTextPropertyRenderer::BuildMesh ( void )
 	textParams.color = Color(0, 0, 0, 1).Lerp(m_propertyState->m_hovered ? DefaultStyler.text.headingColor : DefaultStyler.text.headingColor.Lerp(DefaultStyler.box.defaultColor, 0.3F), 0.4F);
 	buildText(textParams);
 
-	const char* str = GetNode()->view->GetPropertyAsString(m_property->identifier);
+	//const char* str = GetNode()->view->GetPropertyAsString(m_property->identifier);
+	const char* str = properties::GetProperty<const char*>(m_targetData, m_property->identifier);
 	if (str)
 	{
 		textParams = ParamsForText();
@@ -431,7 +434,8 @@ void m04::editor::sequence::ScriptTextPropertyRenderer::OnGameFrameUpdate ( cons
 		const bool bControlHeld = core::Input::Key( core::kVkControl, input_frame.input_index );
 
 		// Parse input and modify the underlying property
-		std::string l_currentValue = GetNode()->view->GetPropertyAsString(m_property->identifier);
+		//std::string l_currentValue = GetNode()->view->GetPropertyAsString(m_property->identifier);
+		std::string l_currentValue = properties::GetProperty<const char*>(m_targetData, m_property->identifier);
 
 		// Run the parse loop (see dusk/TextField.cpp)
 		const auto& inputString = core::Input::FrameInputString( input_frame.input_index );
@@ -496,7 +500,8 @@ void m04::editor::sequence::ScriptTextPropertyRenderer::OnGameFrameUpdate ( cons
 		}
 
 		// Save back the edits
-		GetNode()->view->SetProperty(m_property->identifier, l_currentValue.c_str());
+		//GetNode()->view->SetProperty(m_property->identifier, l_currentValue.c_str());
+		properties::SetProperty(m_targetData, m_property->identifier, l_currentValue.c_str());
 	}
 }
 
@@ -509,7 +514,8 @@ void m04::editor::sequence::ScriptTextPropertyRenderer::UpdateLayout ( const Vec
 
 	if (m_lineCount <= 0)
 	{
-		const char* l_scriptString = GetNode()->view->GetPropertyAsString(m_property->identifier);
+		//const char* l_scriptString = GetNode()->view->GetPropertyAsString(m_property->identifier);
+		const char* l_scriptString = properties::GetProperty<const char*>(m_targetData, m_property->identifier);
 		ParamsForText textParams;
 		textParams = ParamsForText();
 		textParams.string = l_scriptString;

@@ -44,7 +44,8 @@ void m04::editor::sequence::InvalidPropertyRenderer::BuildMesh ( void )
 	textParams.color = Color(1, 0, 0, 1.0);
 	buildText(textParams);
 
-	const char* str = GetNode()->view->GetPropertyAsString(m_property->identifier);
+	//const char* str = GetNode()->view->GetPropertyAsString(m_property->identifier);
+	const char* str = properties::GetProperty<const char*>(m_targetData, m_property->identifier);
 	textParams = ParamsForText();
 	textParams.string = str;
 	textParams.font_texture = &m_nodeRenderer->GetRenderResources().m_fontTexture;

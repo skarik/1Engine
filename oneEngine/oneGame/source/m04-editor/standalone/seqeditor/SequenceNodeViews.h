@@ -20,7 +20,7 @@ namespace sequence {
 		EDITOR_API virtual SequenceNode*
 								GetOuptut ( const int outputIndex ) override;
 
-		EDITOR_API virtual void	SetProperty ( const int propertyIndex, const float newFloatValue ) override;
+		/*EDITOR_API virtual void	SetProperty ( const int propertyIndex, const float newFloatValue ) override;
 		EDITOR_API virtual void	SetProperty ( const int propertyIndex, const int newIntValue ) override;
 		EDITOR_API virtual void	SetProperty ( const int propertyIndex, const bool newBooleanValue ) override;
 		EDITOR_API virtual void	SetProperty ( const int propertyIndex, const char* newStringValue ) override;
@@ -43,7 +43,7 @@ namespace sequence {
 		EDITOR_API virtual Vector3f
 								GetPropertyAsVector3f ( const char* stringIndex ) override;
 		EDITOR_API virtual Color
-								GetPropertyAsColor ( const char* stringIndex ) override;
+								GetPropertyAsColor ( const char* stringIndex ) override;*/
 	};
 
 	class TaskSeqNodeView : public BarebonesSequenceNodeView

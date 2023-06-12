@@ -11,7 +11,14 @@ void m04::editor::sequence::BooleanPropertyRenderer::OnClicked ( const ui::event
 	{
 		if (m_bboxKey.IsPointInBox(mouse_event.position_world))
 		{
-			GetNode()->view->SetProperty(m_property->identifier, !GetNode()->view->GetPropertyAsBool(m_property->identifier));
+			// We need this to work within an array - so, instead of a "property view" that works on any OSF object so
+			//	using m04::editor::sequence::properties;
+			//	SetProperty(GetNode()->data, m_property->identifier, !GetProperty<bool>(GetNode()->data));
+			//	SetProperty(m_targetData, m_property->identifier, !GetProperty<bool>(m_targetData));
+			//GetNode()->view->SetProperty(m_property->identifier, !GetNode()->view->GetPropertyAsBool(m_property->identifier));
+			
+			using namespace m04::editor::sequence::properties;
+			SetProperty(m_targetData, m_property->identifier, !GetProperty<bool>(m_targetData, m_property->identifier));
 		}
 	}
 }
@@ -40,7 +47,8 @@ void m04::editor::sequence::BooleanPropertyRenderer::BuildMesh ( void )
 	quadParams.color = Color(1, 1, 1, 1).Lerp(DefaultStyler.box.defaultColor, 0.5F);
 	buildQuad(quadParams);
 
-	if (GetNode()->view->GetPropertyAsBool(m_property->identifier))
+	//if (GetNode()->view->GetPropertyAsBool(m_property->identifier))
+	if (properties::GetProperty<bool>(m_targetData, m_property->identifier))
 	{
 		quadParams = {};
 		quadParams.position = m_bboxKey.GetCenterPoint() + Vector3f(0, 0, 2);

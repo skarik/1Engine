@@ -202,6 +202,7 @@
     <ClCompile Include="source\m04-editor\standalone\seqeditor\SequenceEditorListing.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\SequenceNodeEnums.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\SequenceNodeViews.cpp" />
+    <ClCompile Include="source\m04-editor\standalone\seqeditor\SequenceProperties.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\SequenceSerialization.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\TopMenu.cpp" />
     <ClCompile Include="source\m04-editor\standalone\seqeditor\vn\ViewsFlow.cpp" />

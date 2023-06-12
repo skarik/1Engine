@@ -42,11 +42,13 @@ void m04::editor::sequence::FloatPropertyRenderer::BuildMesh ( void )
 	std::string str_tempBuffer;
 	if (m_propertyState->m_editing)
 	{
-		str = GetNode()->view->GetPropertyAsString(m_property->identifier);
+		//str = GetNode()->view->GetPropertyAsString(m_property->identifier);
+		str = properties::GetProperty<const char*>(m_targetData, m_property->identifier);
 	}
 	else
 	{
-		const float currentValue = GetNode()->view->GetPropertyAsFloat(m_property->identifier);
+		//const float currentValue = GetNode()->view->GetPropertyAsFloat(m_property->identifier);
+		const float currentValue = properties::GetProperty<float>(m_targetData, m_property->identifier);
 		str_tempBuffer = std::to_string(currentValue);
 		str_tempBuffer.erase(str_tempBuffer.find_last_not_of('0') + 1, std::string::npos);
 		str_tempBuffer.erase(str_tempBuffer.find_last_not_of('.') + 1, std::string::npos); // See the node conversion GetPropertyAsFloat/GetPropertyAsString
@@ -81,7 +83,8 @@ void m04::editor::sequence::FloatPropertyRenderer::OnGameFrameUpdate ( const ui:
 	if (m_propertyState->m_editing)
 	{
 		// Parse input and modify the underlying property
-		std::string l_currentValue = GetNode()->view->GetPropertyAsString(m_property->identifier);
+		//std::string l_currentValue = GetNode()->view->GetPropertyAsString(m_property->identifier);
+		std::string l_currentValue = properties::GetProperty<const char*>(m_targetData, m_property->identifier);
 
 		// Run the parse loop (see dusk/TextField.cpp)
 		const auto& inputString = core::Input::FrameInputString( input_frame.input_index );
@@ -98,25 +101,29 @@ void m04::editor::sequence::FloatPropertyRenderer::OnGameFrameUpdate ( const ui:
 		}
 
 		// Save back the edits
-		GetNode()->view->SetProperty(m_property->identifier, l_currentValue.c_str());
+		//GetNode()->view->SetProperty(m_property->identifier, l_currentValue.c_str());
+		properties::SetProperty(m_targetData, m_property->identifier, l_currentValue.c_str());
 	}
 	else
 	{
 		// If the field is invalid, force the value of zero
 		if (GetNode()->view->node->data[m_property->identifier]->GetType() == osf::ValueType::kString)
 		{
-			std::string l_currentValue = GetNode()->view->GetPropertyAsString(m_property->identifier);
+			//std::string l_currentValue = GetNode()->view->GetPropertyAsString(m_property->identifier);
+			std::string l_currentValue = properties::GetProperty<const char*>(m_targetData, m_property->identifier);
 			try
 			{
 				std::stof(l_currentValue); // Try the conversion. If it throws, the input is invalid.
 			}
 			catch (std::invalid_argument&)
 			{
-				GetNode()->view->SetProperty(m_property->identifier, "0");
+				//GetNode()->view->SetProperty(m_property->identifier, "0");
+				properties::SetProperty(m_targetData, m_property->identifier, "0");
 			}
 		}
 		// Forces the value to convert back to a floating point value.
-		GetNode()->view->GetPropertyAsFloat(m_property->identifier);
+		//GetNode()->view->GetPropertyAsFloat(m_property->identifier);
+		properties::GetProperty<float>(m_targetData, m_property->identifier);
 	}
 }
 

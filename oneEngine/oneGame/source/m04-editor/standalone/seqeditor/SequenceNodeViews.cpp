@@ -57,7 +57,7 @@ m04::editor::sequence::BarebonesSequenceNodeView::BarebonesSequenceNodeView ( Se
 	flowView.outputCount = 1;
 	propertyViews.resize(1);
 	propertyViews[0] = {"Enabled?", "enable", PropertyRenderStyle::kBoolean};
-	SetProperty(0, true); // Default enabled.
+	properties::SetProperty(&node->data, "enable", true); // Default enabled.
 }
 
 void m04::editor::sequence::BarebonesSequenceNodeView::SetFlow ( const int flowOutputIndex, SequenceNode* newNodeValue )
@@ -78,7 +78,7 @@ m04::editor::SequenceNode* m04::editor::sequence::BarebonesSequenceNodeView::Get
 	return NULL;
 }
 
-void m04::editor::sequence::BarebonesSequenceNodeView::SetProperty ( const int propertyIndex, const float newFloatValue )
+/*void m04::editor::sequence::BarebonesSequenceNodeView::SetProperty ( const int propertyIndex, const float newFloatValue )
 {
 }
 
@@ -176,7 +176,7 @@ Color m04::editor::sequence::BarebonesSequenceNodeView::GetPropertyAsColor ( con
 	ARCORE_ASSERT(quadValues.size() == 3 || quadValues.size() == 4);
 	// Set the node's position.
 	return ColorRGBA16(std::stoi(quadValues[0]), std::stoi(quadValues[0]), std::stoi(quadValues[0]), (quadValues.size() == 4) ? std::stoi(quadValues[0]) : 255).ToRGBAFloat();
-}
+}*/
 
 //===============================================================================================//
 
@@ -212,7 +212,7 @@ m04::editor::sequence::ExternallyDefinedSeqNodeView::ExternallyDefinedSeqNodeVie
 		
 		if (propertyView.renderstyle != m04::editor::PropertyRenderStyle::kArray)
 		{
-			SetProperty(propertyView.identifier, sourceProperty.defaultValue);
+			properties::SetProperty(&node->data, propertyView.identifier, sourceProperty.defaultValue);
 		}
 		else
 		{

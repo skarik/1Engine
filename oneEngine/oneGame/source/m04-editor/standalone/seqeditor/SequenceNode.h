@@ -160,7 +160,7 @@ namespace editor {
 		EDITOR_API virtual SequenceNode*
 								GetOuptut ( const int outputIndex ) =0;
 
-		EDITOR_API virtual void	SetProperty ( const int propertyIndex, const float newFloatValue ) =0;
+		/*EDITOR_API virtual void	SetProperty ( const int propertyIndex, const float newFloatValue ) =0;
 		EDITOR_API virtual void	SetProperty ( const int propertyIndex, const int newIntValue ) =0;
 		EDITOR_API virtual void	SetProperty ( const int propertyIndex, const bool newBooleanValue ) =0;
 		EDITOR_API virtual void	SetProperty ( const int propertyIndex, const char* newStringValue ) =0;
@@ -183,7 +183,7 @@ namespace editor {
 		EDITOR_API virtual Vector3f
 								GetPropertyAsVector3f ( const char* stringIndex ) =0;
 		EDITOR_API virtual Color
-								GetPropertyAsColor ( const char* stringIndex ) =0;
+								GetPropertyAsColor ( const char* stringIndex ) =0;*/
 
 	public:
 		SequenceNode*		node;
@@ -279,6 +279,30 @@ namespace editor {
 			return node; \
 		} \
 	} InstSequenceNodeClass_##SequenceNodeClass;\
+
+
+	namespace sequence {
+	namespace properties
+	{
+		EDITOR_API extern void SetProperty ( osf::ObjectValue* data, const char* stringIndex, const float value );
+		EDITOR_API extern void SetProperty ( osf::ObjectValue* data, const char* stringIndex, const int value );
+		EDITOR_API extern void SetProperty ( osf::ObjectValue* data, const char* stringIndex, const bool value );
+		EDITOR_API extern void SetProperty ( osf::ObjectValue* data, const char* stringIndex, const char* value );
+		EDITOR_API extern void SetProperty ( osf::ObjectValue* data, const char* stringIndex, const Vector2f value );
+		EDITOR_API extern void SetProperty ( osf::ObjectValue* data, const char* stringIndex, const Vector3f value );
+		EDITOR_API extern void SetProperty ( osf::ObjectValue* data, const char* stringIndex, const Color value );
+
+		template <typename ReturnType>
+		ReturnType GetProperty ( osf::ObjectValue* data, const char* stringIndex );
+
+		extern template EDITOR_API float GetProperty ( osf::ObjectValue* data, const char* stringIndex );
+		extern template EDITOR_API int GetProperty ( osf::ObjectValue* data, const char* stringIndex );
+		extern template EDITOR_API bool GetProperty ( osf::ObjectValue* data, const char* stringIndex );
+		extern template EDITOR_API const char* GetProperty ( osf::ObjectValue* data, const char* stringIndex );
+		extern template EDITOR_API Vector2f GetProperty ( osf::ObjectValue* data, const char* stringIndex );
+		extern template EDITOR_API Vector3f GetProperty ( osf::ObjectValue* data, const char* stringIndex );
+		extern template EDITOR_API Color GetProperty ( osf::ObjectValue* data, const char* stringIndex );
+	}}
 
 }}
 

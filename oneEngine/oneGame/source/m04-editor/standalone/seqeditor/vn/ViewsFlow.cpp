@@ -7,6 +7,6 @@ m04::editor::sequence::vn::WaitNodeView::WaitNodeView ( SequenceNode* in_node )
 {
 	propertyViews.push_back({"Wait Time", "time", PropertyRenderStyle::kFloat});
 
-	SetProperty("time", 0.2F);
+	properties::SetProperty(&node->data, "time", 0.2F);
 }
 

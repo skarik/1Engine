@@ -95,7 +95,7 @@ m04::editor::sequence::NodeRenderer::NodeRenderer (m04::editor::sequence::NodeBo
 		
 		auto& nodeProperty = nodeProperties[nodePropertyIndex];
 
-		PropertyRendererCreateParams l_propCreateParams = {this, &nodeProperty, &m_propertyState[nodePropertyIndex]};
+		PropertyRendererCreateParams l_propCreateParams = {this, &nodeProperty, &m_propertyState[nodePropertyIndex], &node->sequenceInfo->data};
 
 		property_renderer = CreatePropertyRenderer(nodeProperty.renderstyle, l_propCreateParams);
 

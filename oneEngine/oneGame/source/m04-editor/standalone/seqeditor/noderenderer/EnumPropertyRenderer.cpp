@@ -53,7 +53,8 @@ void m04::editor::sequence::EnumPropertyRenderer::OnClicked ( const ui::eventide
 		{
 			// find matching enum name
 			int32_t currentEnumIndex = -1;
-			const char* str = GetNode()->view->GetPropertyAsString(m_property->identifier);
+			//const char* str = GetNode()->view->GetPropertyAsString(m_property->identifier);
+			const char* str = properties::GetProperty<const char*>(m_targetData, m_property->identifier);
 			if (str == NULL || strlen(str) == 0)
 			{
 				currentEnumIndex = 0;
@@ -76,11 +77,13 @@ void m04::editor::sequence::EnumPropertyRenderer::OnClicked ( const ui::eventide
 			auto enumValue = m_enumDefinition->enumDefinition->CreateValueFromIndex(currentEnumIndex);
 			if (enumValue.IsValid())
 			{
-				GetNode()->view->SetProperty(m_property->identifier, enumValue.GetName());
+				//GetNode()->view->SetProperty(m_property->identifier, enumValue.GetName());
+				properties::SetProperty(m_targetData, m_property->identifier, enumValue.GetName());
 			}
 			else
 			{
-				GetNode()->view->SetProperty(m_property->identifier, m_enumDefinition->enumDefinition->CreateValueFromIndex(0).GetName());
+				//GetNode()->view->SetProperty(m_property->identifier, m_enumDefinition->enumDefinition->CreateValueFromIndex(0).GetName());
+				properties::SetProperty(m_targetData, m_property->identifier, m_enumDefinition->enumDefinition->CreateValueFromIndex(0).GetName());
 			}
 		}
 	}
@@ -129,7 +132,8 @@ void m04::editor::sequence::EnumPropertyRenderer::BuildMesh ( void )
 		bool makeReadable = false;
 
 		// find matching enum name
-		const char* str = GetNode()->view->GetPropertyAsString(m_property->identifier);
+		//const char* str = GetNode()->view->GetPropertyAsString(m_property->identifier);
+		const char* str = properties::GetProperty<const char*>(m_targetData, m_property->identifier);
 		if (str == NULL || strlen(str) == 0)
 		{
 			str = m_enumDefinition->enumDefinition->GetEnumName(0); //todo

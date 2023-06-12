@@ -599,5 +599,8 @@
     <ClCompile Include="source\m04-editor\standalone\seqeditor\noderenderer\ArrayPropertyRenderer.cpp">
       <Filter>SOURCE\M04-Editor\Standalone\SeqEditor\Node Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="source\m04-editor\standalone\seqeditor\SequenceProperties.cpp">
+      <Filter>SOURCE\M04-Editor\Standalone\SeqEditor</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

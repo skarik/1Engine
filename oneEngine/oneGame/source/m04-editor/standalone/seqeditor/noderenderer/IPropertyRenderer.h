@@ -17,6 +17,7 @@ namespace sequence {
 							property;
 		NodeRenderer::PropertyState*
 							property_state;
+		osf::ObjectValue*	target_data = nullptr;
 	};
 
 	// TODO: may want to move the state outside of the renderer, so that we don't need to instantiate renderers, just use em as a "view" of sorts
@@ -30,6 +31,7 @@ namespace sequence {
 			, m_nodeRenderer(params.node_renderer)
 			, m_propertyState(params.property_state)
 			, m_property(params.property)
+			, m_targetData(params.target_data)
 			{}
 
 		virtual					~IPropertyRenderer ( void )
@@ -70,12 +72,59 @@ namespace sequence {
 							m_property = nullptr;
 		NodeRenderer::PropertyState*
 							m_propertyState = nullptr;
+		osf::ObjectValue*	m_targetData = nullptr;
 
 		Real				m_bboxHeight;
 		core::math::BoundingBox
 							m_bboxAll;
 		core::math::BoundingBox
 							m_bboxKey;
+	};
+
+	//===============================================================================================//
+
+	// Data-forward property visualizer prototyping
+
+	typedef PropertyRendererCreateParams PropertyVisualizationData;
+	struct PropertyVisualizationState
+	{
+		// Hover state of the property
+		NodeRenderer::PropertyState
+							m_propertyState;
+		// Bounding box of the property
+		Real				m_bboxHeight;
+		core::math::BoundingBox
+							m_bboxAll;
+		core::math::BoundingBox
+							m_bboxKey;
+	};
+
+	struct PropertyVisualizationInput
+	{
+		PropertyVisualizationData*	data;
+		PropertyVisualizationState*	state;
+	};
+
+	typedef void (*PropertyVisBuildMesh) ( PropertyVisualizationInput& );
+	typedef void (*PropertyVisOnClicked) ( PropertyVisualizationInput&, const ui::eventide::Element::EventMouse& mouse_event );
+	typedef void (*PropertyVisOnGameFrameUpdate) ( PropertyVisualizationInput&, const ui::eventide::Element::GameFrameUpdateInput& input_frame );
+	typedef void (*PropertyVisUpdateLayout) ( PropertyVisualizationInput&, const Vector3f& upper_left_corner, const Real left_column_width, const core::math::BoundingBox& node_bbox );
+
+	struct PropertyVisualization
+	{
+		// Called when node needs to update layout. Should be called before BuildMesh() but is not gauranteed.
+		PropertyVisUpdateLayout
+							UpdateLayout = nullptr;
+		// Called for each property when building the mesh
+		PropertyVisBuildMesh
+							BuildMesh = nullptr;
+
+		// Behavior when the property is clicked on
+		PropertyVisOnClicked
+							OnClicked = nullptr;
+		// Behavior on each frame the property is being rendered
+		PropertyVisOnGameFrameUpdate
+							OnGameFrameUpdate = nullptr;
 	};
 
 }}}

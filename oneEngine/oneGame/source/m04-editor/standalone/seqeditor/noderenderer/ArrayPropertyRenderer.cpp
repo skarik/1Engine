@@ -16,8 +16,23 @@ void m04::editor::sequence::ArrayPropertyRenderer::OnClicked ( const ui::eventid
 		if (addRect.IsPointInBox(mouse_event.position_world))
 		{
 			//GetNode()->view->SetProperty(m_property->identifier, !GetNode()->view->GetPropertyAsBool(m_property->identifier));
-			auto arrayValue = GetNode()->data.GetAdd<osf::ArrayValue>(m_property->identifier);
+			auto arrayValue = m_targetData->GetAdd<osf::ArrayValue>(m_property->identifier);
 			arrayValue->values.push_back(new osf::ObjectValue());
+			return;
+		}
+	}
+
+	// Forward the even to the objects
+	auto arrayValue = m_targetData->GetAdd<osf::ArrayValue>(m_property->identifier);
+	for (size_t elementIndex = 0; elementIndex < arrayValue->values.size(); ++elementIndex)
+	{
+		for (size_t subpropertyIndex = 0; subpropertyIndex < m_property->definition->arraySubproperties->size(); ++subpropertyIndex)
+		{
+			size_t subpropertyRendererIndex = elementIndex * m_property->definition->arraySubproperties->size() + subpropertyIndex;
+			if (m_subproperties[subpropertyRendererIndex] != nullptr)
+			{
+				m_subproperties[subpropertyRendererIndex]->OnClicked(mouse_event);
+			}
 		}
 	}
 }
@@ -46,7 +61,7 @@ void m04::editor::sequence::ArrayPropertyRenderer::BuildMesh ( void )
 
 	// Add the +/- buttons at the top for the array, and display number of values
 	//GetNode()->view->GetPropertyArray(
-	auto arrayValue = GetNode()->data.GetAdd<osf::ArrayValue>(m_property->identifier);
+	auto arrayValue = m_targetData->GetAdd<osf::ArrayValue>(m_property->identifier);
 	//auto arrayKeyValue = GetNode()->data.GetKeyValueAdd(m_property->identifier);
 	//auto arrayValue = 
 	// display size of the array
@@ -209,7 +224,14 @@ void m04::editor::sequence::ArrayPropertyRenderer::OnGameFrameUpdate ( const ui:
 				params.node_renderer = this->m_nodeRenderer;
 				params.property = &m_subpropertyProperties[subpropertyIndex];  //m_property->definition->arraySubproperties->at(subpropertyIndex);
 				params.property_state = &m_subpropertyState[subpropertyIndex];
+				params.target_data = m_targetData->GetAdd<osf::ArrayValue>(m_property->identifier)->values[elementIndex]->As<osf::ObjectValue>();
+
 				m_subproperties[subpropertyRendererIndex] = m04::editor::sequence::CreatePropertyRenderer(m_property->definition->arraySubproperties->at(subpropertyIndex).type, params);
+			}
+
+			if (m_subproperties[subpropertyRendererIndex] != nullptr)
+			{
+				m_subproperties[subpropertyRendererIndex]->OnGameFrameUpdate(input_frame);
 			}
 		}
 	}
@@ -219,7 +241,7 @@ void m04::editor::sequence::ArrayPropertyRenderer::UpdateLayout ( const Vector3f
 {
 	int line_height = 1;
 	// todo: don't hack this
-	auto arrayValue = GetNode()->data.GetAdd<osf::ArrayValue>(m_property->identifier);
+	auto arrayValue = m_targetData->GetAdd<osf::ArrayValue>(m_property->identifier);
 	line_height += (int)arrayValue->values.size() * (int)m_property->definition->arraySubproperties->size();
 
 	m_bboxHeight = (ui::eventide::DefaultStyler.text.buttonSize + m_nodeRenderer->GetPadding().y) * line_height;
@@ -240,8 +262,11 @@ void m04::editor::sequence::ArrayPropertyRenderer::UpdateLayout ( const Vector3f
 	// update layout of all the subproperties:
 	///m_subproperties
 	core::math::BoundingBox local_bbox = m_bboxAll;
-	Real lc_width = node_bbox.GetExtents().x - left_column_width;
-	Vector3f ul_corner = upper_left_corner - Vector3f(0, (ui::eventide::DefaultStyler.text.buttonSize + m_nodeRenderer->GetPadding().y), 0);
+	//Real lc_width = node_bbox.GetExtents().x - left_column_width;
+	//Real lc_width = node_bbox.GetExtents().x - left_column_width;
+	Real lc_width = left_column_width;
+	Vector3f ul_corner = upper_left_corner - Vector3f(-left_column_width, (ui::eventide::DefaultStyler.text.buttonSize + m_nodeRenderer->GetPadding().y), 0);
+	local_bbox.m_Extent.x -= left_column_width * 0.5F;
 
 	for (size_t elementIndex = 0; elementIndex < arrayValue->values.size(); ++elementIndex)
 	{
