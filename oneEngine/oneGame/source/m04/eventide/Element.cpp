@@ -257,10 +257,10 @@ ui::eventide::Texture ui::eventide::Element::LoadTexture ( const char* filename 
 	return m_ui->LoadTexture(filename);
 }
 
-ui::eventide::Texture ui::eventide::Element::LoadTextureFont ( const char* filename )
+ui::eventide::Texture ui::eventide::Element::LoadTextureFont ( const char* filename, const int weight )
 {
 	ARCORE_ASSERT(m_ui != NULL);
-	return m_ui->LoadTextureFont(filename);
+	return m_ui->LoadTextureFont(filename, weight);
 }
 
 void ui::eventide::Element::ReleaseTexture ( const ui::eventide::Texture& texture )

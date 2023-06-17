@@ -10,6 +10,8 @@
 #include "core/math/Cubic.h"
 #include "core/types/ModelData.h"
 
+#include "renderer/types/fontEnums.h"
+
 namespace ui {
 namespace eventide {
 
@@ -133,6 +135,8 @@ namespace eventide {
 			Color				color		= Color(1.0F, 1.0F, 1.0F, 1.0F);
 			Texture*			texture		= nullptr;
 			bool				wireframe	= false;
+
+			inline ParamsForCube&	setDefaults ( void );
 		};
 		//	buildCube( params ) : Adds a cube to the build.
 		EVENTIDE_API void		buildCube ( const ParamsForCube& params );
@@ -153,6 +157,14 @@ namespace eventide {
 			Vector3f			position	= Vector3f(0, 0, 0);
 			Rotator				rotation	= Rotator();
 			Texture*			font_texture= nullptr;
+
+			inline ParamsForText&	setDefaults ( void );
+			inline ParamsForText&	setString ( const char* string );
+			inline ParamsForText&	setSize ( Real size );
+			inline ParamsForText&	setAlignment ( AlignHorizontal alignment );
+			inline ParamsForText&	setColor ( const Color& color );
+			inline ParamsForText&	setTransform ( const Vector3f& position, const Rotator& rotation = Rotator() );
+			inline ParamsForText&	setFontTexture ( Texture* font_texture );
 		};
 		//	buildText( params ) : Adds text to the build.
 		EVENTIDE_API void		buildText ( const ParamsForText& params );
@@ -168,6 +180,8 @@ namespace eventide {
 			Texture*			texture		= nullptr;
 			Rect				uvs			= Rect(0, 0, 1, 1);
 			bool				wireframe	= false;
+
+			inline ParamsForQuad&	setDefaults ( void );
 		};
 		//	buildQuad( params ) : Adds a quad to the build.
 		EVENTIDE_API void		buildQuad ( const ParamsForQuad& params );
@@ -183,6 +197,8 @@ namespace eventide {
 			Texture*			texture		= nullptr;
 			Rect				uvs			= Rect(0, 0, 1, 1);
 			bool				wireframe	= false;
+
+			inline ParamsForPath&	setDefaults ( void );
 		};
 		//	buildPath( params ) : Adds a trianglestrip path to the build.
 		EVENTIDE_API void		buildPath ( const ParamsForPath& params );
@@ -313,7 +329,7 @@ namespace eventide {
 
 		//	LoadTextureFont() : Loads a font, using ui->LoadTextureFont().
 		EVENTIDE_API ui::eventide::Texture
-								LoadTextureFont ( const char* filename );
+								LoadTextureFont ( const char* filename, const int weight = kFW_Normal );
 
 		//	ReleaseTexture() : Frees a texture, using ui->ReleaseTexture().
 		EVENTIDE_API void		ReleaseTexture ( const ui::eventide::Texture& texture );
@@ -412,6 +428,65 @@ namespace eventide {
 	private:
 		Element*			calling_element;
 	};
+
+
+	//===========
+	// Inline setters
+
+	Element::ParamsForCube& Element::ParamsForCube::setDefaults ( void )
+	{
+		*this = Element::ParamsForCube();
+		return *this;
+	}
+
+	Element::ParamsForText& Element::ParamsForText::setDefaults ( void )
+	{
+		*this = Element::ParamsForText();
+		return *this;
+	}
+	Element::ParamsForText& Element::ParamsForText::setString ( const char* string )
+	{
+		this->string = string;
+		return *this;
+	}
+	Element::ParamsForText& Element::ParamsForText::setSize ( Real size )
+	{
+		this->size = size;
+		return *this;
+	}
+	Element::ParamsForText& Element::ParamsForText::setAlignment ( AlignHorizontal alignment )
+	{
+		this->alignment = alignment;
+		return *this;
+	}
+	Element::ParamsForText& Element::ParamsForText::setColor ( const Color& color )
+	{
+		this->color = color;
+		return *this;
+	}
+	Element::ParamsForText& Element::ParamsForText::setTransform ( const Vector3f& position, const Rotator& rotation )
+	{
+		this->position = position;
+		this->rotation = rotation;
+		return *this;
+	}
+	Element::ParamsForText& Element::ParamsForText::setFontTexture ( Texture* font_texture )
+	{
+		this->font_texture = font_texture;
+		return *this;
+	}
+	
+	Element::ParamsForQuad& Element::ParamsForQuad::setDefaults ( void )
+	{
+		*this = Element::ParamsForQuad();
+		return *this;
+	}
+
+	Element::ParamsForPath& Element::ParamsForPath::setDefaults ( void )
+	{
+		*this = Element::ParamsForPath();
+		return *this;
+	}
 }}
 
 #endif//UI_EVENTIDE_ELEMENT_H_

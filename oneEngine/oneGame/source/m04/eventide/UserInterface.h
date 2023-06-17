@@ -8,6 +8,7 @@
 
 #include "engine/behavior/CGameBehavior.h"
 #include "renderer/logic/RrLogicObject.h"
+#include "renderer/types/fontEnums.h"
 
 class ArScreen;
 class RrTexture;
@@ -87,7 +88,7 @@ namespace eventide {
 		EVENTIDE_API void		RequestDestroyElement ( Element* element );
 
 		EVENTIDE_API Texture	LoadTexture ( const char* filename );
-		EVENTIDE_API Texture	LoadTextureFont ( const char* filename );
+		EVENTIDE_API Texture	LoadTextureFont ( const char* filename, int weight = kFW_Normal );
 		EVENTIDE_API void		ReleaseTexture ( const Texture& texture );
 
 	public:

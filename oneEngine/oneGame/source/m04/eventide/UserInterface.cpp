@@ -557,13 +557,13 @@ ui::eventide::Texture ui::eventide::UserInterface::LoadTexture ( const char* fil
 	return ui::eventide::Texture{loaded_texture, (uint32_t)std::distance(m_textures.begin(), texture_location)};
 }
 
-ui::eventide::Texture ui::eventide::UserInterface::LoadTextureFont ( const char* filename )
+ui::eventide::Texture ui::eventide::UserInterface::LoadTextureFont ( const char* filename, int weight )
 {
 	// Set load params
 	rrFontTextureLoadParams params;
 	params.characterSets = 0;
 	params.height = 24;
-	params.weight = kFW_Normal;
+	params.weight = weight;
 
 	// Load texture
 	RrFontTexture* loaded_texture = RrFontTexture::Load(filename, params);
