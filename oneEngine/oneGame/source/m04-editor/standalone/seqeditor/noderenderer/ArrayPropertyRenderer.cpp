@@ -31,7 +31,17 @@ void m04::editor::sequence::ArrayPropertyRenderer::OnClicked ( const ui::eventid
 			size_t subpropertyRendererIndex = elementIndex * m_property->definition->arraySubproperties->size() + subpropertyIndex;
 			if (m_subproperties[subpropertyRendererIndex] != nullptr)
 			{
-				m_subproperties[subpropertyRendererIndex]->OnClicked(mouse_event);
+				// Force update the subproperty states
+				if (m_subproperties[subpropertyRendererIndex]->GetCachedBboxAll().IsPointInBox(mouse_event.position_world))
+				{
+					m_subpropertyState[subpropertyRendererIndex].m_hovered = true;
+					m_subproperties[subpropertyRendererIndex]->OnClicked(mouse_event);
+				}
+				else
+				{
+					m_subpropertyState[subpropertyRendererIndex].m_hovered = false;
+					m_subpropertyState[subpropertyRendererIndex].m_editing = false;
+				}
 			}
 		}
 	}
@@ -49,7 +59,7 @@ void m04::editor::sequence::ArrayPropertyRenderer::BuildMesh ( void )
 
 	const Vector3f kZStep = Vector3f(0, 0, 0.1F);
 
-	textParams = ParamsForText();
+	textParams.setDefaults();
 	textParams.string = m_property->label.c_str();
 	textParams.font_texture = &m_nodeRenderer->GetRenderResources().m_fontTexture;
 	textParams.position = m_bboxAll.GetCenterPoint() - Vector3f(m_bboxAll.GetExtents().x, m_bboxAll.GetExtents().y, 0) + kZStep;
@@ -69,15 +79,16 @@ void m04::editor::sequence::ArrayPropertyRenderer::BuildMesh ( void )
 	//tempString = "Array Size<" + std::to_string(arrayValue->values.size()) + ">";
 
 	// Display the size of the array.
-	textParams = ParamsForText();
 	tempString = "Array, " + std::to_string(arrayValue->values.size()) + " elements";
-	textParams.string = tempString.c_str();
-	textParams.font_texture = &m_nodeRenderer->GetRenderResources().m_fontTexture;
-	textParams.position = m_bboxKey.GetCenterPoint() - Vector3f(m_bboxKey.GetExtents().x, m_bboxKey.GetExtents().y, 0) + kZStep;
-	textParams.rotation = m_nodeRenderer->GetBBoxAbsolute().m_M.getRotator();
-	textParams.size = math::lerp(0.0F, ui::eventide::DefaultStyler.text.buttonSize, ui::eventide::DefaultStyler.text.headingSize);
-	textParams.alignment = AlignHorizontal::kLeft;
-	textParams.color = m_propertyState->m_hovered ? DefaultStyler.text.headingColor : DefaultStyler.text.headingColor.Lerp(DefaultStyler.box.defaultColor, 0.3F);
+	textParams.setDefaults()
+		.setString(tempString.c_str())
+		.setFontTexture(&m_nodeRenderer->GetRenderResources().m_fontTexture)
+		.setTransform(
+			m_bboxKey.GetCenterPoint() - Vector3f(m_bboxKey.GetExtents().x, m_bboxKey.GetExtents().y, 0) + kZStep,
+			m_nodeRenderer->GetBBoxAbsolute().m_M.getRotator())
+		.setSize(math::lerp(0.0F, ui::eventide::DefaultStyler.text.buttonSize, ui::eventide::DefaultStyler.text.headingSize))
+		.setAlignment(AlignHorizontal::kLeft)
+		.setColor(m_propertyState->m_hovered ? DefaultStyler.text.headingColor : DefaultStyler.text.headingColor.Lerp(DefaultStyler.box.defaultColor, 0.3F));
 	buildText(textParams);
 
 
@@ -215,15 +226,15 @@ void m04::editor::sequence::ArrayPropertyRenderer::OnGameFrameUpdate ( const ui:
 			size_t subpropertyRendererIndex = elementIndex * m_property->definition->arraySubproperties->size() + subpropertyIndex;
 			if (m_subproperties[subpropertyRendererIndex] == nullptr)
 			{
-				m_subpropertyProperties[subpropertyIndex].definition = &m_property->definition->arraySubproperties->at(subpropertyIndex);
-				m_subpropertyProperties[subpropertyIndex].label = m_property->definition->arraySubproperties->at(subpropertyIndex).displayName;
-				m_subpropertyProperties[subpropertyIndex].identifier = m_property->definition->arraySubproperties->at(subpropertyIndex).name;
-				m_subpropertyProperties[subpropertyIndex].renderstyle = m_property->definition->arraySubproperties->at(subpropertyIndex).type;
+				m_subpropertyProperties[subpropertyRendererIndex].definition = &m_property->definition->arraySubproperties->at(subpropertyIndex);
+				m_subpropertyProperties[subpropertyRendererIndex].label = m_property->definition->arraySubproperties->at(subpropertyIndex).displayName;
+				m_subpropertyProperties[subpropertyRendererIndex].identifier = m_property->definition->arraySubproperties->at(subpropertyIndex).name;
+				m_subpropertyProperties[subpropertyRendererIndex].renderstyle = m_property->definition->arraySubproperties->at(subpropertyIndex).type;
 
 				PropertyRendererCreateParams params;
 				params.node_renderer = this->m_nodeRenderer;
-				params.property = &m_subpropertyProperties[subpropertyIndex];  //m_property->definition->arraySubproperties->at(subpropertyIndex);
-				params.property_state = &m_subpropertyState[subpropertyIndex];
+				params.property = &m_subpropertyProperties[subpropertyRendererIndex];  //m_property->definition->arraySubproperties->at(subpropertyIndex);
+				params.property_state = &m_subpropertyState[subpropertyRendererIndex];
 				params.target_data = m_targetData->GetAdd<osf::ArrayValue>(m_property->identifier)->values[elementIndex]->As<osf::ObjectValue>();
 
 				m_subproperties[subpropertyRendererIndex] = m04::editor::sequence::CreatePropertyRenderer(m_property->definition->arraySubproperties->at(subpropertyIndex).type, params);
@@ -260,10 +271,7 @@ void m04::editor::sequence::ArrayPropertyRenderer::UpdateLayout ( const Vector3f
 	);
 
 	// update layout of all the subproperties:
-	///m_subproperties
 	core::math::BoundingBox local_bbox = m_bboxAll;
-	//Real lc_width = node_bbox.GetExtents().x - left_column_width;
-	//Real lc_width = node_bbox.GetExtents().x - left_column_width;
 	Real lc_width = left_column_width;
 	Vector3f ul_corner = upper_left_corner - Vector3f(-left_column_width, (ui::eventide::DefaultStyler.text.buttonSize + m_nodeRenderer->GetPadding().y), 0);
 	local_bbox.m_Extent.x -= left_column_width * 0.5F;
@@ -275,8 +283,6 @@ void m04::editor::sequence::ArrayPropertyRenderer::UpdateLayout ( const Vector3f
 			size_t subpropertyRendererIndex = elementIndex * m_property->definition->arraySubproperties->size() + subpropertyIndex;
 			if (subpropertyRendererIndex < m_subproperties.size() && m_subproperties[subpropertyRendererIndex] != nullptr)
 			{
-				//ul_corner = upper_left_corner;
-
 				m_subproperties[subpropertyRendererIndex]->UpdateLayout(
 					ul_corner,
 					lc_width,

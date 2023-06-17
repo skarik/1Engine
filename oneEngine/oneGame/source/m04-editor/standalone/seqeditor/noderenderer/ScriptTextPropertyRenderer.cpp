@@ -282,15 +282,15 @@ void m04::editor::sequence::ScriptTextPropertyRenderer::OnClicked ( const ui::ev
 			if (str)
 			{
 				// Get the font info:
-				RrFontTexture* font_texture = (RrFontTexture*)m_nodeRenderer->GetRenderResources().m_fontTexture.reference;
+				RrFontTexture* font_texture = (RrFontTexture*)m_nodeRenderer->GetRenderResources().m_fontTextureScripting.reference;
 				auto fontInfo		= font_texture->GetFontInfo();
 
 				// Get box width
-				const core::math::BoundingBox& node_bbox = m_nodeRenderer->GetBBoxAbsolute();
+				const core::math::BoundingBox& node_bbox = GetCachedBboxAll(); //m_nodeRenderer->GetBBoxAbsolute();
 				const Real l_boxWidth = node_bbox.GetExtents().x * 2.0F - m_nodeRenderer->GetPadding().x * 2.0F;
 
 				// Set up the max width we can go to
-				Real l_fontScaling = (m_fontSize / fontInfo->height);
+				Real l_fontScaling = (m_fontSizeScript / fontInfo->height);
 				const Real l_maxPenWidth = l_boxWidth / l_fontScaling;
 
 				// Scale to correct penspace
@@ -351,8 +351,8 @@ void m04::editor::sequence::ScriptTextPropertyRenderer::BuildMesh ( void )
 	if (str)
 	{
 		textParams = ParamsForText();
-		textParams.font_texture = &m_nodeRenderer->GetRenderResources().m_fontTexture;
-		textParams.size = m_fontSize;
+		textParams.font_texture = &m_nodeRenderer->GetRenderResources().m_fontTextureScripting;
+		textParams.size = m_fontSizeScript;
 		textParams.position = m_bboxAll.GetCenterPoint() - Vector3f(m_bboxAll.GetExtents().x, -m_bboxAll.GetExtents().y + textParams.size, 0) + Vector3f(0, 0, 0.2F);
 		textParams.rotation = m_nodeRenderer->GetBBoxAbsolute().m_M.getRotator();
 		textParams.alignment = AlignHorizontal::kLeft;
@@ -363,15 +363,16 @@ void m04::editor::sequence::ScriptTextPropertyRenderer::BuildMesh ( void )
 		std::vector<TextRequest> l_lines;
 		{
 			// Get the font info:
-			RrFontTexture* font_texture = (RrFontTexture*)m_nodeRenderer->GetRenderResources().m_fontTexture.reference;
+			RrFontTexture* font_texture = (RrFontTexture*)m_nodeRenderer->GetRenderResources().m_fontTextureScripting.reference;
 			auto fontInfo		= font_texture->GetFontInfo();
 
 			// Get box width
-			const core::math::BoundingBox& node_bbox = m_nodeRenderer->GetBBoxAbsolute();
+			//const core::math::BoundingBox& node_bbox = m_nodeRenderer->GetBBoxAbsolute();
+			const core::math::BoundingBox& node_bbox = GetCachedBboxAll(); //m_nodeRenderer->GetBBoxAbsolute();
 			const Real l_boxWidth = node_bbox.GetExtents().x * 2.0F - m_nodeRenderer->GetPadding().x * 2.0F;
 
 			// Set up the max width we can go to
-			l_fontScaling = (m_fontSize / fontInfo->height);
+			l_fontScaling = (m_fontSizeScript / fontInfo->height);
 			const Real l_maxPenWidth = l_boxWidth / l_fontScaling;
 
 			SplitStringOutputs outputs;
@@ -508,6 +509,7 @@ void m04::editor::sequence::ScriptTextPropertyRenderer::OnGameFrameUpdate ( cons
 void m04::editor::sequence::ScriptTextPropertyRenderer::UpdateLayout ( const Vector3f& upper_left_corner, const Real left_column_width, const core::math::BoundingBox& node_bbox )
 {
 	m_fontSize = math::lerp(0.0F, ui::eventide::DefaultStyler.text.buttonSize, ui::eventide::DefaultStyler.text.headingSize);
+	m_fontSizeScript = 12.0F; // TODO: define this somewhere the fuck else lmao
 
 	const Real l_boxWidth = node_bbox.GetExtents().x * 2.0F - m_nodeRenderer->GetPadding().x * 2.0F;
 	int l_numberOfLines = 0;
@@ -536,7 +538,7 @@ void m04::editor::sequence::ScriptTextPropertyRenderer::UpdateLayout ( const Vec
 		m_bboxAll = core::math::BoundingBox(
 			Matrix4x4(),
 			upper_left_corner + Vector3f(m_nodeRenderer->GetPadding().x, 0, 0),
-			upper_left_corner + Vector3f(m_nodeRenderer->GetPadding().x + l_boxWidth, -ui::eventide::DefaultStyler.text.buttonSize * l_numberOfLines, 4.0F)
+			upper_left_corner + Vector3f(m_nodeRenderer->GetPadding().x + l_boxWidth, -m_fontSizeScript * l_numberOfLines, 4.0F)
 		);
 	}
 

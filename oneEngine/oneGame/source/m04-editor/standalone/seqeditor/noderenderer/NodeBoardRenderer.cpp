@@ -75,6 +75,7 @@ m04::editor::sequence::NodeRenderer::NodeRenderer (m04::editor::sequence::NodeBo
 	m_frameUpdate = FrameUpdate::kPerFrame;
 
 	m_renderResources.m_fontTexture = m_fontTexture;
+	m_renderResources.m_fontTextureScripting = LoadTextureFont(m04::editor::sequence::gFilenameGUIUnispaceFont, kFW_Medium);
 	m_renderResources.m_uiElementsTexture = LoadTexture(m04::editor::sequence::gFilenameGUIElementTexture);
 
 	ARCORE_ASSERT(in_node->sequenceInfo != NULL); // Must ensure node exists

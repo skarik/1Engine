@@ -106,6 +106,9 @@ namespace sequence {
 			// Font texture
 			ui::eventide::Texture
 								m_fontTexture;
+			// Scripting texture
+			ui::eventide::Texture
+								m_fontTextureScripting;
 			// GUI texture.
 			ui::eventide::Texture
 								m_uiElementsTexture;

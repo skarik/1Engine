@@ -5,7 +5,8 @@ namespace m04 {
 namespace editor {
 namespace sequence {
 	
-	constexpr char* gFilenameGUIElementTexture = "textures/editor/sequenceElements.png";
+	constexpr char* gFilenameGUIElementTexture	= "textures/editor/sequenceElements.png";
+	constexpr char*	gFilenameGUIUnispaceFont	= "FiraCode-Regular.ttf";
 
 }}}
 

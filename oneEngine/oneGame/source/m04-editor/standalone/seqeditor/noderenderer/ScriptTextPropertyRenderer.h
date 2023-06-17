@@ -25,6 +25,7 @@ namespace sequence {
 	private:
 		// Font size we render at
 		Real				m_fontSize = 10.0F;
+		Real				m_fontSizeScript = 9.0F;
 
 		// Number of lines the output is, for sizing the layout
 		int32_t				m_lineCount = 0;
