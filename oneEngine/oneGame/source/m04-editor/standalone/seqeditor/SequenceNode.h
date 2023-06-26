@@ -125,6 +125,9 @@ namespace editor {
 
 		// Node. Usually only used by flow outputs.
 		kSequenceNode,
+
+		// Constant. Value that needs to be saved, but isn't visible to editors.
+		kConstant,
 	};
 
 	PropertyRenderStyle StringToPropertyRenderStyle ( const char* str );

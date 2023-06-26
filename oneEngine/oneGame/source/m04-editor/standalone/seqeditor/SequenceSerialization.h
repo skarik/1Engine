@@ -9,6 +9,29 @@ namespace m04 {
 namespace editor {
 namespace sequence {
 
+	class NodeBoardState;
+
+	// Node serialization interface V2
+	class ISequenceBoardSerializer
+	{
+	public:
+		EDITOR_API virtual void SerializeBoard ( const NodeBoardState* board ) = 0;
+		EDITOR_API virtual void DeserializeBoard ( NodeBoardState* board ) = 0;
+	};
+
+	// compatibility for using old method of IO provided for compatibility purposes
+	class OldSequenceBoardSerializer : public ISequenceBoardSerializer
+	{
+	public:
+		EDITOR_API explicit		OldSequenceBoardSerializer ( const char* filename );
+
+		EDITOR_API virtual void	SerializeBoard ( const NodeBoardState* board ) override;
+		EDITOR_API virtual void	DeserializeBoard ( NodeBoardState* board ) override;
+
+	protected:
+		arstring256 m_filename;
+	};
+
 	// Node serialization interface
 	class ISequenceSerializer
 	{

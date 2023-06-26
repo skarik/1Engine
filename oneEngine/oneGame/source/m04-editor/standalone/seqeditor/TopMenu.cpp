@@ -157,8 +157,10 @@ void m04::editor::sequence::TopMenu::SaveFile ( const std::string& filename )
 	auto board = main_editor->GetNodeBoardState();
 	if (board != NULL)
 	{
-		m04::editor::sequence::OsfSerializer serializer (filename.c_str());
-		board->Save(&serializer);
+		if (!board->SaveToFile(filename.c_str()))
+			ARCORE_ERROR("failure in saving");
+		//m04::editor::sequence::OsfSerializer serializer (filename.c_str());
+		//board->Save(&serializer);
 		main_editor->SetWorkspaceDirty(false); // Clear workspace dirty flag
 		main_editor->SetSaveTargetFilename(filename.c_str());
 	}
@@ -185,8 +187,10 @@ void m04::editor::sequence::TopMenu::LoadFile ( const std::string& filename )
 	auto board = main_editor->GetNodeBoardState();
 	if (board != NULL)
 	{
-		m04::editor::sequence::OsfDeserializer deserializer (filename.c_str());
-		board->Load(&deserializer);
+		if (!board->LoadFromFile(filename.c_str()))
+			ARCORE_ERROR("failure in loading");
+		//m04::editor::sequence::OsfDeserializer deserializer (filename.c_str());
+		//board->Load(&deserializer);
 		main_editor->SetWorkspaceDirty(false); // Clear workspace dirty flag
 		main_editor->SetSaveTargetFilename(filename.c_str()); // Set the save-target on load for easy & quick saving
 	}

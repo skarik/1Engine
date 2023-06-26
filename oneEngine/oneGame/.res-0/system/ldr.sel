@@ -42,6 +42,14 @@ settings
 		}
 	}
 	
+	scriptText
+	{
+		// define escape code type
+		escapeType "[]"
+		
+		// define all the recognized commands
+		
+	}
 }
 
 enumtype Character
@@ -68,6 +76,11 @@ nodetype SGUIDialogueParamsChain
 		displayAs ""
 		type array
 		{
+			structType
+			{
+				default "SGUIDialogueParams"
+				type constant
+			}
 			text
 			{
 				displayAs "Text"

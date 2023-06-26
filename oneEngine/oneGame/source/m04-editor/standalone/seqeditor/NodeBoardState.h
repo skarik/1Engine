@@ -81,9 +81,19 @@ namespace sequence {
 		//	RemoveNode( board_node ) : Removes node from the board.
 		void					RemoveDisplayNode ( BoardNode* board_node );
 
+		[[nodiscard]]
+		// todo: save the board to the given file
+		bool SaveToFile ( const char* filename );
+
+		[[nodiscard]]
+		// todo: load the board from the given file
+		bool LoadFromFile ( const char* filename );
+
+		//[[deprecated]]
 		//	Save( serializer ) : Saves board state with the given serializer.
 		void					Save ( ISequenceSerializer* serializer );
 
+		//[[deprecated]]
 		//	Load( deserializer ) : Clears board state, then loads board state with given serializer.
 		// Any invalid nodes are still loaded, but with a severely-limited view. Since the views are mostly untouched, their data is preserved.
 		void					Load ( ISequenceDeserializer* deserializer );
@@ -97,12 +107,15 @@ namespace sequence {
 			{ return parent_editor; }
 
 	public:
-		std::vector<BoardNode*>
+		struct NodeEntry
+		{
+			BoardNode*		node;
+			INodeDisplay*	display;
+			arguid32*		guid;
+		};
+
+		std::vector<NodeEntry>
 							nodes;
-		std::vector<INodeDisplay*>
-							display;
-		std::vector<arguid32*>
-							node_guids;
 
 	protected:
 		ui::eventide::UserInterface*

@@ -67,6 +67,7 @@ namespace editor {
 
 	enum class SequenceOutputPreference
 	{
+		kNone,
 		kOsf,
 		kJson,
 	};

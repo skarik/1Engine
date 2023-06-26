@@ -665,11 +665,11 @@ void m04::editor::sequence::NodeRenderer::UpdateNextNode ( void )
 	// Find the node in the board with the matching pointer
 	auto boardNodeIter = (this->node->sequenceInfo->next == NULL)
 		? nbs->nodes.end()
-		: std::find_if(nbs->nodes.begin(), nbs->nodes.end(), [this](BoardNode* board_node) { return this->node->sequenceInfo->next == board_node->sequenceInfo; });
+		: std::find_if(nbs->nodes.begin(), nbs->nodes.end(), [this](const NodeBoardState::NodeEntry& board_node) { return this->node->sequenceInfo->next == board_node.node->sequenceInfo; });
 
 	if (boardNodeIter != nbs->nodes.end())
 	{
-		m_next = (*boardNodeIter)->display;
+		m_next = (*boardNodeIter).node->display;
 	}
 	else
 	{	// Next node does not exist, update both this node and the next one

@@ -63,6 +63,10 @@ namespace editor {
 		EDITOR_API const SequenceNodeDefinitionMap&
 								GetNodeTypes ( void )
 			{ return sel.node_definitions; }
+		//	GetSEL() : returns the SEL loaded.
+		EDITOR_API const SELInfo&
+								GetSEL ( void )
+			{ return sel; }
 
 		//	GetGridState() : Returns the grid state for the editor.
 		EDITOR_API m04::editor::sequence::GridState&

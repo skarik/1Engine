@@ -23,7 +23,7 @@ ui::eventide::elements::ListMenu::~ListMenu ( void )
 	{
 		button->Destroy();
 	}
-	m_choiceButtons.empty();
+	m_choiceButtons.clear();
 }
 
 void ui::eventide::elements::ListMenu::BuildMesh ( void )

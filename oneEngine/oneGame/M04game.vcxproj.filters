@@ -112,6 +112,9 @@
     <Filter Include="SOURCE\M04\Standalone\LoZ Worldgen Test">
       <UniqueIdentifier>{237a9501-579e-4763-a12a-4f1f3ba834a8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\M04-Editor\Standalone\SeqEditor\Serialization">
+      <UniqueIdentifier>{81d1b86e-9df8-4d6c-b2a8-921ff9e75f3b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\m04\m04-common.h">
@@ -366,6 +369,9 @@
     <ClInclude Include="source\m04-editor\standalone\seqeditor\noderenderer\ArrayPropertyRenderer.h">
       <Filter>SOURCE\M04-Editor\Standalone\SeqEditor\Node Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="source\m04-editor\standalone\seqeditor\serialization\JSONSequenceBoardSerializer.h">
+      <Filter>SOURCE\M04-Editor\Standalone\SeqEditor\Serialization</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\m04\m04-common.cpp">
@@ -601,6 +607,9 @@
     </ClCompile>
     <ClCompile Include="source\m04-editor\standalone\seqeditor\SequenceProperties.cpp">
       <Filter>SOURCE\M04-Editor\Standalone\SeqEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04-editor\standalone\seqeditor\serialization\JSONSequenceBoardSerializer.cpp">
+      <Filter>SOURCE\M04-Editor\Standalone\SeqEditor\Serialization</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

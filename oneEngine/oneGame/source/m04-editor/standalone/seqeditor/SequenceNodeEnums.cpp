@@ -27,6 +27,8 @@ m04::editor::PropertyRenderStyle m04::editor::StringToPropertyRenderStyle (const
 		string_case("dropdown"):	return PropertyRenderStyle::kEnumtypeDropdown;
 
 		string_case("node"):		return PropertyRenderStyle::kSequenceNode;
+
+		string_case("constant"):	return PropertyRenderStyle::kConstant;
 			
 		string_case("unknown"):	
 		default:					return PropertyRenderStyle::kUnknown;

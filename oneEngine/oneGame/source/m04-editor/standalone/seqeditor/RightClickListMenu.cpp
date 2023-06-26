@@ -21,9 +21,9 @@ m04::editor::sequence::RightClickListMenu::RightClickListMenu ( SequenceEditor* 
 	const Vector3f mousePositionUI = m_editor->GetMousePosition3D();
 
 	// Also check which node connection we're over
-	for (const auto& boardNode : m_editor->GetNodeBoardState()->nodes)
+	for (const auto& boardNodeEntry : m_editor->GetNodeBoardState()->nodes)
 	{
-		NodeRenderer* outputNode = arFastCast<NodeRenderer*>(boardNode->display);
+		NodeRenderer* outputNode = arFastCast<NodeRenderer*>(boardNodeEntry.node->display);
 		NodeRenderer* inputNode = arFastCast<NodeRenderer*>(outputNode->GetNextNode());
 
 		if (outputNode && inputNode)
@@ -160,7 +160,14 @@ void m04::editor::sequence::RightClickListMenu::OnActivated ( int choiceIndex )
 			// TODO: move to a boardnode factory for the actual sequence info gen
 			BoardNode* board_node = new BoardNode();
 			board_node->SetPosition(GetBBox().GetCenterPoint());
-			board_node->guid.generateDistinctTo(m_editor->GetNodeBoardState()->node_guids);
+			std::vector<arguid32*> all_guids;
+			std::transform(
+				m_editor->GetNodeBoardState()->nodes.begin(),
+				m_editor->GetNodeBoardState()->nodes.end(),
+				std::back_inserter(all_guids),
+				[](const NodeBoardState::NodeEntry& entry){ return entry.guid; }
+				);
+			board_node->guid.generateDistinctTo(all_guids);
 
 			// create a view for the board node
 			//board_node->sequenceInfo.view = new m04::editor::sequence::BarebonesSequenceNodeView(&board_node->sequenceInfo);

@@ -1,10 +1,14 @@
 #include "NodeBoardState.h"
+
+#include "core/utils/stringcase.h"
+
 #include "m04/eventide/elements/DefaultStyler.h"
 #include "m04/eventide/elements/Button.h"
 
 #include "./noderenderer/NodeBoardRenderer.h"
 #include "./SequenceEditor.h"
 #include "./SequenceSerialization.h"
+#include "serialization/JSONSequenceBoardSerializer.h"
 
 static const char* kKeyGuid = "guid";
 static const char* kKeyEditorPosition = "__editor_position";
@@ -91,31 +95,24 @@ void m04::editor::sequence::NodeBoardState::AddDisplayNode ( BoardNode* board_no
 	board_node->display = new m04::editor::sequence::NodeRenderer(this, board_node, ui);
 
 	// Add both node and node's display
-	nodes.push_back(board_node);
-	display.push_back(board_node->display);
-	node_guids.push_back(&board_node->guid);
+	nodes.push_back({board_node, board_node->display, &board_node->guid});
 }
 
 void m04::editor::sequence::NodeBoardState::RemoveDisplayNode ( BoardNode* board_node )
 {
-	auto nodeIter = std::find(nodes.begin(), nodes.end(), board_node);
-	auto displayIter = std::find(display.begin(), display.end(), board_node->display);
-	auto guidIter = std::find(node_guids.begin(), node_guids.end(), &board_node->guid);
+	auto nodeIter = std::find_if(nodes.begin(), nodes.end(), [board_node](const NodeEntry& entry){ return entry.node == board_node; });
 
 	ARCORE_ASSERT(nodeIter != nodes.end());
-	ARCORE_ASSERT(displayIter != display.end());
-	ARCORE_ASSERT(guidIter != node_guids.end());
 
 	nodes.erase(nodeIter);
-	display.erase(displayIter);
-	node_guids.erase(guidIter);
 }
 
 void m04::editor::sequence::NodeBoardState::UnhookNode ( BoardNode* board_node )
 {
 	m04::editor::SequenceNode* sequence_node = board_node->sequenceInfo;
-	for (BoardNode* node : nodes)
+	for (auto& nodeEntry : nodes)
 	{
+		BoardNode* node = nodeEntry.node;
 		// Clear Sync
 		if (node->sequenceInfo->task_sync_target == sequence_node)
 		{
@@ -141,6 +138,89 @@ void m04::editor::sequence::NodeBoardState::UnhookNode ( BoardNode* board_node )
 	}
 }
 
+static m04::editor::SequenceOutputPreference GetFiletypeFromExtension ( const char* filename )
+{
+	arstring256 l_inputFileext (filename);
+	core::utils::string::ToFileExtension(l_inputFileext, 256);
+	core::utils::string::ToLower(l_inputFileext, 256);
+
+	string_switch(l_inputFileext)
+	{
+		string_case("osf"):		return m04::editor::SequenceOutputPreference::kOsf;
+		string_case("json"):	return m04::editor::SequenceOutputPreference::kJson;
+		default:
+			return m04::editor::SequenceOutputPreference::kNone;
+	}
+}
+
+bool m04::editor::sequence::NodeBoardState::SaveToFile ( const char* filename )
+{
+	ISequenceBoardSerializer* serializer = nullptr;
+
+	// Get preference from the filename
+	auto outputType = GetFiletypeFromExtension(filename);
+	// Create serializer based on selected preference
+	if (outputType == m04::editor::SequenceOutputPreference::kOsf
+		|| outputType == m04::editor::SequenceOutputPreference::kNone)
+	{
+		serializer = new OldSequenceBoardSerializer(filename);
+	}
+	else if (outputType == m04::editor::SequenceOutputPreference::kJson)
+	{
+		serializer = new JSONSequenceBoardSerializer(filename);
+	}
+	// Write to file
+	ARCORE_ASSERT(serializer != nullptr);
+	serializer->SerializeBoard(this);
+
+	delete serializer;
+	return true;
+}
+bool m04::editor::sequence::NodeBoardState::LoadFromFile ( const char* filename )
+{
+	ClearAllNodes(); // TODO: This neceessaraty here?
+
+	ISequenceBoardSerializer* serializer = nullptr;
+
+	// Get preference from the filename
+	auto outputType = GetFiletypeFromExtension(filename);
+	// Create serializer based on selected preference
+	if (outputType == m04::editor::SequenceOutputPreference::kOsf
+		|| outputType == m04::editor::SequenceOutputPreference::kNone)
+	{
+		serializer = new OldSequenceBoardSerializer(filename);
+	}
+	else if (outputType == m04::editor::SequenceOutputPreference::kJson)
+	{
+		serializer = new JSONSequenceBoardSerializer(filename);
+	}
+	// Read from file
+	ARCORE_ASSERT(serializer != nullptr);
+	serializer->DeserializeBoard(this);
+
+	delete serializer;
+	return true;
+}
+
+m04::editor::sequence::OldSequenceBoardSerializer::OldSequenceBoardSerializer ( const char* filename )
+{
+	m_filename = filename;
+}
+void m04::editor::sequence::OldSequenceBoardSerializer::SerializeBoard ( const NodeBoardState* board ) 
+{
+	m04::editor::sequence::OsfSerializer serializer (m_filename);
+	((NodeBoardState*)board)->Save(&serializer);
+	((NodeBoardState*)board)->GetEditor()->SetWorkspaceDirty(false); // Clear workspace dirty flag
+	((NodeBoardState*)board)->GetEditor()->SetSaveTargetFilename(m_filename);
+}
+void m04::editor::sequence::OldSequenceBoardSerializer::DeserializeBoard ( NodeBoardState* board )
+{
+	m04::editor::sequence::OsfDeserializer deserializer (m_filename);
+	board->Load(&deserializer);
+	board->GetEditor()->SetWorkspaceDirty(false); // Clear workspace dirty flag
+	board->GetEditor()->SetSaveTargetFilename(m_filename); // Set the save-target on load for easy & quick saving
+}
+
 void m04::editor::sequence::NodeBoardState::Save ( ISequenceSerializer* serializer )
 {
 	auto CollectFlowOutputs = [this](BoardNode* node, std::vector<BoardNode*>& out_list)
@@ -149,8 +229,9 @@ void m04::editor::sequence::NodeBoardState::Save ( ISequenceSerializer* serializ
 		for (uint outputIndex = 0; outputIndex < node->sequenceInfo->view->Flow().outputCount; ++outputIndex)
 		{
 			SequenceNode* outputNode = node->sequenceInfo->view->GetFlow(outputIndex);
-			for (BoardNode* possibleBoardNode : nodes)
+			for (auto& possibleNodeEntry : nodes)
 			{
+				BoardNode* possibleBoardNode = possibleNodeEntry.node;
 				if (possibleBoardNode->sequenceInfo == outputNode)
 				{
 					out_list.push_back(possibleBoardNode);
@@ -162,8 +243,9 @@ void m04::editor::sequence::NodeBoardState::Save ( ISequenceSerializer* serializ
 	auto CollectFlowInputs = [this](BoardNode* node, std::vector<BoardNode*>& out_list)
 	{
 		out_list.clear();
-		for (BoardNode* possibleBoardNode : nodes)
+		for (auto& possibleNodeEntry : nodes)
 		{
+			BoardNode* possibleBoardNode = possibleNodeEntry.node;
 			for (uint outputIndex = 0; outputIndex < possibleBoardNode->sequenceInfo->view->Flow().outputCount; ++outputIndex)
 			{
 				if (possibleBoardNode->sequenceInfo->view->GetFlow(outputIndex) == node->sequenceInfo)
@@ -175,9 +257,9 @@ void m04::editor::sequence::NodeBoardState::Save ( ISequenceSerializer* serializ
 	};
 
 	// First push all nodes' editor data into their keyvalues
-	for (BoardNode* node : nodes)
+	for (auto& nodeEntry : nodes)
 	{
-		node->PushEditorData();
+		nodeEntry.node->PushEditorData();
 	}
 
 	// PASS 1: DETERMINE WHICH NODES NEEDS JUMPS
@@ -188,14 +270,15 @@ void m04::editor::sequence::NodeBoardState::Save ( ISequenceSerializer* serializ
 	};
 	std::unordered_map<BoardNode*, JumpInfo> l_nodeinfoTable; // Entry is true when jump
 	// Initialize the table
-	for (BoardNode* node : nodes)
+	for (auto& nodeEntry : nodes)
 	{
-		l_nodeinfoTable[node] = {false, false};
+		l_nodeinfoTable[nodeEntry.node] = {false, false};
 	}
 
 	// Start with all Task-based nodes (no flow inputs)
-	for (BoardNode* possibleStartNode : nodes)
+	for (auto& possibleStartEntry : nodes)
 	{
+		BoardNode* possibleStartNode = possibleStartEntry.node;
 		if (possibleStartNode->sequenceInfo->view->Flow().inputCount == 0)
 		{
 			l_nodeinfoTable[possibleStartNode].isFlowStart = true;
@@ -452,8 +535,10 @@ void m04::editor::sequence::NodeBoardState::Load ( ISequenceDeserializer* deseri
 	}
 
 	// Now, from all the loaded nodes, pull their GUIDs and positions.
-	for (BoardNode* currentNode : nodes)
+	for (auto& currentNodeEntry : nodes)
 	{
+		BoardNode* currentNode = currentNodeEntry.node;
+
 		currentNode->guid.setFromString(currentNode->sequenceInfo->data[kKeyGuid]->As<osf::StringValue>()->value);
 
 		// Need the string tuplet from the values as well.
@@ -474,10 +559,10 @@ void m04::editor::sequence::NodeBoardState::Load ( ISequenceDeserializer* deseri
 
 void m04::editor::sequence::NodeBoardState::ClearAllNodes ( void )
 {
-	for (BoardNode* currentNode : nodes)
+	for (auto& currentNodeEntry : nodes)
 	{
 		// get the node of the hovered
-		BoardNode* board_node = currentNode;
+		BoardNode* board_node = currentNodeEntry.node;
 		UnhookNode(board_node);
 		RemoveDisplayNode(board_node);
 
@@ -486,6 +571,4 @@ void m04::editor::sequence::NodeBoardState::ClearAllNodes ( void )
 	}
 
 	nodes.clear();
-	display.clear();
-	node_guids.clear();
 }
