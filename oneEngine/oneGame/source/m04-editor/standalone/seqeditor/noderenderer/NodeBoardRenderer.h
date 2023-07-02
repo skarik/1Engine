@@ -161,7 +161,7 @@ namespace sequence {
 		// Display name of the node
 		arstring128			m_display_text;
 		// GUID of the node, cached for rendering.
-		arstring<9>			m_guid_text;
+		arstring128			m_guid_text;
 		// Color tint of the node
 		Color				m_display_tint;
 

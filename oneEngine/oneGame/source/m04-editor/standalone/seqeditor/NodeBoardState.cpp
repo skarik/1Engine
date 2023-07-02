@@ -11,25 +11,25 @@
 #include "serialization/JSONSequenceBoardSerializer.h"
 
 static const char* kKeyGuid = "guid";
-static const char* kKeyEditorPosition = "__editor_position";
+static const char* kKeyEditorPosition = "position";
 
 void m04::editor::sequence::BoardNode::PushEditorData ( void )
 {
 	osf::BaseValue* v;
 
-	v = sequenceInfo->data[kKeyGuid];
+	v = sequenceInfo->editorData->data[kKeyGuid];
 	if (v == nullptr)
 	{
-		v = sequenceInfo->data.Add(new osf::KeyValue(kKeyGuid, new osf::StringValue()))->value;
+		v = sequenceInfo->editorData->data.Add(new osf::KeyValue(kKeyGuid, new osf::StringValue()))->value;
 	}
-	v->As<osf::StringValue>()->value = guid.toString();
+	v->As<osf::StringValue>()->value = editorData.guid.toString();
 
-	v = sequenceInfo->data[kKeyEditorPosition];
+	v = sequenceInfo->editorData->data[kKeyEditorPosition];
 	if (v == nullptr)
 	{
-		v = sequenceInfo->data.Add(new osf::KeyValue(kKeyEditorPosition, new osf::StringValue()))->value;
+		v = sequenceInfo->editorData->data.Add(new osf::KeyValue(kKeyEditorPosition, new osf::StringValue()))->value;
 	}
-	v->As<osf::StringValue>()->value = std::to_string(position.x) + "\t" + std::to_string(position.y) + "\t" + std::to_string(position.z);
+	v->As<osf::StringValue>()->value = std::to_string(editorData.position.x) + "\t" + std::to_string(editorData.position.y) + "\t" + std::to_string(editorData.position.z);
 }
 
 void m04::editor::sequence::BoardNode::FreeData ( void )
@@ -95,7 +95,7 @@ void m04::editor::sequence::NodeBoardState::AddDisplayNode ( BoardNode* board_no
 	board_node->display = new m04::editor::sequence::NodeRenderer(this, board_node, ui);
 
 	// Add both node and node's display
-	nodes.push_back({board_node, board_node->display, &board_node->guid});
+	nodes.push_back({board_node, board_node->display, &board_node->editorData.guid});
 }
 
 void m04::editor::sequence::NodeBoardState::RemoveDisplayNode ( BoardNode* board_node )
@@ -539,7 +539,7 @@ void m04::editor::sequence::NodeBoardState::Load ( ISequenceDeserializer* deseri
 	{
 		BoardNode* currentNode = currentNodeEntry.node;
 
-		currentNode->guid.setFromString(currentNode->sequenceInfo->data[kKeyGuid]->As<osf::StringValue>()->value);
+		currentNode->editorData.guid.setFromString(currentNode->sequenceInfo->data[kKeyGuid]->As<osf::StringValue>()->value);
 
 		// Need the string tuplet from the values as well.
 		std::string positionTripletString = currentNode->sequenceInfo->data[kKeyEditorPosition]->As<osf::StringValue>()->value;
@@ -547,7 +547,7 @@ void m04::editor::sequence::NodeBoardState::Load ( ISequenceDeserializer* deseri
 		auto tripletValues = core::utils::string::Split(positionTripletString, core::utils::string::kWhitespace);
 		ARCORE_ASSERT(tripletValues.size() == 3);
 		// Set the node's position.
-		currentNode->position = Vector3f(std::stof(tripletValues[0]), std::stof(tripletValues[1]), std::stof(tripletValues[2]));
+		currentNode->editorData.position = Vector3f(std::stof(tripletValues[0]), std::stof(tripletValues[1]), std::stof(tripletValues[2]));
 
 		// Update the BoardNode's cached display info
 		static_cast<NodeRenderer*>(currentNode->display)->UpdateNextNode();

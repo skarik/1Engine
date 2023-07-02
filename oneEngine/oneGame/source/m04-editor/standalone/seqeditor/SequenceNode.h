@@ -12,6 +12,12 @@
 
 namespace m04 {
 namespace editor {
+namespace sequence {
+	struct BoardEditorData;
+}}}
+
+namespace m04 {
+namespace editor {
 
 	class SequenceNode;
 	class ISequenceNodeView;
@@ -24,6 +30,9 @@ namespace editor {
 	struct SequenceNodePropertyDefinition;
 	class SequenceNodeDefinition;
 
+
+	//	SequenceNode : Main data storage class for editor nodes.
+	// Holds information of the key-value data itself, editor information, and connections.
 	class SequenceNode
 	{
 	public:
@@ -34,6 +43,11 @@ namespace editor {
 		// The view this node is using to display.
 		// Essentially dictates the type of node this is.
 		ISequenceNodeView*	view = NULL;
+
+		// Data that exists only within the editor.
+		// Defined in NodeBoardState.h. Not valid when node loaded for cutscenes.
+		m04::editor::sequence::BoardEditorData*
+							editorData = nullptr;
 
 	public:
 		// Default next node in the sequence.

@@ -145,27 +145,39 @@ void m04::editor::sequence::JSONSequenceBoardSerializer::SerializeBoard ( const 
 			// TODO: These are currently stored inside of the main OSF data.
 			//		Do we need to split those into a separate structure for more reliable serialization state & error handling?
 			// TODO: Need to make sure the Board State pushes editor data to the nodes before serialization.
+			SerializeOSFToJSON(editor_data, &nodeEntry.node->editorData.data);
 		}
 		data_node["editor_data"] = editor_data;
 
 		// Set up all UUIDs
-		data_node["uuid"] = nullptr; // TODO
+		data_node["uuid"] = nodeEntry.node->editorData.guid.toString();
 
 		// Save flow states
 		{
 			const auto& nodeFlow = nodeEntry.node->sequenceInfo->view->Flow();
 
-			//nodeEntry.node->sequenceInfo->view->GetOuptut(
-
 			data_node["previousNode"] = nullptr; // TODO
 
 			if (nodeFlow.outputCount <= 1)
 			{
-				//data_node["nextNode"] = nodeEntry.node->sequenceInfo->view->GetOuptut(0)->view.; // TODO
+				auto flowTarget = nodeEntry.node->sequenceInfo->view->GetFlow(0);
+
+				if (flowTarget != nullptr)
+					data_node["nextNode"] = flowTarget->editorData->guid.toString();
+				else 
+					data_node["nextNode"] = nullptr;
 			}
 			else
 			{
-				data_node["nextNodes"] = nullptr; // TODO
+				for (uint i = 0; i < nodeFlow.outputCount; ++i)
+				{
+					auto flowTarget = nodeEntry.node->sequenceInfo->view->GetFlow(i);
+
+					if (flowTarget != nullptr)
+						data_node["nextNodes"].push_back(flowTarget->editorData->guid.toString());
+					else 
+						data_node["nextNodes"].push_back(nullptr);
+				}
 			}
 		}
 

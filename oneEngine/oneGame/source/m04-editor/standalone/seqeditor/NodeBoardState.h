@@ -5,6 +5,7 @@
 
 #include "core/math/Vector3.h"
 #include "core-ext/containers/arguid.h"
+#include "core-ext/containers/aruuid4.h"
 
 #include "m04/eventide/UserInterface.h"
 
@@ -21,16 +22,112 @@ namespace sequence {
 	class ISequenceSerializer;
 	class ISequenceDeserializer;
 
+	// TODO: Unify with SequenceGUIDType??? or a converter
+	enum class BoardNodeGUIDType
+	{
+		kGUID32,
+		kUUID4,
+	};
+
+	// TODO: move the combined GUID class type elsewhere
+	struct BoardNodeGUID
+	{
+		BoardNodeGUIDType	guidType = BoardNodeGUIDType::kGUID32;
+		union
+		{
+			arguid32	guid32;
+			aruuid4		uuid4;
+			uint64_t	raw[4];
+		};
+
+		std::string toString ( void )
+		{
+			if (guidType == BoardNodeGUIDType::kGUID32)
+				return guid32.toString();
+			else if (guidType == BoardNodeGUIDType::kUUID4)
+				return uuid4.toString();
+			ARCORE_ERROR("Invalid GUID type");
+			return "";
+		}
+
+		void setFromString ( const std::string& stringValue )
+		{
+			if (guidType == BoardNodeGUIDType::kGUID32)
+				guid32.setFromString(stringValue);
+			else if (guidType == BoardNodeGUIDType::kUUID4)
+				uuid4.setFromString(stringValue);
+		}
+
+		void generate ( void )
+		{
+			if (guidType == BoardNodeGUIDType::kGUID32)
+				guid32.generate();
+			else if (guidType == BoardNodeGUIDType::kUUID4)
+				uuid4.generate();
+		}
+
+		//	generateDistinctTo(container) : Generates a new GUID value that is unique within the given container.
+		template <class ContainerType>
+		void generateDistinctTo ( const ContainerType& container )
+		{
+			do
+			{
+				generate();
+			}
+			while (!isDistinctTo(container));
+		}
+
+		//	isDistinctTo(container) : Checks if the current GUID is unique to the given container.
+		template <class ContainerType>
+		bool					isDistinctTo ( const ContainerType& container ) const
+		{
+			for (const BoardNodeGUID* guid : container)
+			{
+				if (*guid == *this)
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+
+		bool					operator== ( const BoardNodeGUID& other ) const
+		{
+			if (guidType == other.guidType)
+			{
+				if (guidType == BoardNodeGUIDType::kGUID32)
+					return guid32 == other.guid32;
+				else if (guidType == BoardNodeGUIDType::kUUID4)
+					return uuid4 == other.uuid4;
+				ARCORE_ERROR("Invalid GUID type");
+			}
+			return false;
+		}
+
+		BoardNodeGUID()
+			: guidType(BoardNodeGUIDType::kGUID32)
+			, raw{0}
+			{}
+	};
+
+	struct BoardEditorData
+	{
+		// Position in the board
+		Vector3f			position;
+		// GUID of the node
+		BoardNodeGUID		guid = {};
+		// Key-value storage, populated by the editor.
+		osf::ObjectValue	data;
+	};
+
 	struct BoardNode
 	{
 	public:
 		// Actual data contained in the node
 		SequenceNode*		sequenceInfo;
 
-		// Position the node is at
-		Vector3f			position;
-		// GUID of the node
-		arguid32			guid;
+		// Data used by the editor and for saving
+		BoardEditorData		editorData;
 
 		// Associated Eventide element used to render the object.
 		// Not owned by this object.
@@ -38,7 +135,7 @@ namespace sequence {
 
 	public:
 		EDITOR_API void 		SetPosition ( const Vector3f& new_position )
-			{ position = new_position; }
+			{ editorData.position = new_position; }
 
 		//	PushEditorData() : Pushes the editor data to the sequence node's keyvalues.
 		EDITOR_API void			PushEditorData ( void );
@@ -111,7 +208,7 @@ namespace sequence {
 		{
 			BoardNode*		node;
 			INodeDisplay*	display;
-			arguid32*		guid;
+			BoardNodeGUID*	guid;
 		};
 
 		std::vector<NodeEntry>

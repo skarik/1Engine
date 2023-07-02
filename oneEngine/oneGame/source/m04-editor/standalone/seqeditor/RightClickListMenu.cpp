@@ -160,14 +160,15 @@ void m04::editor::sequence::RightClickListMenu::OnActivated ( int choiceIndex )
 			// TODO: move to a boardnode factory for the actual sequence info gen
 			BoardNode* board_node = new BoardNode();
 			board_node->SetPosition(GetBBox().GetCenterPoint());
-			std::vector<arguid32*> all_guids;
+			std::vector<BoardNodeGUID*> all_guids;
 			std::transform(
 				m_editor->GetNodeBoardState()->nodes.begin(),
 				m_editor->GetNodeBoardState()->nodes.end(),
 				std::back_inserter(all_guids),
 				[](const NodeBoardState::NodeEntry& entry){ return entry.guid; }
 				);
-			board_node->guid.generateDistinctTo(all_guids);
+			board_node->editorData.guid.guidType = (BoardNodeGUIDType)m_editor->GetSEL().guid_preference;
+			board_node->editorData.guid.generateDistinctTo(all_guids);
 
 			// create a view for the board node
 			//board_node->sequenceInfo.view = new m04::editor::sequence::BarebonesSequenceNodeView(&board_node->sequenceInfo);
@@ -182,6 +183,10 @@ void m04::editor::sequence::RightClickListMenu::OnActivated ( int choiceIndex )
 				board_node->sequenceInfo = m04::editor::SequenceNode::CreateWithEditorView(m_editor->GetNodeTypes().find(classnameInfo.name)->second, classnameInfo.name);
 			}
 
+			// Make sure the sequence info has a reference to editor data it needs to be aware of
+			board_node->sequenceInfo->editorData = &board_node->editorData;
+
+			// Add node to the board state!
 			m_editor->GetNodeBoardState()->AddDisplayNode(board_node);
 		}
 		else if (m_mode == Mode::kOnNode)

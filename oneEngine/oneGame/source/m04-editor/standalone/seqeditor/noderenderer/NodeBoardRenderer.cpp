@@ -85,7 +85,7 @@ m04::editor::sequence::NodeRenderer::NodeRenderer (m04::editor::sequence::NodeBo
 	UpdateNextNode();
 
 	// Set position & bbox
-	SetBBox(core::math::BoundingBox(Rotator(), node->position + m_halfsizeOnBoard, m_halfsizeOnBoard));
+	SetBBox(core::math::BoundingBox(Rotator(), node->editorData.position + m_halfsizeOnBoard, m_halfsizeOnBoard));
 
 	// Set up the properties and extra
 	auto& nodeProperties = node->sequenceInfo->view->PropertyList();
@@ -136,7 +136,7 @@ void m04::editor::sequence::NodeRenderer::UpdateCachedVisualInfo ( void )
 			}
 		}
 		m_display_text = l_displayNameModified.c_str();
-		m_guid_text = node->guid.toString().c_str();
+		m_guid_text = node->editorData.guid.toString().c_str();
 	}
 	else
 	{
@@ -145,7 +145,7 @@ void m04::editor::sequence::NodeRenderer::UpdateCachedVisualInfo ( void )
 		std::string l_displayNameModified = node->sequenceInfo->view->externalClass->displayName;
 
 		m_display_text = l_displayNameModified.c_str();
-		m_guid_text = node->guid.toString().c_str();
+		m_guid_text = node->editorData.guid.toString().c_str();
 	}
 
 	// Grab tint color from the node info
@@ -208,7 +208,7 @@ void m04::editor::sequence::NodeRenderer::OnEventMouse ( const EventMouse& mouse
 			}
 			bbox.m_M.setTranslation(bboxPosition);
 
-			node->position = bbox.GetCenterPoint() - m_halfsizeOnBoard;
+			node->editorData.position = bbox.GetCenterPoint() - m_halfsizeOnBoard;
 
 			SetBBox( bbox );
 			UpdatePropertyLayout();
@@ -426,6 +426,17 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 		- Vector3f(nodeExtents.x, -nodeExtents.y, nodeExtents.z)
 		+ Vector3f(0, 0, nodeExtents.z * 2.0F + 1.0F);
 
+	// Show the node's GUID at the top
+	textParams = {};
+	textParams.string = m_guid_text.c_str();
+	textParams.font_texture = &m_renderResources.m_fontTextureScripting;
+	textParams.position = nodeTopLeft + Vector3f(m_halfsizeOnBoard.x * 2.0F - m_margins.x, -ui::eventide::DefaultStyler.text.buttonSize - m_margins.y, 0);
+	textParams.rotation = GetBBoxAbsolute().m_M.getRotator();
+	textParams.size = ui::eventide::DefaultStyler.text.buttonSize * 0.4;
+	textParams.alignment = AlignHorizontal::kRight;
+	textParams.color = DefaultStyler.text.headingColor.Lerp(DefaultStyler.box.defaultColor, 0.75F);
+	buildText(textParams);
+
 	// Show the view's name
 	textParams = {};
 	textParams.string = m_display_text;
@@ -434,17 +445,6 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 	textParams.rotation = GetBBoxAbsolute().m_M.getRotator();
 	textParams.size = ui::eventide::DefaultStyler.text.headingSize;
 	textParams.color = DefaultStyler.text.headingColor;
-	buildText(textParams);
-
-	// Show the node's GUID at the top
-	textParams = {};
-	textParams.string = m_guid_text.c_str();
-	textParams.font_texture = &m_fontTexture;
-	textParams.position = nodeTopLeft + Vector3f(m_halfsizeOnBoard.x * 2.0F - m_margins.x, -ui::eventide::DefaultStyler.text.buttonSize - m_margins.y, 0);
-	textParams.rotation = GetBBoxAbsolute().m_M.getRotator();
-	textParams.size = ui::eventide::DefaultStyler.text.buttonSize;
-	textParams.alignment = AlignHorizontal::kRight;
-	textParams.color = DefaultStyler.text.headingColor.Lerp(DefaultStyler.box.defaultColor, 0.75F);
 	buildText(textParams);
 
 	// Flow input
@@ -618,7 +618,7 @@ void m04::editor::sequence::NodeRenderer::UpdateHalfsize ( void )
 void m04::editor::sequence::NodeRenderer::UpdateBboxSize ( void )
 {
 	UpdateHalfsize();
-	SetBBox(core::math::BoundingBox(Rotator(), node->position + m_halfsizeOnBoard, m_halfsizeOnBoard));
+	SetBBox(core::math::BoundingBox(Rotator(), node->editorData.position + m_halfsizeOnBoard, m_halfsizeOnBoard));
 }
 
 void m04::editor::sequence::NodeRenderer::OnGameFrameUpdate ( const GameFrameUpdateInput& input_frame )
@@ -630,8 +630,8 @@ void m04::editor::sequence::NodeRenderer::OnGameFrameUpdate ( const GameFrameUpd
 	// Update size of the board
 	UpdateHalfsize();
 	// TODO: based on properties, update bbox
-	node->position.y += (l_previousExtents.y - m_halfsizeOnBoard.y) * 2.0F;
-	bbox = core::math::BoundingBox(Rotator(), node->position + m_halfsizeOnBoard, m_halfsizeOnBoard);
+	node->editorData.position.y += (l_previousExtents.y - m_halfsizeOnBoard.y) * 2.0F;
+	bbox = core::math::BoundingBox(Rotator(), node->editorData.position + m_halfsizeOnBoard, m_halfsizeOnBoard);
 
 	// Set bbox, push update for mesh
 	SetBBox(bbox);
