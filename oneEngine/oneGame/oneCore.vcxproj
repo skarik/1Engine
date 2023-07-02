@@ -162,6 +162,7 @@
     <ClInclude Include="source\core-ext\containers\arguid.h" />
     <ClInclude Include="source\core-ext\containers\arproperty.h" />
     <ClInclude Include="source\core-ext\containers\arresource.h" />
+    <ClInclude Include="source\core-ext\containers\aruuid4.h" />
     <ClInclude Include="source\core-ext\containers\ExtendibleMap2D.h" />
     <ClInclude Include="source\core-ext\containers\arKDTree.h" />
     <ClInclude Include="source\core-ext\containers\osfstructure.h" />
@@ -268,6 +269,7 @@
     <ClInclude Include="source\core\types\string_extension.h" />
     <ClInclude Include="source\core\types\types.h" />
     <ClInclude Include="source\core\utils\armodule.h" />
+    <ClInclude Include="source\core\utils\hex.h" />
     <ClInclude Include="source\core\utils\string.h" />
     <ClInclude Include="source\core\utils\string.hpp" />
     <ClInclude Include="source\core\utils\stringcase.h" />
@@ -275,6 +277,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core-ext\containers\arguid.cpp" />
+    <ClCompile Include="source\core-ext\containers\aruuid4.cpp" />
     <ClCompile Include="source\core-ext\containers\osfstructure.cpp" />
     <ClCompile Include="source\core-ext\math\MathQEF.cpp" />
     <ClCompile Include="source\core-ext\math\noise\MidpointNoiseBuffer.cpp" />

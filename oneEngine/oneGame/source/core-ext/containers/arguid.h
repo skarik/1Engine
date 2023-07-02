@@ -14,6 +14,7 @@
 
 #include "core/types/types.h"
 #include "core/debug.h"
+#include "core/utils/hex.h"
 
 class arguid32
 {
@@ -64,16 +65,14 @@ public:
 		return identifier != other.identifier;
 	}
 
-private:
-	static constexpr char* digits = "0123456789ABCDEF";
-
 public:
 	//	toString(output[8]) : Ouputs the GUID string value into given buffer
+	// Note: this is incredibly unsafe to use - be extremely careful when using it!
 	void					toString ( char output_string[8] )
 	{
 		for (int32_t offset = 0; offset < 8; ++offset)
 		{
-			output_string[offset] = digits[ (identifier >> (offset * 4)) & 0x0F ];
+			output_string[offset] = core::utils::hex::NumToChar( (identifier >> (offset * 4)) & 0x0F );
 		}
 	}
 
@@ -93,26 +92,7 @@ public:
 		identifier = 0x0;
 		for (int32_t offset = 0; offset < 8; ++offset)
 		{
-			switch (stringValue[offset])
-			{
-			case '0':	break;
-			case '1':	identifier |= 0x1 << (offset * 4); break;
-			case '2':	identifier |= 0x2 << (offset * 4); break;
-			case '3':	identifier |= 0x3 << (offset * 4); break;
-			case '4':	identifier |= 0x4 << (offset * 4); break;
-			case '5':	identifier |= 0x5 << (offset * 4); break;
-			case '6':	identifier |= 0x6 << (offset * 4); break;
-			case '7':	identifier |= 0x7 << (offset * 4); break;
-			case '8':	identifier |= 0x8 << (offset * 4); break;
-			case '9':	identifier |= 0x9 << (offset * 4); break;
-			case 'A':	identifier |= 0xA << (offset * 4); break;
-			case 'B':	identifier |= 0xB << (offset * 4); break;
-			case 'C':	identifier |= 0xC << (offset * 4); break;
-			case 'D':	identifier |= 0xD << (offset * 4); break;
-			case 'E':	identifier |= 0xE << (offset * 4); break;
-			case 'F':	identifier |= 0xF << (offset * 4); break;
-			default:	ARCORE_ERROR("Invalid character in GUID sequence.");
-			}
+			identifier |= core::utils::hex::CharToNum(stringValue[offset]) << (offset * 4);
 		}
 	}
 
@@ -156,6 +136,12 @@ public:
 			}
 		}
 		return true;
+	}
+
+	//	isNil() : Checks if this is a nil UID
+	bool					isNil ( void ) const
+	{
+		return identifier == 0;
 	}
 
 public:

@@ -457,6 +457,12 @@
     <ClInclude Include="source\core\utils\stringhash.h">
       <Filter>SOURCE\Core\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="source\core-ext\containers\aruuid4.h">
+      <Filter>SOURCE\Core-ext\Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="source\core\utils\hex.h">
+      <Filter>SOURCE\Core\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core\math\Color.cpp">
@@ -563,6 +569,9 @@
     </ClCompile>
     <ClCompile Include="source\core\math\noise\WorleyNoise.cpp">
       <Filter>SOURCE\Core\Math\Noise</Filter>
+    </ClCompile>
+    <ClCompile Include="source\core-ext\containers\aruuid4.cpp">
+      <Filter>SOURCE\Core-ext\Containers</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
