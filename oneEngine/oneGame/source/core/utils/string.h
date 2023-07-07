@@ -90,6 +90,8 @@ namespace core
 
 			template<class object>
 			object						ToObject ( const char* t );
+			template<class object>
+			std::string					ToString ( const object& o );
 		}
 	}
 }

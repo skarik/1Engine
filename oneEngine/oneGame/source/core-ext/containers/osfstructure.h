@@ -179,6 +179,9 @@ namespace osf
 			ARCORE_ERROR("Value was not in the array to be removed!");
 		}
 
+		//	GetAs<type>(string) : Looks up the given key-value and casts it. Returns nullptr if it does not exist.
+		template <class SequenceTypeCastTo>
+		SequenceTypeCastTo*		GetAs (const char* key_name);
 		//	GetAdd<type>(string) : Looks up the given key-value and casts it. Adds it if it does not exist.
 		template <class SequenceTypeCastTo>
 		SequenceTypeCastTo*		GetAdd (const char* key_name);
@@ -190,7 +193,8 @@ namespace osf
 		SequenceTypeCastTo*		GetConvertAdd (const char* key_name)
 		{
 			GetAdd<SequenceTypeCastTo>(key_name);
-			return Convert<SequenceTypeCastTo>(key_name)->value->As<SequenceTypeCastTo>();
+			KeyValue* conversionResult = Convert<SequenceTypeCastTo>(key_name);
+			return conversionResult ? conversionResult->value->As<SequenceTypeCastTo>() : nullptr;
 		}
 		//	Convert<type>(index) : Attempts to convert the given index to the correct type.
 		// Returns null if the key was not found or conversion could not happen.
@@ -285,6 +289,26 @@ namespace osf
 	};
 
 	//===============================================================================================//
+
+	template <class SequenceTypeCastTo>
+	SequenceTypeCastTo*		ObjectValue::GetAs (const char* key_name)
+	{
+		KeyValue* kvSource = GetKeyValue(key_name);
+
+		// This is not a valid add.
+		const bool isSame = std::is_same<SequenceTypeCastTo,osf::ObjectValue>::value;
+		ARCORE_ASSERT(!isSame);
+
+		// Need to add the item
+		if (kvSource != nullptr)
+		{
+			return kvSource->value->As<SequenceTypeCastTo>();
+		}
+		else
+		{
+			return nullptr;
+		}
+	}
 
 	template <class SequenceTypeCastTo>
 	SequenceTypeCastTo*		ObjectValue::GetAdd (const char* key_name)

@@ -242,7 +242,14 @@ bool osf::ObjectValue::ConvertValue (const BaseValue* source, BaseValue* target)
 			}
 			catch (std::invalid_argument&)
 			{
-				return false;
+				if (source->As<StringValue>()->value.length() == 0)
+				{
+					target->As<IntegerValue>()->value = 0;
+				}
+				else
+				{
+					return false;
+				}
 			}
 			return true;
 		}
@@ -261,7 +268,14 @@ bool osf::ObjectValue::ConvertValue (const BaseValue* source, BaseValue* target)
 			}
 			catch (std::invalid_argument&)
 			{
-				return false;
+				if (source->As<StringValue>()->value.length() == 0)
+				{
+					target->As<FloatValue>()->value = 0.0F;
+				}
+				else
+				{
+					return false;
+				}
 			}
 			return true;
 		}

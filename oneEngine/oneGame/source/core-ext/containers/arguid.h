@@ -79,7 +79,7 @@ public:
 	//	toString() : Returns a string of the GUID value
 	std::string				toString ( void )
 	{
-		char string_buffer [8];
+		char string_buffer [9] = {};
 		toString(string_buffer);
 		return std::string(string_buffer, 8);
 	}

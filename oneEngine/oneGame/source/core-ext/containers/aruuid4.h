@@ -68,7 +68,7 @@ public:
 
 private:
 	static constexpr int groups[] = {8, 4, 4, 4, 12};
-	static constexpr size_t kStringBufferSize = sizeof("xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"); // y is either 8, 9, a or b
+	static constexpr size_t kStringBufferSize = sizeof("xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx") - 1; // y is either 8, 9, a or b
 
 public:
 	//	toString(output[kStringBufferSize]) : Ouputs the GUID string value into given buffer
@@ -84,8 +84,8 @@ public:
 			for (int j = 0; j < group; j += 2)
 			{
 				uint8_t byte = bytes[b++];
-				*output++ = core::utils::hex::NumToChar(byte >> 4);
-				*output++ = core::utils::hex::NumToChar(byte & 0xf);
+				*output++ = core::utils::hex::NumToCharLower(byte >> 4);
+				*output++ = core::utils::hex::NumToCharLower(byte & 0xf);
 			}
 			*output++ = '-';
 		}
@@ -96,7 +96,7 @@ public:
 	//	toString() : Returns a string of the GUID value
 	std::string				toString ( void )
 	{
-		char string_buffer [kStringBufferSize];
+		char string_buffer [kStringBufferSize + 1] = {};
 		toString(string_buffer);
 		return std::string(string_buffer, kStringBufferSize);
 	}
@@ -118,11 +118,11 @@ public:
 			for (int j = 0; j < group; j += 2)
 			{
 				bytes[b++] =
-					   core::utils::hex::CharToNum(stringValue[offset + 0])
-					| (core::utils::hex::CharToNum(stringValue[offset + 1]) << 4);
+					   core::utils::hex::CharLowerToNum(stringValue[offset + 0])
+					| (core::utils::hex::CharLowerToNum(stringValue[offset + 1]) << 4);
 				offset += 2;
 			}
-			ARCORE_ASSERT(stringValue[offset] == '-');
+			ARCORE_ASSERT(stringValue[offset] == '-' || offset >= kStringBufferSize);
 			offset += 1;
 		}
 	}
