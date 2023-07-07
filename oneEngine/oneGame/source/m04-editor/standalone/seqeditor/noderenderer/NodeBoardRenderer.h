@@ -29,8 +29,11 @@ namespace sequence {
 			kPropertyValue,
 		};
 
+		// Are we currently dragging
 		bool				active = false;
-		Target				target = Target::kNone;
+		// What we started dragging from
+		Target				dragStart = Target::kNone;
+		// Index of the item we're dragging
 		uint32_t			index = 0;
 	};
 
@@ -68,9 +71,13 @@ namespace sequence {
 		void					UpdateHalfsize ( void );
 		void					UpdateBboxSize ( void );
 
+		const std::vector<m04::editor::sequence::INodeDisplay*>&
+								GetNextNodes ( void ) const
+			{ return m_nextNodes; }
+
 		m04::editor::sequence::INodeDisplay*
-								GetNextNode ( void ) const
-			{ return m_next; }
+								GetNextNode ( const uint index ) const
+			{ return (index < m_nextNodes.size()) ? m_nextNodes[index] : nullptr; }
 
 	protected:
 
@@ -155,9 +162,9 @@ namespace sequence {
 
 		RenderResources		m_renderResources;
 
-		// Node currently selected as the "next" node in the flow. Corresponds to node->next.
-		m04::editor::sequence::INodeDisplay*
-							m_next;
+		// Nodes currently selected as the "next" nodes in the flow. Corresponds to node->nextNodes.
+		std::vector<m04::editor::sequence::INodeDisplay*>
+							m_nextNodes;
 		// Display name of the node
 		arstring128			m_display_text;
 		// GUID of the node, cached for rendering.

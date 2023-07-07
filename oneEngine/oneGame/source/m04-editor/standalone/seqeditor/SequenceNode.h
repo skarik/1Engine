@@ -50,11 +50,12 @@ namespace editor {
 							editorData = nullptr;
 
 	public:
-		// Default next node in the sequence.
-		SequenceNode*		next = NULL;
+		// List of all nodes that come next in the sequence
+		std::vector<SequenceNode*>
+							nextNodes;
 
-		// Task sync target.
-		SequenceNode*		task_sync_target = NULL;
+		// Task sync target. Nodes in parallel tasks that have a sync node will attempt to wait for the given node to pass before continuing.
+		SequenceNode*		syncNode = nullptr;
 
 	public:
 		// Destructor for clearing out the view.
@@ -68,12 +69,14 @@ namespace editor {
 	class SequenceViewFlow
 	{
 	public:
-		// Number of flow inputs. They are considered sequential.
+		// If this node has a flow input. They are considered sequential.
 		// Only zero (0) or one (1) are valid vaues.
-		uint				inputCount = 1;
+		bool				hasInput = true;
 		// There is always one flow input - since flow is one way, a single input can take multiple values.
 		// Number of flow outputs. They are considered sequential.
 		uint				outputCount = 1;
+		// If this flow has a sync input/output.
+		bool				hasSync = false;
 	};
 
 	class SequenceViewInput
@@ -169,13 +172,13 @@ namespace editor {
 			: node(in_node)
 			{}
 
-		EDITOR_API virtual void SetFlow ( const int flowOutputIndex, SequenceNode* newNodeValue );
+		/*EDITOR_API virtual void SetFlow ( const int flowOutputIndex, SequenceNode* newNodeValue );
 		EDITOR_API virtual SequenceNode* 
 								GetFlow ( const int flowOutputIndex );
 
 		EDITOR_API virtual void	SetOutput ( const int outputIndex, SequenceNode* newNodeValue ) =0;
 		EDITOR_API virtual SequenceNode*
-								GetOuptut ( const int outputIndex ) =0;
+								GetOuptut ( const int outputIndex ) =0;*/
 
 		/*EDITOR_API virtual void	SetProperty ( const int propertyIndex, const float newFloatValue ) =0;
 		EDITOR_API virtual void	SetProperty ( const int propertyIndex, const int newIntValue ) =0;
@@ -216,14 +219,14 @@ namespace editor {
 			{ return flowView; }
 
 		//	InputList() : Provides a list of all the available inputs to this node.
-		const std::vector<SequenceViewInput>&
+		/*const std::vector<SequenceViewInput>&
 								InputList ( void ) const
 			{ return inputViews; }
 
 		//	OutputList() : Provides a list of all the available outputs from this node.
 		const std::vector<SequenceViewOutput>&
 								OutputList ( void ) const
-			{ return outputViews; }
+			{ return outputViews; }*/
 
 		//	PropertyList() : Provides a list of all the tweakable values for this node.
 		const std::vector<SequenceViewProperty>&

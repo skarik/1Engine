@@ -163,9 +163,18 @@ void SplitString ( const char* str, RrFontTexture* font_texture, const Real max_
 
 					// Grab offset & check against limit
 					Vector2f l_letterSize (fontInfo->glyphAdvance[c_lookup].x, fontInfo->glyphAdvance[c_lookup].y);
-							
+						
+					// Letter is too big for the line? Step forward and break out of the loop
+					if (l_letterSize.x > max_pen_width)
+					{
+						state.pen += l_letterSize;
+
+						state.index += 1;
+						string_length += 1;
+						break;
+					}
 					// We haven't hit the limit yet, so step forward
-					if (state.pen.x + l_letterSize.x < max_pen_width)
+					else if (state.pen.x + l_letterSize.x < max_pen_width)
 					{
 						state.pen += l_letterSize;
 

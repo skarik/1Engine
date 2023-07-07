@@ -15,8 +15,8 @@ m04::editor::sequence::JSONSequenceBoardSerializer::~JSONSequenceBoardSerializer
 {
 }
 
-static void SerializeOSFToJSON(nlohmann::json& data, const osf::ObjectValue* object);
-static void SerializeOSFArrayToJSON(nlohmann::json& data, const osf::ArrayValue* array_object);
+static void SerializeOSFToJSON (nlohmann::json& data, const osf::ObjectValue* object);
+static void SerializeOSFArrayToJSON (nlohmann::json& data, const osf::ArrayValue* array_object);
 
 static void SerializeOSFToJSON (nlohmann::json& data, const osf::ObjectValue* object)
 {
@@ -117,8 +117,14 @@ void m04::editor::sequence::JSONSequenceBoardSerializer::SerializeBoard ( const 
 	auto board_copy = board->nodes;
 	std::sort(board_copy.begin(), board_copy.end(), [](NodeBoardState::NodeEntry& a, NodeBoardState::NodeEntry& b)
 		{
-			return a.node->sequenceInfo->view->Flow().inputCount < b.node->sequenceInfo->view->Flow().inputCount;
+			return a.node->sequenceInfo->view->Flow().hasInput < b.node->sequenceInfo->view->Flow().hasInput;
 		});
+
+	// Push all nodes' editor data into their keyvalues
+	for (auto& nodeEntry : board_copy)
+	{
+		nodeEntry.node->PushEditorData();
+	}
 
 	// Export the board as a node array
 	nlohmann::json data_nodes;
@@ -156,11 +162,40 @@ void m04::editor::sequence::JSONSequenceBoardSerializer::SerializeBoard ( const 
 		{
 			const auto& nodeFlow = nodeEntry.node->sequenceInfo->view->Flow();
 
-			data_node["previousNode"] = nullptr; // TODO
+			// Write out 'previousNode'
+			if (nodeFlow.hasInput)
+			{
+				// Find the first node in our list that matches our node
+				auto flowTargetItr = std::find_if(
+					board_copy.begin(), board_copy.end(),
+					[&nodeEntry](const NodeBoardState::NodeEntry& board_node)
+					{
+						auto& nextNodes = board_node.node->sequenceInfo->nextNodes;
+						return std::find(nextNodes.begin(), nextNodes.end(), nodeEntry.node->sequenceInfo) != nextNodes.end();
+					});
 
+				if (flowTargetItr != board_copy.end())
+				{
+					auto flowTarget = flowTargetItr->node->sequenceInfo;
+					if (flowTarget != nullptr)
+						data_node["previousNode"] = flowTarget->editorData->guid.toString();
+					else 
+						data_node["previousNode"] = nullptr;
+				}
+				else
+				{
+					data_node["previousNode"] = nullptr;
+				}
+			}
+			else
+			{
+				data_node["previousNode"] = nullptr;
+			}
+
+			// Write out 'nextNode'
 			if (nodeFlow.outputCount <= 1)
 			{
-				auto flowTarget = nodeEntry.node->sequenceInfo->view->GetFlow(0);
+				auto flowTarget = nodeEntry.node->sequenceInfo->nextNodes.empty() ? nullptr : nodeEntry.node->sequenceInfo->nextNodes[0];
 
 				if (flowTarget != nullptr)
 					data_node["nextNode"] = flowTarget->editorData->guid.toString();
@@ -171,13 +206,28 @@ void m04::editor::sequence::JSONSequenceBoardSerializer::SerializeBoard ( const 
 			{
 				for (uint i = 0; i < nodeFlow.outputCount; ++i)
 				{
-					auto flowTarget = nodeEntry.node->sequenceInfo->view->GetFlow(i);
+					auto flowTarget = (i < nodeEntry.node->sequenceInfo->nextNodes.size()) ? nodeEntry.node->sequenceInfo->nextNodes[i] : nullptr;
 
 					if (flowTarget != nullptr)
 						data_node["nextNodes"].push_back(flowTarget->editorData->guid.toString());
 					else 
 						data_node["nextNodes"].push_back(nullptr);
 				}
+			}
+
+			// Write out 'syncNode'
+			if (nodeFlow.hasSync)
+			{
+				auto flowTarget = nodeEntry.node->sequenceInfo->syncNode;
+
+				if (flowTarget != nullptr)
+					data_node["syncNode"] = flowTarget->editorData->guid.toString();
+				else
+					data_node["syncNode"] = nullptr;
+			}
+			else
+			{
+				data_node["syncNode"] = nullptr;
 			}
 		}
 
@@ -199,6 +249,101 @@ void m04::editor::sequence::JSONSequenceBoardSerializer::SerializeBoard ( const 
 	}
 }
 
+static void SerializeJSONToOSF (osf::ObjectValue* object, const nlohmann::json& data);
+static void SerializeJSONArrayToOSFArray (osf::ArrayValue* array_object, const nlohmann::json& data);
+
+static void SerializeJSONToOSF (osf::ObjectValue* object, const nlohmann::json& data)
+{
+	ARCORE_ASSERT(data.is_object());
+
+	for (auto& entry : data.items())
+	{
+		switch (entry.value().type())
+		{
+		case nlohmann::json::value_t::string:
+			object->GetConvertAdd<osf::StringValue>(entry.key().c_str())->value = entry.value();
+			break;
+		case nlohmann::json::value_t::boolean:
+			object->GetConvertAdd<osf::BooleanValue>(entry.key().c_str())->value = entry.value();
+			break;
+		case nlohmann::json::value_t::number_float:
+			object->GetConvertAdd<osf::FloatValue>(entry.key().c_str())->value = entry.value();
+			break;
+		case nlohmann::json::value_t::number_integer:
+		case nlohmann::json::value_t::number_unsigned:
+			object->GetConvertAdd<osf::IntegerValue>(entry.key().c_str())->value = entry.value();
+			break;
+
+		case nlohmann::json::value_t::object:
+			{
+				osf::ObjectValue* subobject = object->GetConvertAdd<osf::ObjectValue>(entry.key().c_str());
+				SerializeJSONToOSF(subobject, entry.value());
+			}
+			break;
+
+		case nlohmann::json::value_t::array:
+			{
+				osf::ArrayValue* subarray = object->GetConvertAdd<osf::ArrayValue>(entry.key().c_str());
+				SerializeJSONArrayToOSFArray(subarray, entry.value());
+			}
+			break;
+
+		default:
+			ARCORE_ERROR("Not yet implemented.");
+			break;
+		}
+	}
+}
+
+static void SerializeJSONArrayToOSFArray (osf::ArrayValue* array_object, const nlohmann::json& data)
+{
+	ARCORE_ASSERT(data.is_array());
+
+	for (const nlohmann::json& entry : data)
+	{
+		switch (entry.type())
+		{
+		case nlohmann::json::value_t::string:
+			array_object->values.push_back(new osf::StringValue);
+			array_object->values.back()->As<osf::StringValue>()->value = entry;
+			break;
+		case nlohmann::json::value_t::boolean:
+			array_object->values.push_back(new osf::BooleanValue);
+			array_object->values.back()->As<osf::BooleanValue>()->value = entry;
+			break;
+		case nlohmann::json::value_t::number_float:
+			array_object->values.push_back(new osf::FloatValue);
+			array_object->values.back()->As<osf::FloatValue>()->value = entry;
+			break;
+		case nlohmann::json::value_t::number_integer:
+		case nlohmann::json::value_t::number_unsigned:
+			array_object->values.push_back(new osf::IntegerValue);
+			array_object->values.back()->As<osf::IntegerValue>()->value = entry;
+			break;
+
+		case nlohmann::json::value_t::object:
+			{
+				osf::ObjectValue* subobject = new osf::ObjectValue;
+				SerializeJSONToOSF(subobject, entry);
+				array_object->values.push_back(subobject);
+			}
+			break;
+
+		case nlohmann::json::value_t::array:
+			{
+				osf::ArrayValue* subarray = new osf::ArrayValue;
+				SerializeJSONArrayToOSFArray(subarray, entry);
+				array_object->values.push_back(subarray);
+			}
+			break;
+
+		default:
+			ARCORE_ERROR("Not yet implemented.");
+			break;
+		}
+	}
+}
+
 void m04::editor::sequence::JSONSequenceBoardSerializer::DeserializeBoard ( NodeBoardState* board )
 {
 	nlohmann::json data;
@@ -207,5 +352,26 @@ void m04::editor::sequence::JSONSequenceBoardSerializer::DeserializeBoard ( Node
 	{
 		std::ifstream i (mFilename);
 		i >> data;
+	}
+
+	// Start loading in the array of nodes:
+	for (const nlohmann::json& node : data["nodes"])
+	{
+		// Load data from either the node directly, or the data structure
+		const nlohmann::json& data_target = false ? node : node["data"];
+
+		// Create new node we're going to fill:
+		BoardNode* board_node = board->CreateBoardNode(((std::string)data_target["structType"]).c_str());
+
+		SerializeJSONToOSF(&board_node->sequenceInfo->data, data_target);
+		SerializeJSONToOSF(&board_node->sequenceInfo->editorData->data, node["editor_data"]);
+
+		// Pop the editor data!
+		board_node->PullEditorData();
+
+		// TODO: Take nextNode/nextNodes, previousNode, syncNode
+
+		// Add the board node to the display
+		board->AddDisplayNode(board_node);
 	}
 }

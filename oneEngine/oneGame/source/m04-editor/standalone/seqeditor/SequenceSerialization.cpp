@@ -88,7 +88,7 @@ void m04::editor::sequence::OsfSerializer::SerializeStartpoint ( const m04::edit
 	startpointEntry.name = node->view->classname;
 	osf_writer->WriteObjectBegin(startpointEntry);
 	{
-		io::OSFEntryInfo guidEntry = {io::kOSFEntryTypeNormal, "goto", node->next->data["guid"]->As<osf::StringValue>()->value.c_str()};
+		io::OSFEntryInfo guidEntry = {io::kOSFEntryTypeNormal, "goto", node->nextNodes[0]->data["guid"]->As<osf::StringValue>()->value.c_str()};
 		osf_writer->WriteEntry(guidEntry);
 
 		// Write the GUID and the Editor information.
@@ -115,7 +115,7 @@ void m04::editor::sequence::OsfSerializer::SerializeNode ( const m04::editor::Se
 }
 void m04::editor::sequence::OsfSerializer::SerializeListEnd ( const m04::editor::SequenceNode* lastNode )
 {
-	if (lastNode == NULL || lastNode->next == NULL)
+	if (lastNode == NULL || lastNode->nextNodes[0] == NULL)
 	{
 		// Create a "goto end" object.
 		io::OSFEntryInfo entry;
@@ -130,7 +130,7 @@ void m04::editor::sequence::OsfSerializer::SerializeListEnd ( const m04::editor:
 		io::OSFEntryInfo entry;
 		entry.type = io::kOSFEntryTypeNormal;
 		entry.name = "goto";
-		entry.value = lastNode->next->data["guid"]->As<osf::StringValue>()->value.c_str();
+		entry.value = lastNode->nextNodes[0]->data["guid"]->As<osf::StringValue>()->value.c_str();
 		osf_writer->WriteEntry(entry);
 	}
 }

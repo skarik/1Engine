@@ -140,6 +140,9 @@ namespace sequence {
 		//	PushEditorData() : Pushes the editor data to the sequence node's keyvalues.
 		EDITOR_API void			PushEditorData ( void );
 
+		//	PullEditorData() : Pulls the editor data from the sequence node's keyvalues.
+		EDITOR_API void			PullEditorData ( void );
+
 		//	FreeData() : Frees associated SequenceNode and other information.
 		EDITOR_API void			FreeData ( void );
 
@@ -167,6 +170,9 @@ namespace sequence {
 	{
 	public:
 		explicit				NodeBoardState ( m04::editor::SequenceEditor* editor );
+
+		// CreateBoardNode( classname ) : Creates a board node, allocating a sequence node with the given class name.
+		BoardNode*				CreateBoardNode ( const char* classname );
 
 		//	AddDisplayNode( board_node ) : Adds node to display. Allocates and sets up a proper display object.
 		void					AddDisplayNode ( BoardNode* board_node );

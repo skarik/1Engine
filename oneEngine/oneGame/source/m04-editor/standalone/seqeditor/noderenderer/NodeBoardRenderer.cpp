@@ -323,34 +323,56 @@ void m04::editor::sequence::NodeRenderer::OnReleased ( const EventMouse& mouse_e
 		{
 		}*/
 
-		// Check if hit another node
-		if (m_draggingInfo.target == DragState::Target::kFlowInput
-			|| m_draggingInfo.target == DragState::Target::kFlowOutput
-			|| m_draggingInfo.target == DragState::Target::kFlowSync
-			|| m_draggingInfo.target == DragState::Target::kLogicInput
-			|| m_draggingInfo.target == DragState::Target::kLogicOutput)
+		if (m_draggingInfo.dragStart == DragState::Target::kFlowInput
+			|| m_draggingInfo.dragStart == DragState::Target::kFlowOutput
+			|| m_draggingInfo.dragStart == DragState::Target::kFlowSync
+			|| m_draggingInfo.dragStart == DragState::Target::kLogicInput
+			|| m_draggingInfo.dragStart == DragState::Target::kLogicOutput)
 		{
 			ui::eventide::Element* hitElement = m_ui->GetMouseHit();
-			if (hitElement != NULL)
+			NodeRenderer* hitNodeVisual = hitElement ? dynamic_cast<NodeRenderer*>(hitElement) : nullptr;
+
+			// Check if hit another node
+			if (hitNodeVisual != NULL)
 			{
-				NodeRenderer* hitElementAsNodeRenderer = dynamic_cast<NodeRenderer*>(hitElement);
-				if (hitElementAsNodeRenderer != NULL)
+				if (m_draggingInfo.dragStart == DragState::Target::kFlowInput)
 				{
-					if (m_draggingInfo.target == DragState::Target::kFlowInput)
+					if (hitNodeVisual != this)
 					{
-						if (hitElementAsNodeRenderer != this)
-						{
-							hitElementAsNodeRenderer->GetBoardNode()->sequenceInfo->next = node->sequenceInfo;
-							hitElementAsNodeRenderer->UpdateNextNode();
+						uint32_t hitOutputIndex = 0;
+						const auto& hitNodeFlow = hitNodeVisual->GetBoardNode()->sequenceInfo->view->Flow();
+						if (hitNodeFlow.outputCount == 1)
+						{	// Can always assume the 0'th output
+							hitOutputIndex = 0;
 						}
+						else
+						{
+							// Select based on the closest output
+							int closestOutputIndex = 0;
+							float closestOutputDistance = HUGE_VALF;
+							for (uint32_t outputIndex = 0; outputIndex < hitNodeFlow.outputCount; ++outputIndex)
+							{
+								core::math::BoundingBox l_bbox_flow_output = hitNodeVisual->GetBboxFlowOutput(outputIndex);
+								float l_distanceToBbox = (m_ui->GetMousePosition() - l_bbox_flow_output.GetCenterPoint()).magnitude();
+								if (l_distanceToBbox < closestOutputDistance)
+								{
+									closestOutputIndex = outputIndex;
+									closestOutputDistance = l_distanceToBbox;
+								}
+							}
+							hitOutputIndex = closestOutputIndex;
+						}
+
+						hitNodeVisual->GetBoardNode()->sequenceInfo->nextNodes[hitOutputIndex] = this->node->sequenceInfo;
+						hitNodeVisual->UpdateNextNode();
 					}
-					else if (m_draggingInfo.target == DragState::Target::kFlowOutput)
+				}
+				else if (m_draggingInfo.dragStart == DragState::Target::kFlowOutput)
+				{
+					if (hitNodeVisual != this)
 					{
-						if (hitElementAsNodeRenderer != this)
-						{
-							node->sequenceInfo->next = hitElementAsNodeRenderer->GetBoardNode()->sequenceInfo;
-							m_next = hitElementAsNodeRenderer;
-						}
+						this->node->sequenceInfo->nextNodes[m_draggingInfo.index] = hitNodeVisual->GetBoardNode()->sequenceInfo;
+						m_nextNodes[m_draggingInfo.index] = hitNodeVisual;
 					}
 				}
 			}
@@ -432,7 +454,7 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 	textParams.font_texture = &m_renderResources.m_fontTextureScripting;
 	textParams.position = nodeTopLeft + Vector3f(m_halfsizeOnBoard.x * 2.0F - m_margins.x, -ui::eventide::DefaultStyler.text.buttonSize - m_margins.y, 0);
 	textParams.rotation = GetBBoxAbsolute().m_M.getRotator();
-	textParams.size = ui::eventide::DefaultStyler.text.buttonSize * 0.4;
+	textParams.size = ui::eventide::DefaultStyler.text.buttonSize * 0.4F;
 	textParams.alignment = AlignHorizontal::kRight;
 	textParams.color = DefaultStyler.text.headingColor.Lerp(DefaultStyler.box.defaultColor, 0.75F);
 	buildText(textParams);
@@ -448,7 +470,7 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 	buildText(textParams);
 
 	// Flow input
-	if (node->sequenceInfo->view->Flow().inputCount != 0)
+	if (node->sequenceInfo->view->Flow().hasInput)
 	{
 		core::math::BoundingBox l_bbox_flow_input = GetBboxFlowInput();
 
@@ -487,9 +509,9 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 		// Build the curve
 		pathParams = {};
 		Vector3f pointArray[21];
-		pointArray[0] = (m_draggingInfo.target == DragState::Target::kFlowInput)
+		pointArray[0] = (m_draggingInfo.dragStart == DragState::Target::kFlowInput)
 			? GetBboxFlowInput().GetCenterPoint()
-			: GetBboxFlowOutput(0).GetCenterPoint();
+			: GetBboxFlowOutput(m_draggingInfo.index).GetCenterPoint();
 		pointArray[20] = m_board->GetEditor()->GetMousePosition3D(); // Lead curve to the mouse position
 		const Vector3f pointDelta = pointArray[20] - pointArray[0];
 		// Build a bezier curve between the points
@@ -515,14 +537,12 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 		buildPath(pathParams);
 	}
 
-	// Draw the flow output line
-	if (m_next == NULL)
+	// Draw the lines
+	for (uint32_t outputFlowIndex = 0; outputFlowIndex < this->node->sequenceInfo->view->Flow().outputCount; ++outputFlowIndex)
 	{
-		;	
-	}
-	else
-	{
-		NodeRenderer* next_noderenderer = (NodeRenderer*)m_next;
+		NodeRenderer* next_noderenderer = (NodeRenderer*)m_nextNodes[outputFlowIndex];
+		if (next_noderenderer == nullptr)
+			continue;
 
 		/*cubeParams = {};
 		cubeParams.box = core::math::Cubic::ConstructCenterExtents((GetBboxFlowOutput(0).GetCenterPoint() + next_noderenderer->GetBboxFlowInput().GetCenterPoint()) * 0.5F, Vector3f(5, 5, 5));
@@ -530,7 +550,7 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 		cubeParams.texture = NULL;
 		buildCube(cubeParams);*/
 
-		core::math::BoundingBox l_bbox_flow_output = GetBboxFlowOutput(0);
+		core::math::BoundingBox l_bbox_flow_output = GetBboxFlowOutput(outputFlowIndex);
 		core::math::BoundingBox l_bbox_flow_input = next_noderenderer->GetBboxFlowInput();
 
 		// Build the click-able node
@@ -550,7 +570,7 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 			Vector3f(next_noderenderer->GetBboxFlowInput().GetCenterPoint()),
 		};*/
 		Vector3f pointArray[21];
-		pointArray[0] = GetBboxFlowOutput(0).GetCenterPoint();
+		pointArray[0] = GetBboxFlowOutput(outputFlowIndex).GetCenterPoint();
 		pointArray[20] = next_noderenderer->GetBboxFlowInput().GetCenterPoint();
 		const Vector3f pointDelta = pointArray[20] - pointArray[0];
 		// Build a bezier curve between the points
@@ -662,19 +682,24 @@ void m04::editor::sequence::NodeRenderer::UpdateNextNode ( void )
 {
 	const NodeBoardState* nbs = m_board;
 
-	// Find the node in the board with the matching pointer
-	auto boardNodeIter = (this->node->sequenceInfo->next == NULL)
-		? nbs->nodes.end()
-		: std::find_if(nbs->nodes.begin(), nbs->nodes.end(), [this](const NodeBoardState::NodeEntry& board_node) { return this->node->sequenceInfo->next == board_node.node->sequenceInfo; });
+	m_nextNodes.clear();
 
-	if (boardNodeIter != nbs->nodes.end())
+	for (SequenceNode*& nextNode : this->node->sequenceInfo->nextNodes)
 	{
-		m_next = (*boardNodeIter).node->display;
-	}
-	else
-	{	// Next node does not exist, update both this node and the next one
-		m_next = NULL;
-		node->sequenceInfo->next = NULL;
+		// Find the node in the board with the matching pointer
+		auto boardNodeIter = (nextNode != nullptr)
+			? std::find_if(nbs->nodes.begin(), nbs->nodes.end(), [nextNode](const NodeBoardState::NodeEntry& board_node) { return nextNode == board_node.node->sequenceInfo; })
+			: nbs->nodes.end();
+
+		if (boardNodeIter != nbs->nodes.end())
+		{
+			m_nextNodes.push_back(boardNodeIter->node->display);
+		}
+		else
+		{	// Could not find matching next node, clear it out
+			m_nextNodes.push_back(nullptr);
+			nextNode = nullptr;
+		}
 	}
 }
 

@@ -15,7 +15,7 @@ m04::editor::sequence::RightClickListMenu::RightClickListMenu ( SequenceEditor* 
 {
 	m_mouseInteract = MouseInteract::kCatchAll;
 
-	m04::editor::sequence::NodeRenderer* renderer = dynamic_cast<m04::editor::sequence::NodeRenderer*>(m_editor->GetEventideUI()->GetMouseHit());
+	m04::editor::sequence::NodeRenderer* nodeVisual = dynamic_cast<m04::editor::sequence::NodeRenderer*>(m_editor->GetEventideUI()->GetMouseHit());
 	bool bHoveringOnConnection = false;
 
 	const Vector3f mousePositionUI = m_editor->GetMousePosition3D();
@@ -23,30 +23,35 @@ m04::editor::sequence::RightClickListMenu::RightClickListMenu ( SequenceEditor* 
 	// Also check which node connection we're over
 	for (const auto& boardNodeEntry : m_editor->GetNodeBoardState()->nodes)
 	{
-		NodeRenderer* outputNode = arFastCast<NodeRenderer*>(boardNodeEntry.node->display);
-		NodeRenderer* inputNode = arFastCast<NodeRenderer*>(outputNode->GetNextNode());
+		NodeRenderer* currentNodeVisual = arFastCast<NodeRenderer*>(boardNodeEntry.node->display);
+		auto currentFlow = boardNodeEntry.node->sequenceInfo->view->Flow();
 
-		if (outputNode && inputNode)
-		{
-			// Only connection is the flow connection (for now)
-			Vector3f flowOutput = outputNode->GetBboxFlowOutput(0).GetCenterPoint();
-			Vector3f flowInput = inputNode->GetBboxFlowInput().GetCenterPoint();
-			core::math::Cubic flowCenterBbox = core::math::Cubic::ConstructCenterExtents((flowOutput + flowInput) * 0.5F, Vector3f(10.0F, 10.0F, 20.0F));
+		for (uint i = 0; i < currentFlow.outputCount; ++i)
+		{ 
+			NodeRenderer* inputNodeVisual = arFastCast<NodeRenderer*>(currentNodeVisual->GetNextNode(i));
 
-			if (flowCenterBbox.PointIsInside(mousePositionUI))
+			if (currentNodeVisual && inputNodeVisual)
 			{
-				bHoveringOnConnection = true;
-				renderer = outputNode;
-				m_targetConnection = 0;
+				// Only connection is the flow connection (for now)
+				Vector3f flowOutput = currentNodeVisual->GetBboxFlowOutput(i).GetCenterPoint();
+				Vector3f flowInput  =   inputNodeVisual->GetBboxFlowInput().GetCenterPoint();
+				core::math::Cubic flowCenterBbox = core::math::Cubic::ConstructCenterExtents((flowOutput + flowInput) * 0.5F, Vector3f(10.0F, 10.0F, 20.0F));
+
+				if (flowCenterBbox.PointIsInside(mousePositionUI))
+				{
+					bHoveringOnConnection = true;
+					nodeVisual = currentNodeVisual;
+					m_targetConnection = i;
+				}
 			}
 		}
 	}
 
 	// Set up own choices now:
-	if (renderer != nullptr && !bHoveringOnConnection)
+	if (nodeVisual != nullptr && !bHoveringOnConnection)
 	{
 		m_mode = Mode::kOnNode;
-		m_targetNode = renderer->GetBoardNode();
+		m_targetNode = nodeVisual->GetBoardNode();
 
 		std::vector<std::string> l_choiceList;
 		l_choiceList.push_back("Cancel");
@@ -54,10 +59,10 @@ m04::editor::sequence::RightClickListMenu::RightClickListMenu ( SequenceEditor* 
 		l_choiceList.push_back("[Debug] Dump OSF");
 		this->SetListChoices(l_choiceList);
 	}
-	else if (renderer != nullptr && bHoveringOnConnection)
+	else if (nodeVisual != nullptr && bHoveringOnConnection)
 	{
 		m_mode = Mode::kOnConnection;
-		m_targetNode = renderer->GetBoardNode();
+		m_targetNode = nodeVisual->GetBoardNode();
 
 		std::vector<std::string> l_choiceList;
 		l_choiceList.push_back("Cancel");
@@ -158,7 +163,7 @@ void m04::editor::sequence::RightClickListMenu::OnActivated ( int choiceIndex )
 			// Need to signal to the board state that we want to add a new node at the given position.
 
 			// TODO: move to a boardnode factory for the actual sequence info gen
-			BoardNode* board_node = new BoardNode();
+			/*BoardNode* board_node = new BoardNode();
 			board_node->SetPosition(GetBBox().GetCenterPoint());
 			std::vector<BoardNodeGUID*> all_guids;
 			std::transform(
@@ -181,17 +186,26 @@ void m04::editor::sequence::RightClickListMenu::OnActivated ( int choiceIndex )
 			else
 			{
 				board_node->sequenceInfo = m04::editor::SequenceNode::CreateWithEditorView(m_editor->GetNodeTypes().find(classnameInfo.name)->second, classnameInfo.name);
-			}
+			}*/
+
+			const auto& classnameInfo = m_classnameListing[choiceIndex - 1];
+			BoardNode* board_node = m_editor->GetNodeBoardState()->CreateBoardNode(classnameInfo.name);
+
+			//
+			board_node->SetPosition(GetBBox().GetCenterPoint());
 
 			// Make sure the sequence info has a reference to editor data it needs to be aware of
-			board_node->sequenceInfo->editorData = &board_node->editorData;
+			//board_node->sequenceInfo->editorData = &board_node->editorData;
 
 			// Add node to the board state!
 			m_editor->GetNodeBoardState()->AddDisplayNode(board_node);
 		}
 		else if (m_mode == Mode::kOnNode)
 		{
-			if (choiceIndex == 1)
+			static constexpr int kChoiceId_Cancel = 0;
+			static constexpr int kChoiceId_Delete = 1;
+			static constexpr int kChoiceId_DebugDump = 2;
+			if (choiceIndex == kChoiceId_Delete)
 			{
 				// get the node of the hovered
 				BoardNode* board_node = m_targetNode;
@@ -201,7 +215,7 @@ void m04::editor::sequence::RightClickListMenu::OnActivated ( int choiceIndex )
 				((NodeRenderer*)board_node->display)->Destroy();
 				delete board_node;
 			}
-			else if (choiceIndex == 2)
+			else if (choiceIndex == kChoiceId_DebugDump)
 			{
 				BoardNode* board_node = m_targetNode;
 				board_node->DebugDumpOSF();
@@ -209,11 +223,13 @@ void m04::editor::sequence::RightClickListMenu::OnActivated ( int choiceIndex )
 		}
 		else if (m_mode == Mode::kOnConnection)
 		{
-			if (choiceIndex == 1)
+			static constexpr int kChoiceId_Cancel = 0;
+			static constexpr int kChoiceId_Unlink = 1;
+			if (choiceIndex == kChoiceId_Unlink)
 			{
 				// Unlink the given node
 				BoardNode* board_node = m_targetNode;
-				board_node->sequenceInfo->next = nullptr;
+				board_node->sequenceInfo->nextNodes[m_targetConnection] = nullptr;
 				NodeRenderer* node_display = arFastCast<NodeRenderer*>(board_node->display);
 				node_display->UpdateNextNode();
 			}

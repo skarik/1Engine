@@ -18,11 +18,13 @@ m04::editor::SequenceNode* m04::editor::SequenceNode::CreateWithEditorView ( con
 	auto classInfoItr = ISequenceNodeClassInfo::m_registry.find(className);
 	if (classInfoItr == ISequenceNodeClassInfo::m_registry.end())
 	{
-		return NULL;
+		return nullptr;
 	}
 	else
 	{
-		return classInfoItr->second->CreateNew();
+		m04::editor::SequenceNode* node = classInfoItr->second->CreateNew();
+		node->nextNodes.resize(node->view->Flow().outputCount, nullptr);
+		return node;
 	}
 }
 
@@ -32,11 +34,12 @@ m04::editor::SequenceNode* m04::editor::SequenceNode::CreateWithEditorView ( con
 	m04::editor::SequenceNode* node = new m04::editor::SequenceNode;
 	node->view = new m04::editor::sequence::ExternallyDefinedSeqNodeView(node, definition);
 	node->view->classname = className;
+	node->nextNodes.resize(node->view->Flow().outputCount, nullptr);
 	return node;
 }
 
 
-void m04::editor::ISequenceNodeView::SetFlow ( const int flowOutputIndex, SequenceNode* newNodeValue )
+/*void m04::editor::ISequenceNodeView::SetFlow ( const int flowOutputIndex, SequenceNode* newNodeValue )
 {
 	node->next = newNodeValue;
 }
@@ -44,7 +47,7 @@ void m04::editor::ISequenceNodeView::SetFlow ( const int flowOutputIndex, Sequen
 m04::editor::SequenceNode* m04::editor::ISequenceNodeView::GetFlow ( const int flowOutputIndex )
 {
 	return node->next;
-}
+}*/
 
 // Barebones sequence node view definition:
 
@@ -53,14 +56,14 @@ DECLARE_SEQUENCENODE_CLASS(Generic, m04::editor::sequence::BarebonesSequenceNode
 m04::editor::sequence::BarebonesSequenceNodeView::BarebonesSequenceNodeView ( SequenceNode* in_node )
 	: ISequenceNodeView(in_node)
 {
-	flowView.inputCount = 1;
+	flowView.hasInput = true;
 	flowView.outputCount = 1;
 	propertyViews.resize(1);
 	propertyViews[0] = {"Enabled?", "enable", PropertyRenderStyle::kBoolean};
 	properties::SetProperty(&node->data, "enable", true); // Default enabled.
 }
 
-void m04::editor::sequence::BarebonesSequenceNodeView::SetFlow ( const int flowOutputIndex, SequenceNode* newNodeValue )
+/*void m04::editor::sequence::BarebonesSequenceNodeView::SetFlow ( const int flowOutputIndex, SequenceNode* newNodeValue )
 {
 	ISequenceNodeView::SetFlow(flowOutputIndex, newNodeValue);
 }
@@ -76,7 +79,7 @@ void m04::editor::sequence::BarebonesSequenceNodeView::SetOutput ( const int out
 m04::editor::SequenceNode* m04::editor::sequence::BarebonesSequenceNodeView::GetOuptut ( const int outputIndex )
 {
 	return NULL;
-}
+}*/
 
 /*void m04::editor::sequence::BarebonesSequenceNodeView::SetProperty ( const int propertyIndex, const float newFloatValue )
 {
@@ -186,7 +189,8 @@ DECLARE_SEQUENCENODE_CLASS(Sidetask, m04::editor::sequence::SidetaskSeqNodeView)
 m04::editor::sequence::TaskSeqNodeView::TaskSeqNodeView ( SequenceNode* in_node )
 	: BarebonesSequenceNodeView(in_node)
 {
-	flowView.inputCount = 0;
+	// Task views do not have any input/output
+	flowView.hasInput = false;
 }
 
 //===============================================================================================//
@@ -194,9 +198,12 @@ m04::editor::sequence::TaskSeqNodeView::TaskSeqNodeView ( SequenceNode* in_node 
 m04::editor::sequence::ExternallyDefinedSeqNodeView::ExternallyDefinedSeqNodeView ( SequenceNode* in_node, const SequenceNodeDefinition* definition )
 	: BarebonesSequenceNodeView(in_node)
 {
-	flowView.inputCount = 1;
+	flowView.hasInput = true;
 	isExternalClass = true;
 	externalClass = definition;
+
+	// Set up the flows
+	flowView.outputCount = externalClass->outputCount;
 
 	// Loop through all the inputs and set up properties
 	propertyViews.resize(externalClass->properties.size() + 1);

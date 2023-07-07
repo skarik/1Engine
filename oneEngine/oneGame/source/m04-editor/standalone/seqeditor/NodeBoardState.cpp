@@ -17,19 +17,34 @@ void m04::editor::sequence::BoardNode::PushEditorData ( void )
 {
 	osf::BaseValue* v;
 
-	v = sequenceInfo->editorData->data[kKeyGuid];
-	if (v == nullptr)
+	v = sequenceInfo->editorData->data.GetAdd<osf::StringValue>(kKeyGuid);
+	if (v != nullptr)
 	{
-		v = sequenceInfo->editorData->data.Add(new osf::KeyValue(kKeyGuid, new osf::StringValue()))->value;
+		v->As<osf::StringValue>()->value = editorData.guid.toString();
 	}
-	v->As<osf::StringValue>()->value = editorData.guid.toString();
 
-	v = sequenceInfo->editorData->data[kKeyEditorPosition];
-	if (v == nullptr)
+	v = sequenceInfo->editorData->data.GetAdd<osf::StringValue>(kKeyEditorPosition);
+	if (v != nullptr)
 	{
-		v = sequenceInfo->editorData->data.Add(new osf::KeyValue(kKeyEditorPosition, new osf::StringValue()))->value;
+		v->As<osf::StringValue>()->value = core::utils::string::ToString(editorData.position);
 	}
-	v->As<osf::StringValue>()->value = std::to_string(editorData.position.x) + "\t" + std::to_string(editorData.position.y) + "\t" + std::to_string(editorData.position.z);
+}
+
+void m04::editor::sequence::BoardNode::PullEditorData ( void )
+{
+	osf::BaseValue* v;
+
+	v = sequenceInfo->editorData->data.GetAs<osf::StringValue>(kKeyGuid);
+	if (v != nullptr)
+	{
+		editorData.guid.setFromString(v->As<osf::StringValue>()->value);
+	}
+
+	v = sequenceInfo->editorData->data.GetAs<osf::StringValue>(kKeyEditorPosition);
+	if (v != nullptr)
+	{
+		editorData.position = core::utils::string::ToObject<Vector3f>(v->As<osf::StringValue>()->value.c_str());
+	}
 }
 
 void m04::editor::sequence::BoardNode::FreeData ( void )
@@ -74,7 +89,10 @@ void m04::editor::sequence::BoardNode::DebugDumpOSF ( void )
 				break;
 			}
 		}
-		printf("Next node: %p\n", sequenceInfo->next);
+		for (size_t nodeIndex = 0; nodeIndex < sequenceInfo->nextNodes.size(); ++nodeIndex)
+		{
+			printf("Next node[%zu]: %p\n", nodeIndex, sequenceInfo->nextNodes[nodeIndex]);
+		}
 	}
 	else
 	{
@@ -87,6 +105,35 @@ m04::editor::sequence::NodeBoardState::NodeBoardState ( m04::editor::SequenceEdi
 	, parent_editor(editor)
 {
 	;
+}
+
+m04::editor::sequence::BoardNode* m04::editor::sequence::NodeBoardState::CreateBoardNode ( const char* classname )
+{
+	BoardNode* board_node = new BoardNode();
+
+	// Generate a GUID
+	std::vector<BoardNodeGUID*> all_guids;
+	std::transform(
+		nodes.begin(),
+		nodes.end(),
+		std::back_inserter(all_guids),
+		[](const NodeBoardState::NodeEntry& entry){ return entry.guid; }
+		);
+	board_node->editorData.guid.guidType = (BoardNodeGUIDType)GetEditor()->GetSEL().guid_preference;
+	board_node->editorData.guid.generateDistinctTo(all_guids);
+
+	// create a view for the board node
+	board_node->sequenceInfo = m04::editor::SequenceNode::CreateWithEditorView(classname);
+	if ( board_node->sequenceInfo == nullptr )
+	{
+		board_node->sequenceInfo = m04::editor::SequenceNode::CreateWithEditorView(GetEditor()->GetNodeTypes().find(classname)->second, classname);
+	}
+	ARCORE_ASSERT(board_node->sequenceInfo != nullptr);
+
+	// Make sure the sequence info has a reference to editor data it needs to be aware of
+	board_node->sequenceInfo->editorData = &board_node->editorData;
+
+	return board_node;
 }
 
 void m04::editor::sequence::NodeBoardState::AddDisplayNode ( BoardNode* board_node )
@@ -113,13 +160,24 @@ void m04::editor::sequence::NodeBoardState::UnhookNode ( BoardNode* board_node )
 	for (auto& nodeEntry : nodes)
 	{
 		BoardNode* node = nodeEntry.node;
+		
 		// Clear Sync
-		if (node->sequenceInfo->task_sync_target == sequence_node)
+		if (node->sequenceInfo->syncNode == sequence_node)
 		{
-			node->sequenceInfo->task_sync_target = NULL;
+			node->sequenceInfo->syncNode = NULL;
 		}
+		
+		// Clear Outputs
+		for (size_t outputIndex = 0; outputIndex < node->sequenceInfo->nextNodes.size(); ++outputIndex)
+		{
+			if (node->sequenceInfo->nextNodes[outputIndex] == sequence_node)
+			{
+				node->sequenceInfo->nextNodes[outputIndex] = nullptr;
+			}
+		}
+
 		// Clear Flow
-		for (uint outputIndex = 0; outputIndex < node->sequenceInfo->view->Flow().outputCount; ++outputIndex)
+		/*for (uint outputIndex = 0; outputIndex < node->sequenceInfo->view->Flow().outputCount; ++outputIndex)
 		{
 			if (node->sequenceInfo->view->GetFlow(outputIndex) == sequence_node)
 			{
@@ -134,7 +192,7 @@ void m04::editor::sequence::NodeBoardState::UnhookNode ( BoardNode* board_node )
 			{
 				node->sequenceInfo->view->SetOutput(outputIndex, NULL);
 			}
-		}
+		}*/
 	}
 }
 
@@ -228,7 +286,7 @@ void m04::editor::sequence::NodeBoardState::Save ( ISequenceSerializer* serializ
 		out_list.clear();
 		for (uint outputIndex = 0; outputIndex < node->sequenceInfo->view->Flow().outputCount; ++outputIndex)
 		{
-			SequenceNode* outputNode = node->sequenceInfo->view->GetFlow(outputIndex);
+			SequenceNode* outputNode = node->sequenceInfo->nextNodes[outputIndex]; //node->sequenceInfo->view->GetFlow(outputIndex);
 			for (auto& possibleNodeEntry : nodes)
 			{
 				BoardNode* possibleBoardNode = possibleNodeEntry.node;
@@ -248,7 +306,8 @@ void m04::editor::sequence::NodeBoardState::Save ( ISequenceSerializer* serializ
 			BoardNode* possibleBoardNode = possibleNodeEntry.node;
 			for (uint outputIndex = 0; outputIndex < possibleBoardNode->sequenceInfo->view->Flow().outputCount; ++outputIndex)
 			{
-				if (possibleBoardNode->sequenceInfo->view->GetFlow(outputIndex) == node->sequenceInfo)
+				//if (possibleBoardNode->sequenceInfo->view->GetFlow(outputIndex) == node->sequenceInfo)
+				if (possibleBoardNode->sequenceInfo->nextNodes[outputIndex] == node->sequenceInfo)
 				{
 					out_list.push_back(possibleBoardNode);
 				}
@@ -279,7 +338,7 @@ void m04::editor::sequence::NodeBoardState::Save ( ISequenceSerializer* serializ
 	for (auto& possibleStartEntry : nodes)
 	{
 		BoardNode* possibleStartNode = possibleStartEntry.node;
-		if (possibleStartNode->sequenceInfo->view->Flow().inputCount == 0)
+		if (possibleStartNode->sequenceInfo->view->Flow().hasInput == false)
 		{
 			l_nodeinfoTable[possibleStartNode].isFlowStart = true;
 
@@ -490,7 +549,7 @@ void m04::editor::sequence::NodeBoardState::Load ( ISequenceDeserializer* deseri
 				LabelToNode& previousNodeEntry = l_labelToNodeListing[listingIndex - 1];
 				if (previousNodeEntry.node != NULL)
 				{
-					previousNodeEntry.node->next = nodeEntry.node;
+					previousNodeEntry.node->nextNodes.push_back(nodeEntry.node);
 				}
 			}
 			// Check goto linking:
@@ -511,11 +570,11 @@ void m04::editor::sequence::NodeBoardState::Load ( ISequenceDeserializer* deseri
 					// Redirect the current node to follow the goto
 					if (possibleFindResult != l_labelToNodeListing.end())
 					{
-						nodeEntry.node->next = possibleFindResult->node;
+						nodeEntry.node->nextNodes.push_back(possibleFindResult->node);
 					}
 					else
 					{
-						nodeEntry.node->next = NULL;
+						nodeEntry.node->nextNodes.push_back(nullptr);
 					}
 				}
 			}
