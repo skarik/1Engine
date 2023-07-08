@@ -463,6 +463,9 @@
     <ClInclude Include="source\core\utils\hex.h">
       <Filter>SOURCE\Core\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="source\core-ext\threads\spinlock.h">
+      <Filter>SOURCE\Core-ext\Threads</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\core\math\Color.cpp">
