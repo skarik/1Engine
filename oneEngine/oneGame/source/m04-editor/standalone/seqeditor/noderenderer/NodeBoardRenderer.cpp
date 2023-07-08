@@ -117,6 +117,15 @@ m04::editor::sequence::NodeRenderer::~NodeRenderer ( void )
 	m_propertyRenderers.clear();
 }
 
+void m04::editor::sequence::NodeRenderer::OnDoneLoading ( void )
+{
+	// Update the BoardNode's cached display info
+	UpdateNextNode();
+	UpdateCachedVisualInfo();
+	UpdatePropertyLayout();
+	UpdateBboxSize();
+}
+
 void m04::editor::sequence::NodeRenderer::UpdateCachedVisualInfo ( void )
 {
 	using namespace ui::eventide;

@@ -161,6 +161,9 @@ namespace sequence {
 		BoardNode*			GetBoardNode ( void )
 			{ return node; }
 
+		//	OnDoneLoading() : Overloadable for calling loading done.
+		virtual void		OnDoneLoading ( void ) {}
+
 	protected:
 		BoardNode*			node;
 	};

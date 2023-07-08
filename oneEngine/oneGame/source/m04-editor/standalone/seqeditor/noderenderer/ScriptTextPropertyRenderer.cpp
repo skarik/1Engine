@@ -141,7 +141,7 @@ void SplitString ( const char* str, RrFontTexture* font_texture, const Real max_
 				string_length += l_nextWordLength;
 			}
 			// We go beyond, and the word is small enough to wrap
-			else if (state.pen.x > max_pen_width * 0.5F)
+			else if (state.pen.x > std::max<Real>(FLOAT_PRECISION, max_pen_width * 0.5F))
 			{
 				AddNewLineAndReset(); // This does not increment so the next iteration can work
 			}

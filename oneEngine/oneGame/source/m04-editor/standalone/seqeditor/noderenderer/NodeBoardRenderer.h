@@ -65,6 +65,9 @@ namespace sequence {
 	public:
 		virtual void			OnGameFrameUpdate ( const GameFrameUpdateInput& input_frame ) override;
 
+		//	OnDoneLoading() : Overloadable for calling loading done.
+		virtual void			OnDoneLoading ( void ) override;
+
 		void					UpdateCachedVisualInfo ( void );
 		void					UpdateNextNode ( void );
 		void					UpdatePropertyLayout ( void );

@@ -354,6 +354,15 @@ void m04::editor::sequence::JSONSequenceBoardSerializer::DeserializeBoard ( Node
 		i >> data;
 	}
 
+	struct LinkInfo
+	{
+		std::string nextNode;
+		std::vector<std::string> nextNodes;
+		std::string previousNode;
+		std::string syncNode;
+	};
+	std::map<std::string, LinkInfo> l_linkInfoMap;
+
 	// Start loading in the array of nodes:
 	for (const nlohmann::json& node : data["nodes"])
 	{
@@ -369,9 +378,82 @@ void m04::editor::sequence::JSONSequenceBoardSerializer::DeserializeBoard ( Node
 		// Pop the editor data!
 		board_node->PullEditorData();
 
-		// TODO: Take nextNode/nextNodes, previousNode, syncNode
+		// Store nextNode/nextNodes, previousNode, syncNode
+		LinkInfo l_linkInfo;
+		if (node.find("nextNodes") != node.end() && node["nextNodes"].is_array())
+		{
+			for (const auto& entry : node["nextNodes"])
+			{
+				l_linkInfo.nextNodes.push_back(entry.is_string() ? entry : "");
+			}
+		}
+		else if (node.find("nextNode") != node.end() && node["nextNode"].is_string())
+		{
+			l_linkInfo.nextNode = node["nextNode"];
+		}
 
-		// Add the board node to the display
+		if (node.find("previousNode") != node.end() && node["previousNode"].is_string())
+		{
+			l_linkInfo.previousNode = node["previousNode"];
+		}
+
+		if (node.find("syncNode") != node.end() && node["syncNode"].is_string())
+		{
+			l_linkInfo.syncNode = node["syncNode"];
+		}
+
+		l_linkInfoMap[board_node->editorData.guid.toString()] = l_linkInfo;
+
+		// Save the node
 		board->AddDisplayNode(board_node);
+	}
+
+	// With all data loaded, create the node links
+	for (auto& entry : board->nodes)
+	{
+		BoardNode* board_node = entry.node;
+
+		const LinkInfo& l_linkInfo = l_linkInfoMap[board_node->editorData.guid.toString()];
+
+		// Define lambda for searching for the board nodes with matching GUID
+		static auto FindSequenceNodeWithGUID = [&board](const std::string& guid_string, const BoardNodeGUIDType guid_type) -> SequenceNode*
+		{
+			BoardNodeGUID guid;
+			guid.guidType = guid_type;
+			guid.setFromString(guid_string);
+
+			auto result = std::find_if(board->nodes.begin(), board->nodes.end(),
+				[&guid](NodeBoardState::NodeEntry& entry)
+				{
+					return *entry.guid == guid;
+				});
+			
+			BoardNode* board_node = (result != board->nodes.end()) ? result->node : nullptr;
+			return (board_node != nullptr) ? board_node->sequenceInfo : nullptr;
+		};
+
+		const BoardNodeGUIDType l_guidType = board_node->editorData.guid.guidType;
+
+		// Link next nodes
+		if (l_linkInfo.nextNodes.empty())
+		{
+			if (!l_linkInfo.nextNode.empty())
+				board_node->sequenceInfo->nextNodes[0] = FindSequenceNodeWithGUID(l_linkInfo.nextNode, l_guidType);
+		}
+		else
+		{
+			for (uint32_t i = 0; i < l_linkInfo.nextNodes.size(); ++i)
+			{
+				if (!l_linkInfo.nextNodes[i].empty())
+					board_node->sequenceInfo->nextNodes[i] = FindSequenceNodeWithGUID(l_linkInfo.nextNodes[i], l_guidType);
+			}
+		}
+	
+		// Link sync node
+		if (!l_linkInfo.syncNode.empty())
+			board_node->sequenceInfo->syncNode = FindSequenceNodeWithGUID(l_linkInfo.syncNode, l_guidType);
+
+		// Update the BoardNode's cached display info
+		board_node->display->OnDoneLoading();
 	}
 }
