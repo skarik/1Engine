@@ -298,6 +298,9 @@ void ui::eventide::UserInterface::Update ( void )
 			{
 				ARCORE_ASSERT(element != NULL);
 
+				core::threads::ScopedSpinlock(element->m_workLock);
+				if (!element->m_isValid) continue;
+
 				const ui::eventide::Element::MouseInteract elementInteractStyle = element->GetMouseInteract();
 
 				if (elementInteractStyle == ui::eventide::Element::MouseInteract::kBlocking
@@ -321,36 +324,40 @@ void ui::eventide::UserInterface::Update ( void )
 			ui::eventide::Element* element = m_currentMouseLockedElement;
 			bool hasValidHit = false;
 
-			// Attempt to do collision with the locked element
-			const ui::eventide::Element::MouseInteract elementInteractStyle = element->GetMouseInteract();
-
-			if (elementInteractStyle == ui::eventide::Element::MouseInteract::kBlocking
-				|| elementInteractStyle == ui::eventide::Element::MouseInteract::kCapturing
-				|| elementInteractStyle == ui::eventide::Element::MouseInteract::kCapturingCatchAll)
+			core::threads::ScopedSpinlock(element->m_workLock);
+			if (element->m_isValid)
 			{
-				float mouseHitDistance = 0.0F;
-				if (element->GetBBoxAbsolute().Raycast(mouseRay, mouseHitDistance))
+				// Attempt to do collision with the locked element
+				const ui::eventide::Element::MouseInteract elementInteractStyle = element->GetMouseInteract();
+
+				if (elementInteractStyle == ui::eventide::Element::MouseInteract::kBlocking
+					|| elementInteractStyle == ui::eventide::Element::MouseInteract::kCapturing
+					|| elementInteractStyle == ui::eventide::Element::MouseInteract::kCapturingCatchAll)
 				{
-					minMouseHitDistance = mouseHitDistance;
-					hasValidHit = true;
+					float mouseHitDistance = 0.0F;
+					if (element->GetBBoxAbsolute().Raycast(mouseRay, mouseHitDistance))
+					{
+						minMouseHitDistance = mouseHitDistance;
+						hasValidHit = true;
+					}
 				}
-			}
 
-			if (!hasValidHit)
-			{
-				// Make a plane parallel to the camera at the object's center, and cast against that.
-				core::math::Plane testPlane (element->GetBBox().GetCenterPoint(), camera->transform.rotation * Vector3f::forward);
-
-				float mouseHitDistance = 0.0F;
-				if (testPlane.Raycast(mouseRay, mouseHitDistance))
+				if (!hasValidHit)
 				{
-					minMouseHitDistance = mouseHitDistance;
-					hasValidHit = true;
-				}
-			}
+					// Make a plane parallel to the camera at the object's center, and cast against that.
+					core::math::Plane testPlane (element->GetBBox().GetCenterPoint(), camera->transform.rotation * Vector3f::forward);
 
-			// If we don't have a valid hit at this point, the element has gone behind the camera. This is a bad state to be in.
-			ARCORE_ASSERT(hasValidHit);
+					float mouseHitDistance = 0.0F;
+					if (testPlane.Raycast(mouseRay, mouseHitDistance))
+					{
+						minMouseHitDistance = mouseHitDistance;
+						hasValidHit = true;
+					}
+				}
+
+				// If we don't have a valid hit at this point, the element has gone behind the camera. This is a bad state to be in.
+				ARCORE_ASSERT(hasValidHit);
+			}
 		}
 
 		// Save hit position:
@@ -367,10 +374,16 @@ void ui::eventide::UserInterface::Update ( void )
 		event.position_world = mouseRay.pos + mouseRay.dir * minMouseHitDistance;
 		event.element = m_currentMouseOverElement;
 
+		core::threads::Spinlock* mouseOverWorklock = m_currentMouseOverElement ? &m_currentMouseOverElement->m_workLock : nullptr;
+		if (mouseOverWorklock != nullptr)
+		{
+			mouseOverWorklock->WaitEnter();
+		}
+
 		if (minMouseHitElement != m_currentMouseOverElement)
 		{
 			// Exiting the current element:
-			if (m_currentMouseOverElement != NULL)
+			if (m_currentMouseOverElement != nullptr && m_currentMouseOverElement->m_isValid)
 			{
 				if (m_currentMouseOverElement->GetMouseInteract() == ui::eventide::Element::MouseInteract::kCapturing
 					|| m_currentMouseOverElement->GetMouseInteract() == ui::eventide::Element::MouseInteract::kCapturingCatchAll)
@@ -386,7 +399,7 @@ void ui::eventide::UserInterface::Update ( void )
 			m_currentMouseOverElement = minMouseHitElement;
 
 			// Entering the new element:
-			if (m_currentMouseOverElement != NULL)
+			if (m_currentMouseOverElement != nullptr && m_currentMouseOverElement->m_isValid)
 			{
 				if (m_currentMouseOverElement->GetMouseInteract() == ui::eventide::Element::MouseInteract::kCapturing
 					|| m_currentMouseOverElement->GetMouseInteract() == ui::eventide::Element::MouseInteract::kCapturingCatchAll)
@@ -409,13 +422,16 @@ void ui::eventide::UserInterface::Update ( void )
 					event.type = ui::eventide::Element::EventMouse::Type::kClicked;
 					event.button = mouseButton;
 					event.element = m_currentMouseOverElement;
-					if (m_currentMouseOverElement != NULL)
+					if (m_currentMouseOverElement != nullptr && m_currentMouseOverElement->m_isValid)
 					{
 						m_currentMouseOverElement->OnEventMouse(event);
 					}
 					// Send to global capturing elements
 					for (ui::eventide::Element* element : m_elements)
 					{
+						core::threads::ScopedSpinlock(element->m_workLock);
+						if (!element->m_isValid) continue;
+
 						if (element != m_currentMouseOverElement
 							&& (element->GetMouseInteract() == ui::eventide::Element::MouseInteract::kCapturingCatchAll
 								|| element->GetMouseInteract() == ui::eventide::Element::MouseInteract::kCatchAll))
@@ -435,13 +451,16 @@ void ui::eventide::UserInterface::Update ( void )
 						event.button = mouseButton;
 						event.velocity_world = mouseDelta;
 						event.element = m_currentMouseOverElement;
-						if (m_currentMouseOverElement != NULL)
+						if (m_currentMouseOverElement != nullptr && m_currentMouseOverElement->m_isValid)
 						{
 							m_currentMouseOverElement->OnEventMouse(event);
 						}
 						// Send to global capturing elements
 						for (ui::eventide::Element* element : m_elements)
 						{
+							core::threads::ScopedSpinlock(element->m_workLock);
+							if (!element->m_isValid) continue;
+
 							if (element != m_currentMouseOverElement
 								&& (element->GetMouseInteract() == ui::eventide::Element::MouseInteract::kCapturingCatchAll
 									|| element->GetMouseInteract() == ui::eventide::Element::MouseInteract::kCatchAll))
@@ -458,13 +477,16 @@ void ui::eventide::UserInterface::Update ( void )
 					event.type = ui::eventide::Element::EventMouse::Type::kReleased;
 					event.button = mouseButton;
 					event.element = m_currentMouseOverElement;
-					if (m_currentMouseOverElement != NULL)
+					if (m_currentMouseOverElement != nullptr && m_currentMouseOverElement->m_isValid)
 					{
 						m_currentMouseOverElement->OnEventMouse(event);
 					}
 					// Send to global capturing elements
 					for (ui::eventide::Element* element : m_elements)
 					{
+						core::threads::ScopedSpinlock(element->m_workLock);
+						if (!element->m_isValid) continue;
+
 						if (element != m_currentMouseOverElement
 							&& (element->GetMouseInteract() == ui::eventide::Element::MouseInteract::kCapturingCatchAll
 								|| element->GetMouseInteract() == ui::eventide::Element::MouseInteract::kCatchAll))
@@ -474,13 +496,20 @@ void ui::eventide::UserInterface::Update ( void )
 					}
 				}
 			}
-			
+		}
+
+		if (mouseOverWorklock != nullptr)
+		{
+			mouseOverWorklock->Exit();
 		}
 	}
 
 	// Do other events:
 	for (ui::eventide::Element* element : m_elements) // TODO: this can be parallelized, probably??? Depends on the element OnThing calls.
 	{
+		core::threads::ScopedSpinlock(element->m_workLock);
+		if (!element->m_isValid) continue;
+
 		const uint32_t interactMask = element->GetInputInteractMask();
 		if (element->m_focused || (interactMask & ui::eventide::Element::InputInteractMasks::kCatchAll))
 		{
@@ -618,13 +647,24 @@ void ui::eventide::UserInterface::PostStep ( void )
 		}
 	}
 
-	std::vector<Element*> l_renderedElements = m_elements;
+	// Gather all the valid elements
+	std::vector<Element*> l_renderedElements;
+	l_renderedElements.reserve(m_elements.size());
+	for (Element* element : m_elements)
+	{
+		core::threads::ScopedSpinlock(element->m_workLock);
+		if (element->m_isValid)
+			l_renderedElements.push_back(element);
+	}
 	
 	// Rebuild all the meshes as needed
 	std::vector<core::jobs::JobId> l_rebuildJobs;
 	for (uint32_t elementIndex = 0; elementIndex < l_renderedElements.size(); ++elementIndex)
 	{
 		Element* element = l_renderedElements[elementIndex];
+
+		core::threads::ScopedSpinlock(element->m_workLock);
+		if (!element->m_isValid) continue;
 
 		// Add meshes that need new meshes to the job list
 		if (element->mesh_creation_state.rebuild_requested)
@@ -651,6 +691,8 @@ void ui::eventide::UserInterface::PostStep ( void )
 	{
 		const Element* element = l_renderedElements[elementIndex];
 		ARCORE_ASSERT(element != NULL);
+
+		// No need to lock or check validity: we're only copying data.
 
 		// Skip in-progress meshes
 		if (element->mesh_creation_state.building_mesh)
@@ -695,6 +737,8 @@ void ui::eventide::UserInterface::PostStep ( void )
 	std::vector<core::jobs::JobId> l_jobsToWaitOn (l_renderedElements.size());
 	for (uint32_t elementIndex = 0; elementIndex < l_renderedElements.size(); ++elementIndex)
 	{
+		// No need to lock or check validity: we're only copying data.
+
 		// Skip in-progress meshes
 		if (l_renderedElements[elementIndex]->mesh_creation_state.building_mesh)
 		{

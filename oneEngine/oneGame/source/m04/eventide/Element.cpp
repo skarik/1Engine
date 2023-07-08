@@ -28,8 +28,14 @@ ui::eventide::Element::~Element ( void )
 //	Destroy() : Requests this element to be destroyed. Is added to the ignore status.
 void ui::eventide::Element::Destroy ( void )
 {
-	SetParent(NULL);
-	m_ui->RequestDestroyElement(this);
+	m_workLock.WaitEnter();
+	{
+		m_isValid = false;
+
+		SetParent(NULL);
+		m_ui->RequestDestroyElement(this);
+	}
+	m_workLock.Exit();
 }
 
 void ui::eventide::Element::RequestUpdateMesh ( void )

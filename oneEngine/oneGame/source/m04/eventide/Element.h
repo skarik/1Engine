@@ -10,6 +10,8 @@
 #include "core/math/Cubic.h"
 #include "core/types/ModelData.h"
 
+#include "core-ext/threads/spinlock.h"
+
 #include "renderer/types/fontEnums.h"
 
 namespace ui {
@@ -418,6 +420,13 @@ namespace eventide {
 	private:
 		// Is this element focused? Updated by the UI manager
 		bool				m_focused = false;
+
+	private:
+		// Is this element in-use? Used by UI manager & this::Destroy.
+		core::threads::Spinlock
+							m_workLock;
+		// Is this element able to be used? Updated & used by the UI manager.
+		std::atomic_bool	m_isValid = true;
 	};
 
 	class ScopedCriticalGameThread
