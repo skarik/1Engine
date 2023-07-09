@@ -7,6 +7,7 @@
 #include "core/input/CInput.h"
 #include "core/debug/console.h"
 
+#include "core-ext/core-ext.h"
 #include "core-ext/profiler/CTimeProfiler.h"
 #include "core-ext/threads/Jobs.h"
 #include "core-ext/resources/ResourceManager.h"
@@ -134,6 +135,7 @@ DEPLOY_API int _ARUNIT_CALL Deploy::Game ( _ARUNIT_ARGS )
 		// Only update when all the messages have been looked at
 		//if ( aWindow.UpdateMessages() ) // (this returns true when messages done)
 		{
+			core::OnApplicationGlobalTick();
 			// Update delta time since last step
 			Time::Tick();
 			// Update Steam's state

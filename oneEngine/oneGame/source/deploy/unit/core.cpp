@@ -14,6 +14,8 @@
 #include "core/math/Quaternion.h"
 #include "core/math/matrix/CMatrix.h"
 
+#include "core-ext/core-ext.h"
+
 // Steam Include
 #include "steam/steam_api.h"
 
@@ -88,6 +90,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	// Run main loop
 	while ( true )
 	{
+		core::OnApplicationGlobalTick();
 		// Update delta time since last step
 		Time::Tick();
 		// Update Steam's state

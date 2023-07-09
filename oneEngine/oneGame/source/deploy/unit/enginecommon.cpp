@@ -8,6 +8,7 @@
 #include "core/debug/console.h"
 #include "core/types/arBaseObject.h"
 
+#include "core-ext/core-ext.h"
 #include "core-ext/profiler/CTimeProfiler.h"
 #include "core-ext/threads/Jobs.h"
 #include "core-ext/resources/ResourceManager.h"
@@ -177,6 +178,7 @@ int ARUNIT_CALL Unit::Test_EngineCommon ( ARUNIT_ARGS )
 		// Only update when all the messages have been looked at
 		if ( aWindow.UpdateMessages() ) // (this returns true when messages done)
 		{
+			core::OnApplicationGlobalTick();
 			// Update delta time since last step
 			Time::Tick();
 			// Update Steam's state

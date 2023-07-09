@@ -15,6 +15,7 @@
 #include "core/settings/CGameSettings.h"
 #include "core/input/CInput.h"
 #include "core/debug/console.h"
+#include "core-ext/core-ext.h"
 #include "core-ext/threads/Jobs.h"
 
 // Include audio
@@ -98,6 +99,7 @@ int ARUNIT_CALL ARUNIT_MAIN ( ARUNIT_ARGS )
 	// Run main loop
 	while ( true )
 	{
+		core::OnApplicationGlobalTick();
 		// Update delta time since last step
 		Time::Tick();
 		// Update Steam's state

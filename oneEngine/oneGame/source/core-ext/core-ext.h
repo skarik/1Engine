@@ -8,6 +8,7 @@ namespace core
 {
 	CORE_API void OnApplicationStartup ( void );
 	CORE_API void OnApplicationEnd ( void );
+	CORE_API void OnApplicationGlobalTick ( void );
 
 	CORE_API void _RegisterOnApplicationStartup( std::function<void()> Fn );
 	CORE_API void _RegisterOnApplicationEnd( std::function<void()> Fn );
