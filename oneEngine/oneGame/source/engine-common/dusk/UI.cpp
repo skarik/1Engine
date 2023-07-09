@@ -185,6 +185,8 @@ void dusk::UserInterface::UpdateMouseOver ( void )
 		m_currentMouseover = mouseoverListFinal[0];
 	}*/
 
+	m_treeInUse = true;
+
 	// Update positions, going down the tree.
 	std::list<ElementNode*> updateList;
 	updateList.push_front(m_elementTreeBase);
@@ -221,6 +223,8 @@ void dusk::UserInterface::UpdateMouseOver ( void )
 			updateList.push_back(child);
 		}
 	}
+
+	m_treeInUse = false;
 }
 
 void dusk::UserInterface::UpdateFocus ( void )
@@ -347,16 +351,10 @@ void dusk::UserInterface::UpdateFocus ( void )
 	}*/
 }
 
-void dusk::UserInterface::ClearElementTree ( void )
+void dusk::UserInterface::ClearElementTreeFromNode(ElementNode* rootNode)
 {
 	std::vector<ElementNode*> nodesToTraverse;
 	nodesToTraverse.reserve(m_elements.size());
-
-	for (auto child : m_elementTreeBase->children)
-	{
-		nodesToTraverse.push_back(child);
-	}
-	m_elementTreeBase->children.clear();
 
 	for (int traverseIndex = 0; traverseIndex < nodesToTraverse.size(); ++traverseIndex)
 	{
@@ -371,6 +369,35 @@ void dusk::UserInterface::ClearElementTree ( void )
 
 		// Delete now that we done need it.
 		delete currentNode;
+	}
+}
+
+void dusk::UserInterface::ClearElementTree ( void )
+{
+	if (m_treeInUse)
+	{
+		// Queue all items in the tree base.
+		for (auto child : m_elementTreeBase->children)
+		{
+			m_treeNodeDestroyQueue.push_back(child);
+		}
+		m_elementTreeBase->children.clear();
+	}
+	else
+	{
+		// Clear everything in the tree base.
+		for (auto child : m_elementTreeBase->children)
+		{
+			ClearElementTreeFromNode(child);
+		}
+		m_elementTreeBase->children.clear();
+
+		// Clear everything in the destroy queue
+		for (auto child : m_treeNodeDestroyQueue)
+		{
+			ClearElementTreeFromNode(child);
+		}
+		m_treeNodeDestroyQueue.clear();
 	}
 }
 
@@ -552,6 +579,7 @@ void dusk::UserInterface::UpdateElements ( void )
 	l_stepInfo.mouse_position = Vector2f((Real)core::Input::MouseX(input_index), (Real)core::Input::MouseY(input_index));
 	l_stepInfo.input_index = input_index;
 
+	m_treeInUse = true;
 	//if ( m_currentDialogue == kElementHandleInvalid )
 	{
 		// Update positions, going down the tree.
@@ -590,6 +618,7 @@ void dusk::UserInterface::UpdateElements ( void )
 		// Update them
 		element->Update(&l_stepInfo);
 	}*/
+	m_treeInUse = false;
 
 	// Update the renderer's mouse position
 	m_renderer->m_glowPosition = l_stepInfo.mouse_position;

@@ -9,6 +9,7 @@
 #ifndef ENGINE_COMMON_DUSK_UI_H_
 #define ENGINE_COMMON_DUSK_UI_H_
 
+#include <atomic>
 #include "engine/behavior/CGameBehavior.h"
 #include "engine-common/dusk/Handle.h"
 
@@ -197,7 +198,12 @@ namespace dusk
 								children = std::vector<ElementNode*>(0);
 		};
 		ElementNode*		m_elementTreeBase;
+		std::atomic_bool	m_treeInUse = false;
 		bool				m_treeNeedsGeneration = false;
+
+		std::vector<ElementNode*>
+							m_treeNodeDestroyQueue;
+		void					ClearElementTreeFromNode ( ElementNode* rootNode );
 
 	private:
 		friend UIRenderer; // Give UI renderer dangerous access to sidestep creating accessors for only one class.
