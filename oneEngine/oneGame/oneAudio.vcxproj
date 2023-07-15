@@ -1,32 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <!-- Configuration Listing -->
-  <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="DebugClang|Win32">
-      <Configuration>DebugClang</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="DebugClang|x64">
-      <Configuration>DebugClang</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug|Win32">
-      <Configuration>Debug</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug|x64">
-      <Configuration>Debug</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Unoptimized|Win32">
-      <Configuration>Unoptimized</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Unoptimized|x64">
-      <Configuration>Unoptimized</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-  </ItemGroup>
+  <Import Project="build-scripts/Cpp.Configurations.Common.props" />
   <!-- Dependancies -->
   <ItemGroup>
     <ProjectReference Include="oneCore.vcxproj">
@@ -84,133 +59,28 @@
     <ProjectGuid>{6D8BA09C-513F-4030-8428-0D8797F7264C}</ProjectGuid>
     <RootNamespace>oneCore</RootNamespace>
     <ProjectName>oneAudio</ProjectName>
-    <WindowsTargetPlatformVersion>$(WIN_SDK_VER)</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <!-- Compiler options -->
   <PropertyGroup Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <CharacterSet>NotSet</CharacterSet>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='DebugClang'" Label="Configuration">
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141_clang_c2</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Unoptimized'" Label="Configuration">
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
-  </PropertyGroup>
-  <!-- Imported rules -->
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ImportGroup Label="ExtensionSettings">
-  </ImportGroup>
-  <ImportGroup Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <PropertyGroup Label="UserMacros" />
-  <!-- Directory Rules -->
-  <PropertyGroup>
-    <IntDir>$(SolutionDir)\obj\$(ProjectName)\$(Configuration)_$(Platform)\</IntDir>
-    <TargetName>$(ProjectName)</TargetName>
-    <OutDir>$(SolutionDir)$(Configuration)_$(Platform)\</OutDir>
-    <LinkIncremental>false</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='DebugClang'">
-    <UseMultiToolTask>true</UseMultiToolTask>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Unoptimized'">
-  </PropertyGroup>
+  <!-- Imports -->
+  <Import Project="build-scripts/Cpp.Compile.Common.props" />
   <!-- Compiler Options -->
   <ItemDefinitionGroup>
     <ClCompile>
-      <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)/source/;$(ProjectDir)/source-lib/;source;source-lib;source-lib/jpeg;source-lib/png;source-lib/zlib;source-lib/tga;source-lib/lua;source-lib/fonts;source-lib/ogg;source-lib/vorbis;source-lib/steam;source-lib/raknet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
-      <CompileAsManaged>false</CompileAsManaged>
-      <CompileAsWinRT>false</CompileAsWinRT>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <MinimalRebuild>false</MinimalRebuild>
-      <StructMemberAlignment>16Bytes</StructMemberAlignment>
-      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
-	  <LanguageStandard>stdcpp17</LanguageStandard>
-      <PreprocessorDefinitions>_ENGINE_AUDIO;WIN32;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-	  <ObjectFileName>$(IntDir)%(RelativeDir)\</ObjectFileName>
+      <PreprocessorDefinitions>_ENGINE_AUDIO;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
-    <Link>
-      <LargeAddressAware>true</LargeAddressAware>
-      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
-    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Platform)'=='Win32'">
     <Link>
       <AdditionalDependencies>vorbisfile.lib;vorbis.lib;ogg.lib;muFFT.lib;muFFT-avx.lib;muFFT-sse.lib;muFFT-sse3.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <IgnoreSpecificDefaultLibraries>LIBCMT;LIBCMTD.lib;LIBCPMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <AdditionalLibraryDirectories>libs\core\win32x86;libs\basic\win32x86;libs\render\win32x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Platform)'=='x64'">
     <Link>
       <AdditionalDependencies>vorbisfile.lib;vorbis.lib;ogg.lib;muFFT.lib;muFFT-avx.lib;muFFT-sse.lib;muFFT-sse3.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <IgnoreSpecificDefaultLibraries>LIBCMT;LIBCMTD.lib;LIBCPMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <AdditionalLibraryDirectories>libs\core\win32x64;libs\basic\win32x64;libs\render\win32x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <PreprocessorDefinitions>NDEBUG;_ENGINE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-	  <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <WholeProgramOptimization>false</WholeProgramOptimization>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-    </ClCompile>
-    <Link>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)'=='DebugClang'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <PreprocessorDefinitions>NDEBUG;_ENGINE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <WholeProgramOptimization>false</WholeProgramOptimization>
-      <DebugInformationFormat>FullDebug</DebugInformationFormat>
-      <MSExtensions>true</MSExtensions>
-      <EnableNeonCodegen>false</EnableNeonCodegen>
-    </ClCompile>
-    <Link>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)'=='Unoptimized'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <PreprocessorDefinitions>NDEBUG;_ENGINE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-    <Link>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,156 +1,34 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <!-- Configuration Listing -->
-  <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="DebugClang|Win32">
-      <Configuration>DebugClang</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="DebugClang|x64">
-      <Configuration>DebugClang</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug|Win32">
-      <Configuration>Debug</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug|x64">
-      <Configuration>Debug</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Unoptimized|Win32">
-      <Configuration>Unoptimized</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Unoptimized|x64">
-      <Configuration>Unoptimized</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-  </ItemGroup>
+  <Import Project="build-scripts/Cpp.Configurations.Common.props" />
   <!-- Global Properties -->
   <PropertyGroup Label="Globals">
     <ProjectGuid>{55249828-4343-423D-91D7-C5F5765EB240}</ProjectGuid>
     <RootNamespace>oneCore</RootNamespace>
     <ProjectName>oneCore</ProjectName>
-    <WindowsTargetPlatformVersion>$(WIN_SDK_VER)</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <!-- Compiler options -->
   <PropertyGroup>
     <ConfigurationType>StaticLibrary</ConfigurationType>
-    <CharacterSet>NotSet</CharacterSet>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='DebugClang'" Label="Configuration">
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141_clang_c2</PlatformToolset>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Unoptimized'" Label="Configuration">
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <!-- Imports -->
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ImportGroup Label="ExtensionSettings">
-  </ImportGroup>
-  <ImportGroup Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <!-- Properties -->
-  <PropertyGroup Label="UserMacros" />
-  <PropertyGroup>
-    <IntDir>$(SolutionDir)\obj\$(ProjectName)\$(Configuration)_$(Platform)\</IntDir>
-    <TargetName>$(ProjectName)</TargetName>
-    <OutDir>$(SolutionDir)$(Configuration)_$(Platform)\</OutDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='DebugClang'">
-    <UseMultiToolTask>false</UseMultiToolTask>
-  </PropertyGroup>
+  <Import Project="build-scripts/Cpp.Compile.Common.props" />
   <!-- Compiler and Linker Options -->
   <ItemDefinitionGroup>
     <ClCompile>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir)/source/;$(ProjectDir)/source-lib/;source;source-lib;source-lib/havok;source-lib/jpeg;source-lib/png;source-lib/zlib;source-lib/tga;source-lib/lua;source-lib/fonts;source-lib/ogg;source-lib/vorbis;source-lib/steam;source-lib/raknet;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <StructMemberAlignment>16Bytes</StructMemberAlignment>
-      <MinimalRebuild>false</MinimalRebuild>
-      <CompileAsManaged>false</CompileAsManaged>
-      <CompileAsWinRT>false</CompileAsWinRT>
-      <MultiProcessorCompilation>false</MultiProcessorCompilation>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <ObjectFileName>$(IntDir)%(RelativeDir)\</ObjectFileName>
+      <PreprocessorDefinitions>_ENGINE_CORE;_ENGINE_CORE_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Platform)'=='Win32'">
     <Link>
-      <AdditionalLibraryDirectories>libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <IgnoreSpecificDefaultLibraries>LIBCMT;LIBCMTD.lib;LIBCPMT.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <AdditionalDependencies>Xinput9_1_0.lib;libjpeg.lib;libpng.lib;zlibstatic.lib;steam_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_ENGINE_CORE;_ENGINE_CORE_STATIC;_ENGINE_DEBUG;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
-      <WholeProgramOptimization>false</WholeProgramOptimization>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
-    </ClCompile>
+  <ItemDefinitionGroup Condition="'$(Platform)'=='x64'">
     <Link>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Xinput9_1_0.lib;libjpeg.lib;libpng.lib;zlibstatic.lib;Lua.5.2-debug.lib;OpenGL32.lib;libogg.lib;libvorbis.lib;libvorbisfile.lib;GLu32.lib;OpenAL32.lib;steam_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)'=='DebugClang'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_ENGINE_CORE;_ENGINE_CORE_STATIC;_ENGINE_DEBUG;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
-      <WholeProgramOptimization>false</WholeProgramOptimization>
-      <DebugInformationFormat>FullDebug</DebugInformationFormat>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
-      <Verbose>false</Verbose>
-      <EnableNeonCodegen>true</EnableNeonCodegen>
-      <RuntimeTypeInfo>true</RuntimeTypeInfo>
-    </ClCompile>
-    <Link>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Xinput9_1_0.lib;libjpeg.lib;libpng.lib;zlibstatic.lib;Lua.5.2-debug.lib;OpenGL32.lib;libogg.lib;libvorbis.lib;libvorbisfile.lib;GLu32.lib;OpenAL32.lib;steam_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)'=='Unoptimized'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <Optimization>MaxSpeed</Optimization>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_ENGINE_CORE;_ENGINE_CORE_STATIC;_ENGINE_RELEASE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
-      <MultiProcessorCompilation>false</MultiProcessorCompilation>
-      <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
-    </ClCompile>
-    <Link>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>Xinput9_1_0.lib;libjpeg.lib;libpng.lib;zlibstatic.lib;freetype2411ST.lib;Lua.5.2-release.lib;OpenGL32.lib;GLu32.lib;OpenAL32.lib;libogg.lib;libvorbis.lib;libvorbisfile.lib;steam_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Xinput9_1_0.lib;libjpeg.lib;libpng.lib;zlibstatic.lib;steam_api64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
