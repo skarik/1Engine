@@ -72,7 +72,7 @@ public:
 		{
 			return nullptr;
 		}
-		else if (enumIndex < 0 || enumIndex > m_enumInfo.size())
+		else if (enumIndex < 0 || enumIndex > (int32_t)m_enumInfo.size())
 		{
 			throw core::CorruptedDataException();
 		}

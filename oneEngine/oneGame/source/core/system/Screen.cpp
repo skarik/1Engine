@@ -20,14 +20,14 @@ void ArScreen::SetFocused ( bool focused )
 
 ArScreen& core::GetScreen ( const int index )
 {
-	ARCORE_ASSERT(index >= 0 && index < gScreenList.size());
+	ARCORE_ASSERT(index >= 0 && index < (int)gScreenList.size());
 
 	return gScreenList[index];
 }
 
 ArScreen& core::GetFocusedScreen ( void )
 {
-	ARCORE_ASSERT(gScreenFocused >= 0 && gScreenFocused < gScreenList.size());
+	ARCORE_ASSERT(gScreenFocused >= 0 && gScreenFocused < (int)gScreenList.size());
 
 	return gScreenList[gScreenFocused];
 }

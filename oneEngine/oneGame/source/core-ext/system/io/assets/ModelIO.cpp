@@ -257,14 +257,14 @@ bool core::MpdInterface::LoadMpdCommon ( void )
 core::modelFmtSegmentInfoHeader& core::MpdInterface::GetSegment ( const ModelFmtSegmentType segment_type, int index )
 {
 	const int list_index = (int)segment_type;
-	ARCORE_ASSERT(index >= 0 && index < m_segments[list_index].size());
+	ARCORE_ASSERT(index >= 0 && index < (int)m_segments[list_index].size());
 	return m_segments[list_index][index];
 }
 
 const void* core::MpdInterface::GetSegmentData ( const ModelFmtSegmentType segment_type, int index )
 {
 	const int list_index = (int)segment_type;
-	ARCORE_ASSERT(index >= 0 && index < m_segments[list_index].size());
+	ARCORE_ASSERT(index >= 0 && index < (int)m_segments[list_index].size());
 
 	if (m_segmentsData[list_index][index] != NULL)
 	{
@@ -296,7 +296,7 @@ const void* core::MpdInterface::GetSegmentData ( const ModelFmtSegmentType segme
 void core::MpdInterface::ReleaseSegmentData ( const ModelFmtSegmentType segment_type, int index )
 {
 	const int list_index = (int)segment_type;
-	ARCORE_ASSERT(index >= 0 && index < m_segments[list_index].size());
+	ARCORE_ASSERT(index >= 0 && index < (int)m_segments[list_index].size());
 
 	// Delete any local data we're currently storing.
 	if (m_segmentsData[list_index][index] != NULL)
@@ -309,7 +309,7 @@ void core::MpdInterface::ReleaseSegmentData ( const ModelFmtSegmentType segment_
 void core::MpdInterface::RemoveSegment ( const ModelFmtSegmentType segment_type, int index )
 {
 	const int list_index = (int)segment_type;
-	ARCORE_ASSERT(index >= 0 && index < m_segments[list_index].size());
+	ARCORE_ASSERT(index >= 0 && index < (int)m_segments[list_index].size());
 
 	ReleaseSegmentData(segment_type, index);
 
@@ -321,7 +321,7 @@ void core::MpdInterface::UpdateSegmentData ( const ModelFmtSegmentType segment_t
 {
 	const int list_index = (int)segment_type;
 	ARCORE_ASSERT(data != NULL);
-	ARCORE_ASSERT(index >= 0 && index < m_segments[list_index].size());
+	ARCORE_ASSERT(index >= 0 && index < (int)m_segments[list_index].size());
 
 	// Get current header & update data
 	modelFmtSegmentInfoHeader& segmentInfo = m_segments[list_index][index];

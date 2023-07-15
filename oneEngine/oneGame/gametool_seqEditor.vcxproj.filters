@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="SOURCE">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="SOURCE\M04-Editor">
+      <UniqueIdentifier>{f3062306-9dbf-48cb-b6f4-0aeca58bb7d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\M04-Editor\Deploy">
+      <UniqueIdentifier>{37e5b0d5-8703-4e79-9b12-d0351bdce69e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SOURCE\M04-Editor\Deploy\SeqEditor">
+      <UniqueIdentifier>{6ab48bfd-0137-4183-8645-6ede98a794ca}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\m04-editor\deploy\seqeditor\seqeditor_main.cpp">
+      <Filter>SOURCE\M04-Editor\Deploy\SeqEditor</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Configuration Listing -->
+  <Import Project="build-scripts/Cpp.Configurations.Common.props" />
+  <!-- Dependencies -->
+  <ItemGroup>
+    <ProjectReference Include="oneCore.vcxproj">
+      <Project>{55249828-4343-423d-91d7-c5f5765eb240}</Project>
+      <Private>false</Private>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+      <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
+    </ProjectReference>
+    <ProjectReference Include="oneCoreExt.vcxproj">
+      <Project>{3f16b475-b8c7-4e8a-9678-f368cd0de5c3}</Project>
+    </ProjectReference>
+    <ProjectReference Include="oneAudio.vcxproj">
+      <Project>{6d8ba09c-513f-4030-8428-0d8797f7264c}</Project>
+    </ProjectReference>
+    <ProjectReference Include="oneEngine.vcxproj">
+      <Project>{5cc6093b-cb43-4cdc-817a-002246731bc9}</Project>
+    </ProjectReference>
+    <ProjectReference Include="onePhysical.vcxproj">
+      <Project>{4fdb8acd-7078-4806-b6b0-04c5351f3f87}</Project>
+    </ProjectReference>
+    <ProjectReference Include="oneRenderer.vcxproj">
+      <Project>{c1bc5440-9ce1-4a7e-89dd-dcd57005426a}</Project>
+    </ProjectReference>
+    <ProjectReference Include="oneEngineCommon.vcxproj">
+      <Project>{32BC2667-0024-48A2-A1C4-F7F995E5EF9B}</Project>
+    </ProjectReference>
+    <ProjectReference Include="M04game.vcxproj">
+      <Project>{410E2926-EC32-401C-A45B-DCBBB8342517}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\m04-editor\deploy\seqeditor\seqeditor_main.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{542A9320-E0AF-4442-B01E-6ECEC1B59071}</ProjectGuid>
+    <RootNamespace>gametool_SeqEditor</RootNamespace>
+    <ProjectName>gametool_SeqEditor</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <!-- Compiler options -->
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+  </PropertyGroup>
+  <!-- Imported rules -->
+  <Import Project="build-scripts/Cpp.Compile.Common.props" />
+  <PropertyGroup>
+    <TargetName>OneSeqEditor</TargetName>
+  </PropertyGroup>
+  <!-- Compiler Options -->
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PreprocessorDefinitions>_ENGINE_DEPLOY;_ENGINE_MODE_DEPLOY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Platform)'=='Win32'">
+    <Link>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Platform)'=='x64'">
+    <Link>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

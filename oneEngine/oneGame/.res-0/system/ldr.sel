@@ -125,3 +125,15 @@ nodetype SCTSWaitParams
 		type float
 	}
 }
+
+nodetype SCTSConditionalTestParams
+{
+	displayAs "Condition Test"
+	outputCount 2
+	
+	variable
+	{
+		displayAs "Variable"
+		type string
+	}
+}
