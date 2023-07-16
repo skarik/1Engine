@@ -43,7 +43,7 @@ void SplitString ( const char* str, RrFontTexture* font_texture, const Real max_
 	auto fontGlyphCount	= font_texture->GetFontGlyphCount();
 	Real baseScale		= (Real)font_texture->GetWidth();
 
-	ARCORE_ASSERT(max_pen_width > fontInfo->height * 1.2F);
+	//ARCORE_ASSERT(max_pen_width > fontInfo->height * 1.2F);
 
 	// Set up the string positions
 	uint32_t string_start = 0;

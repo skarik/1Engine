@@ -59,9 +59,13 @@
     <ClCompile Include="source\renderer\logic\model\RrCModel.cpp" />
     <ClCompile Include="source\renderer\logic\model\CSkinnedModel.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugClang|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="source\renderer\logic\model\CSkinnedModelLoader.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugClang|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="source\renderer\logic\model\morpher\CMorpher.cpp" />
     <ClCompile Include="source\renderer\logic\model\morpher\CMorpherSet.cpp" />
@@ -77,15 +81,21 @@
     <ClCompile Include="source\renderer\object\CStreamedRenderable3D.cpp" />
     <ClCompile Include="source\renderer\object\immediate\RrScopedMeshRenderer.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugClang|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="source\renderer\object\mesh\InstancedMesh.cpp" />
     <ClCompile Include="source\renderer\object\mesh\Mesh.cpp" />
     <ClCompile Include="source\renderer\object\mesh\StreamedMesh.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugClang|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="source\renderer\object\mesh\system\rrMeshBuffer.cpp" />
     <ClCompile Include="source\renderer\object\mesh\system\rrSkinnedMesh.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugClang|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="source\renderer\object\postprocess\PostProcessPass.cpp" />
     <ClCompile Include="source\renderer\object\screen\CScreenFade.cpp" />
@@ -170,6 +180,8 @@
     <ClInclude Include="source\renderer\logic\model\RrCModel.h" />
     <ClInclude Include="source\renderer\logic\model\CSkinnedModel.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugClang|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="source\renderer\logic\model\morpher\CMorphAction.h" />
     <ClInclude Include="source\renderer\logic\model\morpher\CMorpher.h" />
@@ -195,20 +207,28 @@
     <ClInclude Include="source\renderer\object\immediate\IRrRenderableStreamedMesh.h" />
     <ClInclude Include="source\renderer\object\immediate\RrScopedMeshRenderer.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugClang|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="source\renderer\object\mesh\InstancedMesh.h" />
     <ClInclude Include="source\renderer\object\mesh\Mesh.h" />
     <ClInclude Include="source\renderer\object\mesh\StreamedMesh.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugClang|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="source\renderer\object\mesh\system\rrMeshBuffer.h" />
     <ClInclude Include="source\renderer\object\mesh\system\rrMeshBufferRing.h" />
     <ClInclude Include="source\renderer\object\mesh\system\rrSkinnedMesh.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugClang|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="source\renderer\object\model\Model.h" />
     <ClInclude Include="source\renderer\object\model\SkinnedModel.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Unoptimized|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugClang|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="source\renderer\object\postprocess\PostProcessPass.h" />
     <ClInclude Include="source\renderer\object\screen\CScreenFade.h" />
