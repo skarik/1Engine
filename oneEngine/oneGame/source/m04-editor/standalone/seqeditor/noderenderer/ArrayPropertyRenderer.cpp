@@ -22,7 +22,7 @@ void m04::editor::sequence::ArrayPropertyRenderer::OnClicked ( const ui::eventid
 		}
 	}
 
-	// Forward the even to the objects
+	// Forward the event to the objects
 	auto arrayValue = m_targetData->GetAdd<osf::ArrayValue>(m_property->identifier);
 	for (size_t elementIndex = 0; elementIndex < arrayValue->values.size(); ++elementIndex)
 	{
@@ -41,6 +41,30 @@ void m04::editor::sequence::ArrayPropertyRenderer::OnClicked ( const ui::eventid
 				{
 					m_subpropertyState[subpropertyRendererIndex].m_hovered = false;
 					m_subpropertyState[subpropertyRendererIndex].m_editing = false;
+					m_subproperties[subpropertyRendererIndex]->OnClickedOutside(mouse_event);
+				}
+			}
+		}
+	}
+}
+
+void m04::editor::sequence::ArrayPropertyRenderer::OnClickedOutside ( const ui::eventide::Element::EventMouse& mouse_event )
+{
+	// Forward the event to the objects
+	auto arrayValue = m_targetData->GetAdd<osf::ArrayValue>(m_property->identifier);
+	for (size_t elementIndex = 0; elementIndex < arrayValue->values.size(); ++elementIndex)
+	{
+		for (size_t subpropertyIndex = 0; subpropertyIndex < m_property->definition->arraySubproperties->size(); ++subpropertyIndex)
+		{
+			size_t subpropertyRendererIndex = elementIndex * m_property->definition->arraySubproperties->size() + subpropertyIndex;
+			if (m_subproperties[subpropertyRendererIndex] != nullptr)
+			{
+				// Force update the subproperty states
+				if (!m_subproperties[subpropertyRendererIndex]->GetCachedBboxAll().IsPointInBox(mouse_event.position_world))
+				{
+					m_subpropertyState[subpropertyRendererIndex].m_hovered = false;
+					m_subpropertyState[subpropertyRendererIndex].m_editing = false;
+					m_subproperties[subpropertyRendererIndex]->OnClickedOutside(mouse_event);
 				}
 			}
 		}

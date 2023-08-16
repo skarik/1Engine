@@ -49,6 +49,7 @@ namespace sequence {
 
 		virtual void			BuildMesh ( void ) {}
 		virtual void			OnClicked ( const ui::eventide::Element::EventMouse& mouse_event ) {}
+		virtual void			OnClickedOutside ( const ui::eventide::Element::EventMouse& mouse_event ) {}
 		virtual void			OnGameFrameUpdate ( const ui::eventide::Element::GameFrameUpdateInput& input_frame ) {}
 
 		//	virtual UpdateLayout() : Called when layout needs to be updated (when the node size or position changes)

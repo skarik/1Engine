@@ -258,6 +258,10 @@ void m04::editor::sequence::NodeRenderer::OnEventMouse ( const EventMouse& mouse
 			{
 				m_propertyState[nodePropertyIndex].m_hovered = false;
 				m_propertyState[nodePropertyIndex].m_editing = false;
+				if (mouse_event.type == EventMouse::Type::kClicked)
+				{
+					m_propertyRenderers[nodePropertyIndex]->OnClickedOutside(mouse_event);
+				}
 			}
 		}
 
