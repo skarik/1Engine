@@ -671,8 +671,30 @@ void ui::eventide::UserInterface::PostStep ( void )
 		{
 			l_rebuildJobs.push_back(core::jobs::System::Current::AddJobRequest([element](void)
 			{
-				// Should be safe, as bbox dirty is not cleared until completely done writing.
-				element->mesh_creation_state.rebuild_requested = element->m_bboxDirty;
+				// Update the element's transform used for rendering:
+				if (!element->m_bboxDirty)
+				{
+					element->m_bboxRendering = element->m_bboxAbsolute;
+				}
+				else
+				{
+					if (element->m_parent == NULL)
+					{
+						// Take the base bbox.
+						element->m_bboxRendering = element->m_bbox;
+					}
+					else
+					{
+						// Start with base bbox
+						element->m_bboxRendering = element->m_bbox;
+						// Transform by the parent's matrix
+						element->m_bboxRendering.m_M			= element->m_bboxRendering.m_M * element->m_parent->m_bboxRendering.m_M;
+						element->m_bboxRendering.m_MInverse		= element->m_bboxRendering.m_M.inverse();
+					}
+				}
+
+				element->mesh_creation_state.rebuild_requested = element->m_bboxDirty; // Should be safe, as bbox dirty is not cleared until completely done writing.
+
 				element->RebuildMesh();
 			}));
 		}

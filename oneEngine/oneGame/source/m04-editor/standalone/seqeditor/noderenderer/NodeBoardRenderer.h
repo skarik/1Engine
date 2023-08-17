@@ -73,6 +73,7 @@ namespace sequence {
 		void					UpdatePropertyLayout ( void );
 		void					UpdateHalfsize ( void );
 		void					UpdateBboxSize ( void );
+		void					UpdateBbox ( void );
 
 		const std::vector<m04::editor::sequence::INodeDisplay*>&
 								GetNextNodes ( void ) const

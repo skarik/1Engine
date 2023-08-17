@@ -229,6 +229,7 @@ namespace eventide {
 			//	buildText( params ) : Adds text to the build.
 			EVENTIDE_API void		buildText ( const ParamsForText& params )
 			{
+				ARCORE_ASSERT(params.string != nullptr);
 				m_element->buildText(params);
 			}
 			//	predictText( params ) : Adds text to the build.
@@ -340,9 +341,15 @@ namespace eventide {
 		EVENTIDE_API const core::math::BoundingBox&
 								GetBBox ( void ) const
 			{ return m_bbox; }
+		// @brief Returns world-space BBox used for collision and logic.
+		//		Use GetBBoxRendering() for rendering instead.
 		EVENTIDE_API const core::math::BoundingBox&
 								GetBBoxAbsolute ( void ) const
 			{ return m_bboxAbsolute; }
+		// @brief Returns world-space BBox used for rendering.
+		EVENTIDE_API const core::math::BoundingBox&
+								GetBBoxRendering ( void ) const
+			{ return m_bboxRendering; }
 
 		//	SetBBox(bbox) : Sets the local-space bbox, in relation to the parent.
 		EVENTIDE_API void		SetBBox ( core::math::BoundingBox& bbox )
@@ -389,9 +396,12 @@ namespace eventide {
 	private:
 		// Does the bbox need a full update?
 		bool				m_bboxDirty = false;
-		// "World"-space bounding box of the element.
+		// "World"-space bounding box of the element, used for logic.
 		core::math::BoundingBox
 							m_bboxAbsolute;
+		// "World"-space bounding box of the element, used for rendering.
+		core::math::BoundingBox
+							m_bboxRendering;
 
 	protected:
 		// UI this element is associated with.

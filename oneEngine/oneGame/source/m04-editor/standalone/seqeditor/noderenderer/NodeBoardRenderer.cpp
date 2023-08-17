@@ -85,7 +85,7 @@ m04::editor::sequence::NodeRenderer::NodeRenderer (m04::editor::sequence::NodeBo
 	UpdateNextNode();
 
 	// Set position & bbox
-	SetBBox(core::math::BoundingBox(Rotator(), node->editorData.position + m_halfsizeOnBoard, m_halfsizeOnBoard));
+	UpdateBbox();
 
 	// Set up the properties and extra
 	auto& nodeProperties = node->sequenceInfo->view->PropertyList();
@@ -219,7 +219,7 @@ void m04::editor::sequence::NodeRenderer::OnEventMouse ( const EventMouse& mouse
 
 			node->editorData.position = bbox.GetCenterPoint() - m_halfsizeOnBoard;
 
-			SetBBox( bbox );
+			UpdateBbox();
 			UpdatePropertyLayout();
 			RequestUpdateMesh();
 		}
@@ -277,52 +277,67 @@ void m04::editor::sequence::NodeRenderer::OnClicked ( const EventMouse& mouse_ev
 	bool bAllowCapture = true; // Flag if we captured something already? Should be used to skip and fallback.
 	bool bMouseInThisElement = mouse_event.element == this;
 
-	if (bMouseInThisElement)
+	if (bAllowCapture)
 	{
-		m_selected = true;
-		m_mouseInteract = MouseInteract::kCapturingCatchAll;
+		bool bMouseInProperty = false;
 
-		core::math::BoundingBox l_bbox_flow_input = GetBboxFlowInput();
-		if (bAllowCapture
-			&& l_bbox_flow_input.IsPointInBox(mouse_event.position_world))
+		// Do not drag if we're clicking something inside of the properties.
+		/*auto& nodeProperties = node->sequenceInfo->view->PropertyList();
+		for (uint32_t nodePropertyIndex = 0; nodePropertyIndex < nodeProperties.size(); ++nodePropertyIndex)
 		{
-			bAllowCapture = false;
-			m_draggingInfo = {true, DragState::Target::kFlowInput, 0};
-			m_mouseInteract = MouseInteract::kCapturingCatchAll;
-		}
-		else if (bAllowCapture)
-		{
-			for (uint32_t flowOutputIndex = 0; flowOutputIndex < node->sequenceInfo->view->Flow().outputCount; ++flowOutputIndex)
+			if (m_propertyState[nodePropertyIndex].m_hovered)
 			{
-				core::math::BoundingBox l_bbox_flow_output = GetBboxFlowOutput(flowOutputIndex);
-				if (l_bbox_flow_output.IsPointInBox(mouse_event.position_world))
-				{
-					bAllowCapture = false;
-					m_draggingInfo = {true, DragState::Target::kFlowOutput, flowOutputIndex};
-					m_mouseInteract = MouseInteract::kCapturingCatchAll;
+				bMouseInProperty = true;
+				break;
+			}
+		}*/ // TODO: Super buggy with ArrayPropertyRenderer and doesn't feel good. Too much dead space.
 
-					// No more check
-					break;
+		if (!bMouseInProperty && bMouseInThisElement)
+		{
+			m_selected = true;
+			m_mouseInteract = MouseInteract::kCapturingCatchAll;
+
+			// Do modified drag for hitting the flow bbox's
+			core::math::BoundingBox l_bbox_flow_input = GetBboxFlowInput();
+			if (l_bbox_flow_input.IsPointInBox(mouse_event.position_world))
+			{
+				bAllowCapture = false;
+				m_draggingInfo = {true, DragState::Target::kFlowInput, 0};
+				m_mouseInteract = MouseInteract::kCapturingCatchAll;
+			}
+			else
+			{
+				for (uint32_t flowOutputIndex = 0; flowOutputIndex < node->sequenceInfo->view->Flow().outputCount; ++flowOutputIndex)
+				{
+					core::math::BoundingBox l_bbox_flow_output = GetBboxFlowOutput(flowOutputIndex);
+					if (l_bbox_flow_output.IsPointInBox(mouse_event.position_world))
+					{
+						bAllowCapture = false;
+						m_draggingInfo = {true, DragState::Target::kFlowOutput, flowOutputIndex};
+						m_mouseInteract = MouseInteract::kCapturingCatchAll;
+
+						// No more check.
+						break;
+					}
 				}
 			}
-		}
 
-		if (bAllowCapture
-			&& false)
-		{
+			if (false)
+			{
 
+			}
+			else if (bDoDraggingAsFallback)
+			{
+				m_dragging = true;
+				m_draggingStart = GetBBox();
+				m_ui->LockMouse();
+			}
 		}
-		else if (bAllowCapture && bDoDraggingAsFallback)
+		else
 		{
-			m_dragging = true;
-			m_draggingStart = GetBBox();
-			m_ui->LockMouse();
+			m_selected = false;
+			m_mouseInteract = MouseInteract::kCapturing;
 		}
-	}
-	else
-	{
-		m_selected = false;
-		m_mouseInteract = MouseInteract::kCapturing;
 	}
 }
 void m04::editor::sequence::NodeRenderer::OnReleased ( const EventMouse& mouse_event )
@@ -331,11 +346,6 @@ void m04::editor::sequence::NodeRenderer::OnReleased ( const EventMouse& mouse_e
 
 	if (m_draggingInfo.active)
 	{
-		/*
-		if (GetMouseInside())
-		{
-		}*/
-
 		if (m_draggingInfo.dragStart == DragState::Target::kFlowInput
 			|| m_draggingInfo.dragStart == DragState::Target::kFlowOutput
 			|| m_draggingInfo.dragStart == DragState::Target::kFlowSync
@@ -411,14 +421,14 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 	ParamsForQuad quadParams;
 	ParamsForPath pathParams;
 
-	const Vector3f nodeExtents = GetBBoxAbsolute().GetExtents();
+	const Vector3f nodeExtents = GetBBoxRendering().GetExtents();
 	const Rect kUVsDot		= Rect(128.0F / 1024, 0.0F,				128.0F / 1024, 128.0F / 1024);
 	const Rect kUVsDotRight	= Rect((128.0F + 64.0F) / 1024, 0.0F,	64.0F / 1024, 128.0F / 1024);
 	const Rect kUVsDotLeft	= Rect(128.0F / 1024, 0.0F,				64.0F / 1024, 128.0F / 1024);
 
 	cubeParams = {};
-	cubeParams.box = core::math::Cubic::ConstructFromBBox(GetBBoxAbsolute());
-	cubeParams.rotation = GetBBoxAbsolute().m_M.getRotator();
+	cubeParams.box = core::math::Cubic::ConstructFromBBox(GetBBoxRendering());
+	cubeParams.rotation = GetBBoxRendering().m_M.getRotator();
 	cubeParams.texture = NULL;
 	cubeParams.color = DefaultStyler.box.defaultColor
 		.Lerp(DefaultStyler.box.hoverColor, m_hoverGlowValue)
@@ -457,7 +467,7 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 
 	}
 
-	Vector3f nodeTopLeft = GetBBoxAbsolute().GetCenterPoint()
+	Vector3f nodeTopLeft = GetBBoxRendering().GetCenterPoint()
 		- Vector3f(nodeExtents.x, -nodeExtents.y, nodeExtents.z)
 		+ Vector3f(0, 0, nodeExtents.z * 2.0F + 1.0F);
 
@@ -466,7 +476,7 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 	textParams.string = m_guid_text.c_str();
 	textParams.font_texture = &m_renderResources.m_fontTextureScripting;
 	textParams.position = nodeTopLeft + Vector3f(m_halfsizeOnBoard.x * 2.0F - m_margins.x, -ui::eventide::DefaultStyler.text.buttonSize - m_margins.y, 0);
-	textParams.rotation = GetBBoxAbsolute().m_M.getRotator();
+	textParams.rotation = GetBBoxRendering().m_M.getRotator();
 	textParams.size = ui::eventide::DefaultStyler.text.buttonSize * 0.4F;
 	textParams.alignment = AlignHorizontal::kRight;
 	textParams.color = DefaultStyler.text.headingColor.Lerp(DefaultStyler.box.defaultColor, 0.75F);
@@ -477,7 +487,7 @@ void m04::editor::sequence::NodeRenderer::BuildMesh ( void )
 	textParams.string = m_display_text;
 	textParams.font_texture = &m_fontTexture;
 	textParams.position = nodeTopLeft + Vector3f(m_margins.x, -ui::eventide::DefaultStyler.text.headingSize - m_margins.y, 0);
-	textParams.rotation = GetBBoxAbsolute().m_M.getRotator();
+	textParams.rotation = GetBBoxRendering().m_M.getRotator();
 	textParams.size = ui::eventide::DefaultStyler.text.headingSize;
 	textParams.color = DefaultStyler.text.headingColor;
 	buildText(textParams);
@@ -651,6 +661,11 @@ void m04::editor::sequence::NodeRenderer::UpdateHalfsize ( void )
 void m04::editor::sequence::NodeRenderer::UpdateBboxSize ( void )
 {
 	UpdateHalfsize();
+	UpdateBbox();
+}
+
+void m04::editor::sequence::NodeRenderer::UpdateBbox ( void )
+{
 	SetBBox(core::math::BoundingBox(Rotator(), node->editorData.position + m_halfsizeOnBoard, m_halfsizeOnBoard));
 }
 
@@ -662,16 +677,20 @@ void m04::editor::sequence::NodeRenderer::OnGameFrameUpdate ( const GameFrameUpd
 
 	// Update size of the board
 	UpdateHalfsize();
-	// TODO: based on properties, update bbox
-	node->editorData.position.y += (l_previousExtents.y - m_halfsizeOnBoard.y) * 2.0F;
-	bbox = core::math::BoundingBox(Rotator(), node->editorData.position + m_halfsizeOnBoard, m_halfsizeOnBoard);
+	//if (l_previousExtents != m_halfsizeOnBoard)
+	{
+		// TODO: based on properties, update bbox
+		node->editorData.position.y += (l_previousExtents.y - m_halfsizeOnBoard.y) * 2.0f;
 
-	// Set bbox, push update for mesh
-	SetBBox(bbox);
-	// Update the property positions (TODO: call this only when bbox changes)
-	UpdatePropertyLayout();
-	// Request the mesh updates next frame
-	RequestUpdateMesh();
+		// Set bbox, push update for mesh
+		UpdateBbox();
+		if (l_previousExtents != m_halfsizeOnBoard)
+			m_draggingStart = GetBBox();
+		// Update the property positions (TODO: call this only when bbox changes)
+		UpdatePropertyLayout();
+		// Request the mesh updates next frame
+		RequestUpdateMesh();
+	}
 
 	// Run the button updates
 	Button::OnGameFrameUpdate(input_frame);

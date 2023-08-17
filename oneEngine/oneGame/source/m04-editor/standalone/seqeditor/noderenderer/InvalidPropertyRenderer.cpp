@@ -46,15 +46,18 @@ void m04::editor::sequence::InvalidPropertyRenderer::BuildMesh ( void )
 
 	//const char* str = GetNode()->view->GetPropertyAsString(m_property->identifier);
 	const char* str = properties::GetProperty<const char*>(m_targetData, m_property->identifier);
-	textParams = ParamsForText();
-	textParams.string = str;
-	textParams.font_texture = &m_nodeRenderer->GetRenderResources().m_fontTexture;
-	textParams.position = m_bboxKey.GetCenterPoint() - Vector3f(m_bboxKey.GetExtents().x, m_bboxKey.GetExtents().y, 0) + Vector3f(0, 0, 0.1F);
-	textParams.rotation = m_nodeRenderer->GetBBoxAbsolute().m_M.getRotator();
-	textParams.size = math::lerp(0.0F, ui::eventide::DefaultStyler.text.buttonSize, ui::eventide::DefaultStyler.text.headingSize);
-	textParams.alignment = AlignHorizontal::kLeft;
-	textParams.color = m_propertyState->m_hovered ? DefaultStyler.text.headingColor : DefaultStyler.text.headingColor.Lerp(DefaultStyler.box.defaultColor, 0.3F);
-	buildText(textParams);
+	if (str)
+	{
+		textParams = ParamsForText();
+		textParams.string = str;
+		textParams.font_texture = &m_nodeRenderer->GetRenderResources().m_fontTexture;
+		textParams.position = m_bboxKey.GetCenterPoint() - Vector3f(m_bboxKey.GetExtents().x, m_bboxKey.GetExtents().y, 0) + Vector3f(0, 0, 0.1F);
+		textParams.rotation = m_nodeRenderer->GetBBoxAbsolute().m_M.getRotator();
+		textParams.size = math::lerp(0.0F, ui::eventide::DefaultStyler.text.buttonSize, ui::eventide::DefaultStyler.text.headingSize);
+		textParams.alignment = AlignHorizontal::kLeft;
+		textParams.color = m_propertyState->m_hovered ? DefaultStyler.text.headingColor : DefaultStyler.text.headingColor.Lerp(DefaultStyler.box.defaultColor, 0.3F);
+		buildText(textParams);
+	}
 }
 
 void m04::editor::sequence::InvalidPropertyRenderer::UpdateLayout ( const Vector3f& upper_left_corner, const Real left_column_width, const core::math::BoundingBox& node_bbox )

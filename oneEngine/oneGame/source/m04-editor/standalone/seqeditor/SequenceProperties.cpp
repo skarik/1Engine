@@ -44,43 +44,57 @@ namespace sequence {
 	template<>
 	float properties::GetProperty ( osf::ObjectValue* data, const char* stringIndex )
 	{
-		return data->GetConvertAdd<osf::FloatValue>(stringIndex)->value;
+		if (auto v = data->GetAs<osf::FloatValue>(stringIndex))
+			return v->value;
+		return float{};
 	}
 
 	template<>
 	int properties::GetProperty ( osf::ObjectValue* data, const char* stringIndex )
 	{
-		return (int)data->GetConvertAdd<osf::IntegerValue>(stringIndex)->value;
+		if (auto v = data->GetAs<osf::IntegerValue>(stringIndex))
+			return (int)v->value;
+		return int{};
 	}
 
 	template<>
 	bool properties::GetProperty ( osf::ObjectValue* data, const char* stringIndex )
 	{
-		return data->GetConvertAdd<osf::BooleanValue>(stringIndex)->value;
+		if (auto v = data->GetAs<osf::BooleanValue>(stringIndex))
+			return v->value;
+		return bool{};
 	}
 
 	template<>
 	const char* properties::GetProperty ( osf::ObjectValue* data, const char* stringIndex )
 	{
-		return data->GetConvertAdd<osf::StringValue>(stringIndex)->value.c_str();
+		if (auto v = data->GetAs<osf::StringValue>(stringIndex))
+			return v->value.c_str();
+		return "";
 	}
 
 	template<>
 	Vector2f properties::GetProperty ( osf::ObjectValue* data, const char* stringIndex )
 	{
-		return core::utils::string::ToObject<Vector2f>(data->GetConvertAdd<osf::StringValue>(stringIndex)->value.c_str());
+		if (auto v = data->GetAs<osf::StringValue>(stringIndex))
+			return core::utils::string::ToObject<Vector2f>(v->value.c_str());
+		return Vector2f();
 	}
 
 	template<>
 	Vector3f properties::GetProperty ( osf::ObjectValue* data, const char* stringIndex )
 	{
-		return core::utils::string::ToObject<Vector3f>(data->GetConvertAdd<osf::StringValue>(stringIndex)->value.c_str());
+		if (auto v = data->GetAs<osf::StringValue>(stringIndex))
+			return core::utils::string::ToObject<Vector3f>(v->value.c_str());
+		return Vector3f();
 	}
 
 	template<>
 	Color properties::GetProperty ( osf::ObjectValue* data, const char* stringIndex )
 	{
-		return core::utils::string::ToObject<ColorRGBA16>(data->GetConvertAdd<osf::StringValue>(stringIndex)->value.c_str()).ToRGBAFloat();
+		if (auto v = data->GetAs<osf::StringValue>(stringIndex))
+			return core::utils::string::ToObject<ColorRGBA16>(v->value.c_str()).ToRGBAFloat();
+		return Color();
 	}
 
 }}}

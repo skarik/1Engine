@@ -15,6 +15,7 @@ void m04::editor::sequence::ArrayPropertyRenderer::OnClicked ( const ui::eventid
 
 		if (addRect.IsPointInBox(mouse_event.position_world))
 		{
+			// TODO: Signal to UI to wait for rendering to finish.
 			//GetNode()->view->SetProperty(m_property->identifier, !GetNode()->view->GetPropertyAsBool(m_property->identifier));
 			auto arrayValue = m_targetData->GetAdd<osf::ArrayValue>(m_property->identifier);
 			arrayValue->values.push_back(new osf::ObjectValue());
