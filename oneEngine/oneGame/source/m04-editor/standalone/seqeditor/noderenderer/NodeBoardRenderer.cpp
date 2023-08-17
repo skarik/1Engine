@@ -277,67 +277,64 @@ void m04::editor::sequence::NodeRenderer::OnClicked ( const EventMouse& mouse_ev
 	bool bAllowCapture = true; // Flag if we captured something already? Should be used to skip and fallback.
 	bool bMouseInThisElement = mouse_event.element == this;
 
-	if (bAllowCapture)
+	bool bMouseInProperty = false;
+
+	// Do not drag if we're clicking something inside of the properties.
+	/*auto& nodeProperties = node->sequenceInfo->view->PropertyList();
+	for (uint32_t nodePropertyIndex = 0; nodePropertyIndex < nodeProperties.size(); ++nodePropertyIndex)
 	{
-		bool bMouseInProperty = false;
-
-		// Do not drag if we're clicking something inside of the properties.
-		/*auto& nodeProperties = node->sequenceInfo->view->PropertyList();
-		for (uint32_t nodePropertyIndex = 0; nodePropertyIndex < nodeProperties.size(); ++nodePropertyIndex)
+		if (m_propertyState[nodePropertyIndex].m_hovered)
 		{
-			if (m_propertyState[nodePropertyIndex].m_hovered)
-			{
-				bMouseInProperty = true;
-				break;
-			}
-		}*/ // TODO: Super buggy with ArrayPropertyRenderer and doesn't feel good. Too much dead space.
+			bMouseInProperty = true;
+			break;
+		}
+	}*/ // TODO: Super buggy with ArrayPropertyRenderer and doesn't feel good. Too much dead space.
 
-		if (!bMouseInProperty && bMouseInThisElement)
+	if (!bMouseInProperty && bMouseInThisElement)
+	{
+		m_selected = true;
+		m_mouseInteract = MouseInteract::kCapturingCatchAll;
+
+		// Do modified drag for hitting the flow bbox's
+		core::math::BoundingBox l_bbox_flow_input = GetBboxFlowInput();
+		if (l_bbox_flow_input.IsPointInBox(mouse_event.position_world))
 		{
-			m_selected = true;
+			bAllowCapture = false;
+			m_draggingInfo = {true, DragState::Target::kFlowInput, 0};
 			m_mouseInteract = MouseInteract::kCapturingCatchAll;
-
-			// Do modified drag for hitting the flow bbox's
-			core::math::BoundingBox l_bbox_flow_input = GetBboxFlowInput();
-			if (l_bbox_flow_input.IsPointInBox(mouse_event.position_world))
+		}
+		else if (bAllowCapture)
+		{
+			for (uint32_t flowOutputIndex = 0; flowOutputIndex < node->sequenceInfo->view->Flow().outputCount; ++flowOutputIndex)
 			{
-				bAllowCapture = false;
-				m_draggingInfo = {true, DragState::Target::kFlowInput, 0};
-				m_mouseInteract = MouseInteract::kCapturingCatchAll;
-			}
-			else
-			{
-				for (uint32_t flowOutputIndex = 0; flowOutputIndex < node->sequenceInfo->view->Flow().outputCount; ++flowOutputIndex)
+				core::math::BoundingBox l_bbox_flow_output = GetBboxFlowOutput(flowOutputIndex);
+				if (l_bbox_flow_output.IsPointInBox(mouse_event.position_world))
 				{
-					core::math::BoundingBox l_bbox_flow_output = GetBboxFlowOutput(flowOutputIndex);
-					if (l_bbox_flow_output.IsPointInBox(mouse_event.position_world))
-					{
-						bAllowCapture = false;
-						m_draggingInfo = {true, DragState::Target::kFlowOutput, flowOutputIndex};
-						m_mouseInteract = MouseInteract::kCapturingCatchAll;
+					bAllowCapture = false;
+					m_draggingInfo = {true, DragState::Target::kFlowOutput, flowOutputIndex};
+					m_mouseInteract = MouseInteract::kCapturingCatchAll;
 
-						// No more check.
-						break;
-					}
+					// No more check.
+					break;
 				}
 			}
-
-			if (false)
-			{
-
-			}
-			else if (bDoDraggingAsFallback)
-			{
-				m_dragging = true;
-				m_draggingStart = GetBBox();
-				m_ui->LockMouse();
-			}
 		}
-		else
+
+		if (!bAllowCapture)
 		{
-			m_selected = false;
-			m_mouseInteract = MouseInteract::kCapturing;
+			;
 		}
+		else if (bDoDraggingAsFallback)
+		{
+			m_dragging = true;
+			m_draggingStart = GetBBox();
+			m_ui->LockMouse();
+		}
+	}
+	else
+	{
+		m_selected = false;
+		m_mouseInteract = MouseInteract::kCapturing;
 	}
 }
 void m04::editor::sequence::NodeRenderer::OnReleased ( const EventMouse& mouse_event )
