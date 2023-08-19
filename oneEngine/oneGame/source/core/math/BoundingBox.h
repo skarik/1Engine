@@ -70,7 +70,7 @@ namespace math
 		// Note that this only really works properly if both bounding boxes have only been transformed through a translation.
 		FORCE_INLINE BoundingBox Expand ( const BoundingBox& BB )
 		{
-			Vector3f minPosA, maxPosA;
+			/*Vector3f minPosA, maxPosA;
 			Vector3f minPosB, maxPosB;
 			Vector3f curCenter;
 
@@ -92,7 +92,26 @@ namespace math
 			maxPosA.z = std::max<Real>( maxPosA.z, maxPosB.z );
 
 			// Return new bounding box
-			return BoundingBox( Matrix4x4(), minPosA, maxPosA );
+			return BoundingBox( Matrix4x4(), minPosA, maxPosA );*/
+
+			// Transform the input BB to our own space
+			Vector3f myspaceCenter = m_MInverse * BB.GetCenterPoint();
+			Vector3f myspaceExtent = m_MInverse.getRotator() * (BB.m_M.getRotator() * BB.m_Extent);
+			Vector3f myspaceExtentAbs = Vector3f(fabsf(myspaceExtent.x), fabsf(myspaceExtent.y), fabsf(myspaceExtent.z));
+
+			Vector3f myspaceMax = myspaceCenter + myspaceExtentAbs;
+			Vector3f myspaceMin = myspaceCenter - myspaceExtentAbs;
+
+			Vector3f extentsMin = Vector3f(
+				std::min<Real>(-m_Extent.x, myspaceMin.x),
+				std::min<Real>(-m_Extent.y, myspaceMin.y),
+				std::min<Real>(-m_Extent.z, myspaceMin.z));
+			Vector3f extentsMax = Vector3f(
+				std::max<Real>(m_Extent.x, myspaceMax.x),
+				std::max<Real>(m_Extent.y, myspaceMax.y),
+				std::max<Real>(m_Extent.z, myspaceMax.z));
+
+			return BoundingBox(Matrix4x4(m_M.getRotator()), extentsMin, extentsMax);
 		}
 	
 		FORCE_INLINE Vector3f GetSize() const 
