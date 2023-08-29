@@ -5,7 +5,10 @@
 #include "core/gfx/textureFormats.h"
 #include "renderer/types/types.h"
 
-namespace gpu
+#include "gpuw/base/Texture.base.h"
+
+namespace gpu {
+namespace dx11
 {
 	class Buffer;
 	class GraphicsContext;
@@ -15,32 +18,32 @@ namespace gpu
 	class WriteableResource;
 
 	// Create a read/write texture.
-	class Texture
+	class Texture : public base::Texture
 	{
 	public:
 		//	valid() : is this texture valid to be used?
 		// If the texture has not been created, it will be removed.
-		GPUW_API bool			valid ( void ) const;
+		GPUW_API bool			valid ( void ) const override;
 		//	nativePtr() : returns native index or pointer to the resource.
-		GPUW_API gpuHandle		nativePtr ( void );
+		GPUW_API gpuHandle		nativePtr ( void ) override;
 
 		//	allocate() : creates a texture
 		GPUW_API int			allocate (
 			const core::gfx::tex::arTextureType textureType,
 			const core::gfx::tex::arColorFormat textureFormat, 
 			const uint width = 0, const uint height = 0, const uint depth = 0, const uint levels = 0
-		);
+		) override;
 
 		// Sampler is in a different object.
 
 		//	free() : destroys any allocated texture, if existing.
-		GPUW_API int			free ( void );
+		GPUW_API int			free ( void ) override;
 
 		//	upload() : uploads data to the texture from a buffer
-		GPUW_API int			upload ( gpu::BaseContext* context, gpu::Buffer& buffer, const uint level, const uint arraySlice );
+		GPUW_API int			upload ( gpu::base::BaseContext* context, gpu::base::Buffer& buffer, const uint level, const uint arraySlice ) override;
 
 		//	copy() : uploads data to a buffer from this texture
-		GPUW_API int			copy ( gpu::BaseContext* context, gpu::Buffer& buffer, const uint level, const uint arraySlice );
+		GPUW_API int			copy ( gpu::base::BaseContext* context, gpu::base::Buffer& buffer, const uint level, const uint arraySlice ) override;
 
 	private:
 		friend GraphicsContext;
@@ -61,24 +64,24 @@ namespace gpu
 	};
 
 	// Create a write-only texture.
-	class WOFrameAttachment
+	class WOFrameAttachment : public base::WOFrameAttachment
 	{
 	public:
 		//	valid() : is this texture valid to be used?
 		// If the texture has not been created, it will be removed.
-		GPUW_API bool			valid ( void );
+		GPUW_API bool			valid ( void ) override;
 		//	nativePtr() : returns native index or pointer to the resource.
-		GPUW_API gpuHandle		nativePtr ( void );
+		GPUW_API gpuHandle		nativePtr ( void ) override;
 
 		//	allocate() : creates a texture
 		GPUW_API int			allocate (
 			const core::gfx::tex::arTextureType textureType,
 			const core::gfx::tex::arColorFormat textureFormat, 
 			const uint width = 0, const uint height = 0, const uint depth = 0, const uint levels = 0
-		);
+		) override;
 
 		//	free() : destroys any allocated texture, if existing.
-		GPUW_API int			free ( void );
+		GPUW_API int			free ( void ) override;
 
 	private:
 		friend GraphicsContext;
@@ -90,6 +93,6 @@ namespace gpu
 		core::gfx::tex::arColorFormat	m_format;
 		unsigned int					m_dxFormat = 0;
 	};
-}
+}}
 
 #endif//_GPU_WRAPPER_TEXTURES_H_

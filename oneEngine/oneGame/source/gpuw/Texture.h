@@ -1,5 +1,7 @@
-#include "gpuw/module_config.h"
-#ifdef GPU_API_OPENGL
+#include "gpuw/gpuw_common.h"
+#include "gpuw/base/Texture.base.h"
+
+/*#ifdef GPU_API_OPENGL
 #	include "gpuw/ogl/Texture.h"
 #endif
 
@@ -9,4 +11,41 @@
 
 #ifdef GPU_API_DIRECTX11
 #	include "gpuw/dx11/Texture.dx11.h"
-#endif
+#endif*/
+
+namespace gpu
+{
+	class TextureDynamic : public gpu::base::Texture
+	{
+	public:
+		// @brief Is this texture valid to be used?
+		//		If the texture has not been created, it will be removed.
+		GPUW_API bool			valid ( void ) const override;
+		
+		// @brief Returns native index or pointer to the resource.
+		GPUW_API gpuHandle		nativePtr ( void ) override;
+
+		// @brief Creates a texture
+		GPUW_API int			allocate (
+			const core::gfx::tex::arTextureType textureType,
+			const core::gfx::tex::arColorFormat textureFormat, 
+			const uint width = 0, const uint height = 0, const uint depth = 0, const uint levels = 0
+		) override;
+
+		// Sampler is in a different object.
+
+		// @brief Destroys any allocated texture, if existing.
+		GPUW_API int			free ( void ) override;
+
+		// @brief Uploads data to the texture from a buffer
+		GPUW_API int			upload ( gpu::base::BaseContext* context, gpu::base::Buffer& buffer, const uint level, const uint arraySlice ) override;
+
+		// @brief Uploads data to a buffer from this texture
+		GPUW_API int			copy ( gpu::base::BaseContext* context, gpu::base::Buffer& buffer, const uint level, const uint arraySlice ) override;
+
+	private:
+		gpu::base::Texture*	pInternal;
+	};
+
+	typedef TextureDynamic Texture;
+}

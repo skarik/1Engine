@@ -2,6 +2,7 @@
 #define GPU_WRAPPER_PUBLIC_ENUMS_H_
 
 #include "core/types.h"
+#include "gpuw/module_config.h"
 #include <stdint.h>
 
 namespace gpu

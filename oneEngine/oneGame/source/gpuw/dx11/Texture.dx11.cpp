@@ -13,16 +13,16 @@
 
 //https://computergraphics.stackexchange.com/questions/4422/directx-openglvulkan-concepts-mapping-chart/4434
 
-bool gpu::Texture::valid ( void ) const
+bool gpu::dx11::Texture::valid ( void ) const
 {
 	return m_texture != NULL;
 }
-gpuHandle gpu::Texture::nativePtr ( void )
+gpuHandle gpu::dx11::Texture::nativePtr ( void )
 {
 	return (gpuHandle)m_texture;
 }
 
-int gpu::Texture::allocate (
+int gpu::dx11::Texture::allocate (
 	const core::gfx::tex::arTextureType textureType,
 	const core::gfx::tex::arColorFormat textureFormat, 
 	const uint width, const uint height, const uint depth, const uint levels
@@ -204,7 +204,7 @@ int gpu::Texture::allocate (
 }
 
 //	free() : destroys any allocated texture, if existing.
-int gpu::Texture::free ( void )
+int gpu::dx11::Texture::free ( void )
 {
 	if (m_texture)
 		static_cast<ID3D11Resource*>(m_texture)->Release();
@@ -217,7 +217,7 @@ int gpu::Texture::free ( void )
 	return gpu::kError_SUCCESS;
 }
 
-int gpu::Texture::upload ( gpu::BaseContext* context, gpu::Buffer& buffer, const uint level, const uint arraySlice )
+int gpu::dx11::Texture::upload ( gpu::base::BaseContext* context, gpu::base::Buffer& buffer, const uint level, const uint arraySlice )
 {
 	ARCORE_ASSERT(valid());
 	
@@ -248,7 +248,7 @@ int gpu::Texture::upload ( gpu::BaseContext* context, gpu::Buffer& buffer, const
 	return gpu::kError_SUCCESS;
 }
 
-int gpu::Texture::copy ( gpu::BaseContext* context, gpu::Buffer& buffer, const uint level, const uint arraySlice )
+int gpu::dx11::Texture::copy ( gpu::base::BaseContext* context, gpu::base::Buffer& buffer, const uint level, const uint arraySlice )
 {
 	ARCORE_ASSERT(valid());
 	
@@ -277,16 +277,16 @@ int gpu::Texture::copy ( gpu::BaseContext* context, gpu::Buffer& buffer, const u
 }
 
 
-bool gpu::WOFrameAttachment::valid ( void )
+bool gpu::dx11::WOFrameAttachment::valid ( void )
 {
 	return m_texture != NULL;
 }
-gpuHandle gpu::WOFrameAttachment::nativePtr ( void )
+gpuHandle gpu::dx11::WOFrameAttachment::nativePtr ( void )
 {
 	return (gpuHandle)m_texture;
 }
 
-int gpu::WOFrameAttachment::allocate (
+int gpu::dx11::WOFrameAttachment::allocate (
 	const core::gfx::tex::arTextureType textureType,
 	const core::gfx::tex::arColorFormat textureFormat, 
 	const uint width, const uint height, const uint depth, const uint levels
@@ -377,7 +377,7 @@ int gpu::WOFrameAttachment::allocate (
 }
 
 //	free() : destroys any allocated texture, if existing.
-int gpu::WOFrameAttachment::free ( void )
+int gpu::dx11::WOFrameAttachment::free ( void )
 {
 	if (m_texture)
 		static_cast<ID3D11Resource*>(m_texture)->Release();
