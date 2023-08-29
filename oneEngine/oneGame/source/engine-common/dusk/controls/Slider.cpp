@@ -14,9 +14,9 @@ template <typename NumberType>
 static int GatherPrecision(NumberType value)
 {
 	string valueString = std::to_string(value);
-	valueString = valueString.substr(
+	/*valueString = valueString.substr(
 		valueString.find_last_not_of(valueString[valueString.length() + 1])
-	);
+	);*/
 	const size_t decimalCount = valueString.substr(valueString.find('.') + 1).length();
 	ARCORE_ASSERT(decimalCount < std::numeric_limits<int>::max());
 	return static_cast<int>(1 + decimalCount);
