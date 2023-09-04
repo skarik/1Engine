@@ -3,6 +3,7 @@
 
 #include "module_config.h"
 #include "core/types/types.h"
+#include "core/mem.h"
 
 namespace gpu
 {

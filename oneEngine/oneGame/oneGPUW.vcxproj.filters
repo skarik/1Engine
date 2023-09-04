@@ -365,5 +365,8 @@
     <ClCompile Include="source\gpuw\Texture.cpp">
       <Filter>SOURCE\GPU Wrapper</Filter>
     </ClCompile>
+    <ClCompile Include="source\gpuw\Buffers.Dynamic.cpp">
+      <Filter>SOURCE\GPU Wrapper</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

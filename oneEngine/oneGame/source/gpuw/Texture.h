@@ -20,10 +20,16 @@ namespace gpu
 	public:
 		// @brief Is this texture valid to be used?
 		//		If the texture has not been created, it will be removed.
-		GPUW_API bool			valid ( void ) const override;
+		GPUW_API bool			valid ( void ) const override
+		{
+			return pInternal ? pInternal->valid() : false;
+		}
 		
 		// @brief Returns native index or pointer to the resource.
-		GPUW_API gpuHandle		nativePtr ( void ) override;
+		GPUW_API gpuHandle		nativePtr ( void ) override
+		{
+			return pInternal ? pInternal->nativePtr() : gpuHandle();
+		}
 
 		// @brief Creates a texture
 		GPUW_API int			allocate (
@@ -38,13 +44,19 @@ namespace gpu
 		GPUW_API int			free ( void ) override;
 
 		// @brief Uploads data to the texture from a buffer
-		GPUW_API int			upload ( gpu::base::BaseContext* context, gpu::base::Buffer& buffer, const uint level, const uint arraySlice ) override;
+		GPUW_API int			upload ( gpu::base::BaseContext* context, gpu::base::Buffer& buffer, const uint level, const uint arraySlice ) override
+		{
+			return pInternal ? pInternal->upload(context, buffer, level, arraySlice) : gpu::kErrorNullReference;
+		}
 
 		// @brief Uploads data to a buffer from this texture
-		GPUW_API int			copy ( gpu::base::BaseContext* context, gpu::base::Buffer& buffer, const uint level, const uint arraySlice ) override;
+		GPUW_API int			copy ( gpu::base::BaseContext* context, gpu::base::Buffer& buffer, const uint level, const uint arraySlice ) override
+		{
+			return pInternal ? pInternal->copy(context, buffer, level, arraySlice) : gpu::kErrorNullReference;
+		}
 
 	private:
-		gpu::base::Texture*	pInternal;
+		gpu::base::Texture*	pInternal = nullptr;
 	};
 
 	typedef TextureDynamic Texture;

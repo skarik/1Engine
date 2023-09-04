@@ -36,7 +36,7 @@ void RrTexture::StreamingReset ( void )
 	{	// Clear off load info state and dirty values.
 		loadInfo->pixelSync.destroy(NULL);
 		for (int i = 0; i < 16; ++i) {
-			loadInfo->pixelBuffer[i].free(NULL);
+			loadInfo->pixelBuffer[i].free();
 		}
 		delete loadInfo;
 	}
@@ -103,8 +103,8 @@ bool RrTexture::OnStreamStepProcedural ( bool sync_client, core::IArResourceSubs
 	case kTextureLoadState_LoadImage:
 		{
 			// Create a buffer to upload the texture data
-			loadInfo->pixelBuffer[0].initAsTextureBuffer(NULL, upload_request->type, upload_request->format, upload_request->width, upload_request->height, upload_request->depth);
-			void* target = loadInfo->pixelBuffer[0].map(NULL, gpu::kTransferWriteDiscardPrevious);
+			loadInfo->pixelBuffer[0].initAsTextureBuffer(upload_request->type, upload_request->format, upload_request->width, upload_request->height, upload_request->depth);
+			void* target = loadInfo->pixelBuffer[0].map(gfx, gpu::kTransferWriteDiscardPrevious);
 
 			// Copy data to the target
 			if (upload_request->data != NULL)
@@ -132,7 +132,7 @@ bool RrTexture::OnStreamStepProcedural ( bool sync_client, core::IArResourceSubs
 				return false;
 			}
 			else {
-				loadInfo->pixelBuffer[0].free(NULL);
+				loadInfo->pixelBuffer[0].free();
 			}
 			loadState = kTextureLoadState_Done;
 		}
@@ -223,9 +223,9 @@ bool RrTexture::OnStreamStepDisk ( bool sync_client, core::IArResourceSubsystem*
 			uint64_t size_Flat = core::kTextureFormat_SuperlowByteSize / core::gfx::tex::getColorFormatByteSize(info.internalFormat);
 			uint64_t size_Width = (uint64_t)sqrt(size_Flat);
 			if (info.type == core::gfx::tex::kTextureType2D) // TODO: replace with common XYZ dim check of above
-				loadInfo->pixelBuffer[0].initAsTextureBuffer(NULL, info.type, info.internalFormat, size_Width, size_Width, 1); 
+				loadInfo->pixelBuffer[0].initAsTextureBuffer(info.type, info.internalFormat, size_Width, size_Width, 1); 
 			else if (info.type == core::gfx::tex::kTextureType3D)
-				loadInfo->pixelBuffer[0].initAsTextureBuffer(NULL, info.type, info.internalFormat, size_Width, size_Width, size_Width); 
+				loadInfo->pixelBuffer[0].initAsTextureBuffer(info.type, info.internalFormat, size_Width, size_Width, size_Width); 
 			void* target = loadInfo->pixelBuffer[0].map(gfx, gpu::kTransferWriteDiscardPrevious);
 
 			// Load the data in:
@@ -256,7 +256,7 @@ bool RrTexture::OnStreamStepDisk ( bool sync_client, core::IArResourceSubsystem*
 				return false;
 			}
 			else {
-				loadInfo->pixelBuffer[0].free(NULL);
+				loadInfo->pixelBuffer[0].free();
 			}
 			loadState = kTextureLoadState_LoadImage;
 		}
@@ -285,7 +285,7 @@ bool RrTexture::OnStreamStepDisk ( bool sync_client, core::IArResourceSubsystem*
 					uint16_t level_height	= std::max<uint16_t>(1, loadInfo->loader.info.height / math::exp2(loadInfo->level));
 					uint16_t level_depth	= std::max<uint16_t>(1, loadInfo->loader.info.depth / math::exp2(loadInfo->level));
 
-					loadInfo->pixelBuffer[loadInfo->level].initAsTextureBuffer(NULL, info.type, info.internalFormat, level_width, level_height, level_depth);
+					loadInfo->pixelBuffer[loadInfo->level].initAsTextureBuffer(info.type, info.internalFormat, level_width, level_height, level_depth);
 					uint32 target_pitch = 0;
 					void* target = loadInfo->pixelBuffer[loadInfo->level].map(gfx, gpu::kTransferWriteDiscardPrevious, target_pitch);
 
@@ -368,7 +368,7 @@ bool RrTexture::OnStreamStepDisk ( bool sync_client, core::IArResourceSubsystem*
 				}
 				else
 				{	// Done uploading to GPU. We can free the previous buffer.
-					loadInfo->pixelBuffer[loadInfo->level].free(NULL);
+					loadInfo->pixelBuffer[loadInfo->level].free();
 
 					// Mark that we're done uploading
 					loadInfo->uploading = false;
@@ -400,7 +400,7 @@ bool RrTexture::OnStreamStepDisk ( bool sync_client, core::IArResourceSubsystem*
 					// Uploading is done, we can now free all of our used pixel buffers.
 					loadInfo->uploading = false;
 					for (int i = 0; i < loadInfo->loader.info.levels; ++i) {
-						loadInfo->pixelBuffer[i].free(NULL);
+						loadInfo->pixelBuffer[i].free();
 					}
 				}
 			}

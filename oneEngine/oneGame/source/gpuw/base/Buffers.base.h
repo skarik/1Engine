@@ -47,7 +47,7 @@ namespace gpu
 		// Allocates memory from the managed GPU heap.
 		kMemoryTypeHeap,
 
-		// Allocates from the command buffer stack.
+		// Allocates from the command buffer stack. Use for Push-Constants.
 		// When not available (such as DX11) will default to allocating from the heap.
 		kMemoryTypeSingleFrame,
 	};
@@ -106,9 +106,8 @@ namespace base
 		GPUW_API virtual void*	map ( gpu::base::BaseContext* context, const TransferStyle style, uint32& out_row_pitch ) =0;
 		// @brief Maps the entire buffer to CPU-side memory and returns the address.
 		GPUW_API virtual void*	map ( gpu::base::BaseContext* context, const TransferStyle style ) =0;
-
-		// @brief Maps the entire buffer to CPU-side memory and returns the address.
-		GPUW_API virtual void*	mapSubregion ( gpu::base::BaseContext* context, const TransferStyle style, uint32& out_row_pitch ) =0;
+		// @brief Maps the given region of the buffer to CPU-side memory and returns the address.
+		GPUW_API virtual void*	mapSubregion ( gpu::base::BaseContext* context, const TransferStyle style, uint64_t byte_offset, uint64_t byte_size, uint32& out_row_pitch ) =0;
 		// @brief Unmaps the buffer.
 		//	If the mapping was Static, this is a synchronous operation, waiting for the data to upload to the device.
 		GPUW_API virtual int	unmap ( gpu::base::BaseContext* context ) =0;

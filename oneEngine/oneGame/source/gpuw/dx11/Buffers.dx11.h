@@ -18,70 +18,67 @@ namespace dx11
 	class ComputeContext;
 	class BaseContext;
 
-	class Buffer
+	class Buffer : public base::Buffer
 	{
 	public:
 		GPUW_API				Buffer ( void );
 
 		//	initAsVertexBuffer( device, format, element_count ) : Initializes as a vertex buffer.
 		// Data is uploaded separately through map/unmap or upload.
-		GPUW_API int			initAsVertexBuffer ( Device* device, Format format, const uint64_t element_count );
+		GPUW_API int			initAsVertexBuffer ( Format format, const uint64_t element_count ) override;
 
 		//	initAsIndexBuffer( device, format, element_count ) : Initializes as an index buffer.
 		// Data is uploaded separately through map/unmap or upload.
-		GPUW_API int			initAsIndexBuffer ( Device* device, IndexFormat format, const uint64_t element_count );
+		GPUW_API int			initAsIndexBuffer ( IndexFormat format, const uint64_t element_count );
 
 		//	initAsData( device, data_size ) : Initializes as a constant buffer.
 		// Data is uploaded separately through map/unmap or upload.
-		GPUW_API int			initAsConstantBuffer ( Device* device, const uint64_t data_size, const MemoryType where = kMemoryTypeHeap );
+		GPUW_API int			initAsConstantBuffer ( const uint64_t data_size, const MemoryType where = kMemoryTypeHeap );
 
 		//	initAsStructuredBuffer( device, data_size ) : Initializes as a data buffer.
 		// Data is uploaded separately through map/unmap or upload.
-		GPUW_API int			initAsStructuredBuffer ( Device* device, const uint64_t data_size );
+		GPUW_API int			initAsStructuredBuffer ( const uint64_t data_size );
 
 		//	initAsIndirectArgs( device, data_size ) : Initializes as a data buffer, able to be used for indirect args.
 		// Data is uploaded separately through map/unmap or upload.
-		GPUW_API int			initAsIndirectArgs ( Device* device, const uint64_t data_size );
+		GPUW_API int			initAsIndirectArgs ( const uint64_t data_size );
 
 		//	initAsTextureBuffer( device, type, format, element_width, element_height, element_width ) : Initializes as a typed data buffer. Can be used to load textures.
 		// Data is uploaded separately through map/unmap or upload.
 		GPUW_API int			initAsTextureBuffer (
-			Device* device,
 			const core::gfx::tex::arTextureType type,
 			const core::gfx::tex::arColorFormat format,
 			const uint64_t element_width, const uint64_t element_height, const uint64_t element_depth
 		);
 
 		//	initAsReadbackBuffer( device, data_size ) : Initializes as a data buffer to be used for reading on CPU.
-		GPUW_API int			initAsReadbackBuffer ( Device* device, const uint64_t data_size );
+		GPUW_API int			initAsReadbackBuffer ( const uint64_t data_size );
 		
 		//	initAsTextureReadbackBuffer( device, type, format, element_width, element_height, element_width ) : Initializes as a typed data buffer. Can be used to read textures.
 		GPUW_API int			initAsTextureReadbackBuffer  (
-			Device* device,
 			const core::gfx::tex::arTextureType type,
 			const core::gfx::tex::arColorFormat format,
 			const uint64_t element_width, const uint64_t element_height, const uint64_t element_depth
 		);
 
 		//	map( device, style, out row_pitch ) : Maps the entire buffer to CPU-side memory and returns the address.
-		GPUW_API void*			map ( BaseContext* context, const TransferStyle style, uint32& out_row_pitch );
+		GPUW_API void*			map ( gpu::base::BaseContext* context, const TransferStyle style, uint32& out_row_pitch );
 		//	map( device, style ) : Maps the entire buffer to CPU-side memory and returns the address.
-		GPUW_API void*			map ( BaseContext* context, const TransferStyle style );
-
-		//	map( device, style ) : Maps the entire buffer to CPU-side memory and returns the address.
-		GPUW_API void*			mapSubregion ( BaseContext* context, const TransferStyle style, uint32& out_row_pitch );
+		GPUW_API void*			map ( gpu::base::BaseContext* context, const TransferStyle style );
+		// @brief Maps the given region of the buffer to CPU-side memory and returns the address.
+		GPUW_API void*			mapSubregion ( gpu::base::BaseContext* context, const TransferStyle style, uint64_t byte_offset, uint64_t byte_size, uint32& out_row_pitch );
 		//	unmap( device ) : Unmaps the buffer.
 		// If the mapping was Static, this is a synchronous operation, waiting for the data to upload to the device.
-		GPUW_API int			unmap ( BaseContext* context );
+		GPUW_API int			unmap ( gpu::base::BaseContext* context );
 
 		//	upload( data, data_size, transfer ) : upload a buffer with data
-		GPUW_API int			upload ( BaseContext* context, void* data, const uint64_t data_size, const TransferStyle style );
+		GPUW_API int			upload ( gpu::base::BaseContext* context, void* data, const uint64_t data_size, const TransferStyle style );
 		//	uploadElements()
-		GPUW_API int			uploadElements ( BaseContext* context, void* data, const uint64_t element_count, const TransferStyle style );
+		GPUW_API int			uploadElements ( gpu::base::BaseContext* context, void* data, const uint64_t element_count, const TransferStyle style );
 
 		//	free() : destroys any allocated buffer, if existing.
 		// Assume that any use of the buffer after this point will be invalid, so avoid 1-frame buffers if possible
-		GPUW_API int			free ( Device* device );
+		GPUW_API int			free ( void );
 
 		//	valid() : is this buffer valid to be used?
 		GPUW_API bool			valid ( void );

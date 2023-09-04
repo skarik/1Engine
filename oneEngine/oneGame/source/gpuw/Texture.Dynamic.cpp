@@ -2,6 +2,7 @@
 #include "gpuw/dx11/Texture.dx11.h"
 #include "gpuw/Public/Error.h"
 
+// @brief Allocates the given pointer if needed.
 static void allocateIfNeeded ( gpu::base::Texture*& pointer )
 {
 	if (pointer == nullptr)
@@ -18,16 +19,6 @@ static void allocateIfNeeded ( gpu::base::Texture*& pointer )
 	}
 }
 
-
-bool gpu::TextureDynamic::valid ( void ) const
-{
-	return pInternal ? pInternal->valid() : false;
-}
-		
-gpuHandle gpu::TextureDynamic::nativePtr ( void )
-{
-	return pInternal ? pInternal->nativePtr() : gpuHandle();
-}
 
 int gpu::TextureDynamic::allocate (
 	const core::gfx::tex::arTextureType textureType,
@@ -48,26 +39,6 @@ int gpu::TextureDynamic::free ( void )
 	int result = gpu::kErrorNullReference;
 	if (pInternal)
 		result = pInternal->free();
-	delete pInternal;
+	delete_safe(pInternal);
 	return result;
-}
-
-int gpu::TextureDynamic::upload ( gpu::base::BaseContext* context, gpu::base::Buffer& buffer, const uint level, const uint arraySlice )
-{
-	ARCORE_ASSERT(pInternal);
-	if (pInternal)
-	{
-		return pInternal->upload(context, buffer, level, arraySlice);
-	}
-	return gpu::kErrorNullReference;
-}
-
-int gpu::TextureDynamic::copy ( gpu::base::BaseContext* context, gpu::base::Buffer& buffer, const uint level, const uint arraySlice )
-{
-	ARCORE_ASSERT(pInternal);
-	if (pInternal)
-	{
-		return pInternal->copy(context, buffer, level, arraySlice);
-	}
-	return gpu::kErrorNullReference;
 }
