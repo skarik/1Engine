@@ -14,6 +14,7 @@ static void allocateIfNeeded ( gpu::base::Texture*& pointer )
 			break;
 #endif
 		}
+		ARCORE_ASSERT(pointer);
 	}
 }
 
@@ -35,7 +36,11 @@ int gpu::TextureDynamic::allocate (
 )
 {
 	allocateIfNeeded(pInternal);
-	return pInternal->allocate(textureType, textureFormat, width, height, depth, levels);
+	if (pInternal)
+	{
+		return pInternal->allocate(textureType, textureFormat, width, height, depth, levels);
+	}
+	return gpu::kErrorNullReference;
 }
 
 int gpu::TextureDynamic::free ( void )

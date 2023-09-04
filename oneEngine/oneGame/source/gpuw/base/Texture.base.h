@@ -14,6 +14,7 @@ namespace base
 	class RenderTarget;
 	class BaseContext;
 	class WriteableResource;
+	class Device;
 
 	// Create a read/write texture.
 	class Texture

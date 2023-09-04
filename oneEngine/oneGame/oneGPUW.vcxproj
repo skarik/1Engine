@@ -18,6 +18,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\gpuw\1docs.gpwu.style.h" />
+    <ClInclude Include="source\gpuw\base\BaseContext.base.h" />
+    <ClInclude Include="source\gpuw\base\Buffers.base.h" />
+    <ClInclude Include="source\gpuw\base\ComputeContext.base.h" />
+    <ClInclude Include="source\gpuw\base\GraphicsContext.base.h" />
+    <ClInclude Include="source\gpuw\base\Texture.base.h" />
     <ClInclude Include="source\gpuw\Buffers.h" />
     <ClInclude Include="source\gpuw\ComputeContext.h" />
     <ClInclude Include="source\gpuw\Device.h" />
@@ -119,6 +124,7 @@
     <ClCompile Include="source\gpuw\ogl\Shader.cpp" />
     <ClCompile Include="source\gpuw\ogl\ShaderPipeline.cpp" />
     <ClCompile Include="source\gpuw\ogl\Texture.cpp" />
+    <ClCompile Include="source\gpuw\Texture.cpp" />
     <ClCompile Include="source\gpuw\vk\Buffers.vk.cpp" />
     <ClCompile Include="source\gpuw\vk\Device.vk.cpp" />
     <ClCompile Include="source\gpuw\vk\GraphicsContext.vk.cpp" />

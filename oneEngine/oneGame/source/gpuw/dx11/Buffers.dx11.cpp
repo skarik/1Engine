@@ -13,7 +13,7 @@
 
 #include <algorithm>
 
-gpu::Buffer::Buffer ( void ) :
+gpu::dx11::Buffer::Buffer ( void ) :
 	m_bufferType(kBufferTypeUnknown),
 	m_buffer(0),
 	m_elementSize(0),
@@ -23,18 +23,18 @@ gpu::Buffer::Buffer ( void ) :
 {}
 
 //	valid () : is this buffer valid to be used?
-bool gpu::Buffer::valid ( void )
+bool gpu::dx11::Buffer::valid ( void )
 {
 	return m_buffer != 0;
 }
 //	getGlIndex() : returns index of resource in OpenGL
-gpuHandle gpu::Buffer::nativePtr ( void )
+gpuHandle gpu::dx11::Buffer::nativePtr ( void )
 {
 	return (gpuHandle)m_buffer;
 }
 
 //	initAsVertexBuffer( device, format, element_count ) : Initializes as a vertex buffer.
-int gpu::Buffer::initAsVertexBuffer ( Device* device, Format format, const uint64_t element_count )
+int gpu::dx11::Buffer::initAsVertexBuffer ( Device* device, Format format, const uint64_t element_count )
 {
 	ARCORE_ASSERT(element_count > 0);
 	if (device == NULL) device = getDevice();
@@ -64,7 +64,7 @@ int gpu::Buffer::initAsVertexBuffer ( Device* device, Format format, const uint6
 }
 
 //	initAsIndexBuffer( device, format, element_count ) : Initializes as an index buffer.
-int gpu::Buffer::initAsIndexBuffer ( Device* device, IndexFormat format, const uint64_t element_count )
+int gpu::dx11::Buffer::initAsIndexBuffer ( Device* device, IndexFormat format, const uint64_t element_count )
 {
 	ARCORE_ASSERT(element_count > 0);
 	if (device == NULL) device = getDevice();
@@ -94,7 +94,7 @@ int gpu::Buffer::initAsIndexBuffer ( Device* device, IndexFormat format, const u
 }
 
 //	initAsData( device, data_size ) : Initializes as a constant buffer.
-int gpu::Buffer::initAsConstantBuffer ( Device* device, const uint64_t data_size, const MemoryType where )
+int gpu::dx11::Buffer::initAsConstantBuffer ( Device* device, const uint64_t data_size, const MemoryType where )
 {
 	ARCORE_ASSERT(data_size > 0);
 	if (device == NULL) device = getDevice();
@@ -123,7 +123,7 @@ int gpu::Buffer::initAsConstantBuffer ( Device* device, const uint64_t data_size
 }
 
 //	initAsStructuredBuffer( device, data_size ) : Initializes as a data buffer.
-int gpu::Buffer::initAsStructuredBuffer ( Device* device, const uint64_t data_size )
+int gpu::dx11::Buffer::initAsStructuredBuffer ( Device* device, const uint64_t data_size )
 {
 	ARCORE_ASSERT(data_size > 0);
 	if (device == NULL) device = getDevice();
@@ -166,7 +166,7 @@ int gpu::Buffer::initAsStructuredBuffer ( Device* device, const uint64_t data_si
 }
 
 //	initAsIndirectArgs( device, data_size ) : Initializes as a data buffer, able to be used for indirect args.
-int gpu::Buffer::initAsIndirectArgs ( Device* device, const uint64_t data_size )
+int gpu::dx11::Buffer::initAsIndirectArgs ( Device* device, const uint64_t data_size )
 {
 	ARCORE_ASSERT(data_size > 0);
 	if (device == NULL) device = getDevice();
@@ -195,7 +195,7 @@ int gpu::Buffer::initAsIndirectArgs ( Device* device, const uint64_t data_size )
 }
 
 //	initAsData( device, data_size ) : Initializes as a constant buffer.
-int gpu::Buffer::initAsReadbackBuffer ( Device* device, const uint64_t data_size )
+int gpu::dx11::Buffer::initAsReadbackBuffer ( Device* device, const uint64_t data_size )
 {
 	ARCORE_ASSERT(data_size > 0);
 	if (device == NULL) device = getDevice();
@@ -224,7 +224,7 @@ int gpu::Buffer::initAsReadbackBuffer ( Device* device, const uint64_t data_size
 }
 
 //	initAsTextureBuffer( device, format, element_width, element_height ) : Initializes as a typed data buffer. Can be used to load textures.
-int gpu::Buffer::initAsTextureBuffer (
+int gpu::dx11::Buffer::initAsTextureBuffer (
 	Device* device,
 	const core::gfx::tex::arTextureType type,
 	const core::gfx::tex::arColorFormat format,
@@ -321,7 +321,7 @@ int gpu::Buffer::initAsTextureBuffer (
 }
 
 //	initAsTextureBuffer( device, format, element_width, element_height ) : Initializes as a typed data buffer. Can be used to load textures.
-int gpu::Buffer::initAsTextureReadbackBuffer (
+int gpu::dx11::Buffer::initAsTextureReadbackBuffer (
 	Device* device,
 	const core::gfx::tex::arTextureType type,
 	const core::gfx::tex::arColorFormat format,
@@ -417,13 +417,13 @@ int gpu::Buffer::initAsTextureReadbackBuffer (
 	return kError_SUCCESS;
 }
 
-void* gpu::Buffer::map ( BaseContext* context, const TransferStyle style )
+void* gpu::dx11::Buffer::map ( BaseContext* context, const TransferStyle style )
 {
 	uint32 dummy;
 	return map(context, style, dummy);
 }
 
-void* gpu::Buffer::map ( BaseContext* context, const TransferStyle style, uint32& out_row_pitch )
+void* gpu::dx11::Buffer::map ( BaseContext* context, const TransferStyle style, uint32& out_row_pitch )
 {
 	ARCORE_ASSERT(m_buffer != NIL);
 	ID3D11DeviceContext* ctx = (context == nullptr) ? gpu::getDevice()->getImmediateContext() : (ID3D11DeviceContext*)context->getNativeContext();
@@ -481,7 +481,7 @@ void* gpu::Buffer::map ( BaseContext* context, const TransferStyle style, uint32
 	//todo: correct flags
 	return resource.pData;
 }
-int gpu::Buffer::unmap ( BaseContext* context )
+int gpu::dx11::Buffer::unmap ( BaseContext* context )
 {
 	ARCORE_ASSERT(m_buffer != NIL);
 	ID3D11DeviceContext* ctx = (context == nullptr) ? gpu::getDevice()->getImmediateContext() : (ID3D11DeviceContext*)context->getNativeContext();
@@ -504,7 +504,7 @@ int gpu::Buffer::unmap ( BaseContext* context )
 }
 
 //	upload( data, data_size, transfer ) : upload a buffer with data
-int	gpu::Buffer::upload ( BaseContext* context, void* data, const  uint64_t data_size, const TransferStyle style )
+int	gpu::dx11::Buffer::upload ( BaseContext* context, void* data, const  uint64_t data_size, const TransferStyle style )
 {
 	ARCORE_ASSERT(m_buffer != NIL);
 
@@ -516,7 +516,7 @@ int	gpu::Buffer::upload ( BaseContext* context, void* data, const  uint64_t data
 }
 
 //	upload( data, data_size, transfer ) : initializes and upload a constant buffer with data
-int	gpu::Buffer::uploadElements ( BaseContext* context, void* data, const  uint64_t element_count, const TransferStyle style )
+int	gpu::dx11::Buffer::uploadElements ( BaseContext* context, void* data, const  uint64_t element_count, const TransferStyle style )
 {
 	ARCORE_ASSERT(m_buffer != NIL);
 	ARCORE_ASSERT(m_elementSize != 0);
@@ -525,7 +525,7 @@ int	gpu::Buffer::uploadElements ( BaseContext* context, void* data, const  uint6
 }
 
 //	free() : destroys any allocated buffer, if existing.
-int	gpu::Buffer::free ( Device* device )
+int	gpu::dx11::Buffer::free ( Device* device )
 {
 	if (m_buffer)
 		static_cast<ID3D11Buffer*>(m_buffer)->Release();
@@ -545,13 +545,13 @@ int	gpu::Buffer::free ( Device* device )
 }
 
 //	getFormat() : returns underlying format of the data, if applicable.
-gpu::Format gpu::Buffer::getFormat ( void ) const
+gpu::Format gpu::dx11::Buffer::getFormat ( void ) const
 {
 	return m_format;
 }
 
 //	getBufferType() : returns the buffer type.
-gpu::BufferType gpu::Buffer::getBufferType ( void ) const
+gpu::BufferType gpu::dx11::Buffer::getBufferType ( void ) const
 {
 	return m_bufferType;
 }

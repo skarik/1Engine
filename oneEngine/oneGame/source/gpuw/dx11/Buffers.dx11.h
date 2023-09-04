@@ -1,5 +1,5 @@
-#ifndef GPU_WRAPPER_BUFFERS_H_
-#define GPU_WRAPPER_BUFFERS_H_
+#ifndef GPU_WRAPPER_BUFFERS_DX11_H_
+#define GPU_WRAPPER_BUFFERS_DX11_H_
 
 #include "core/types/types.h"
 #include "core/gfx/textureFormats.h"
@@ -8,54 +8,15 @@
 #include "gpuw/Public/Transfer.h"
 #include "gpuw/Public/Formats.h"
 
-namespace gpu
+#include "gpuw/base/Buffers.base.h"
+
+namespace gpu {
+namespace dx11
 {
 	class Device;
 	class GraphicsContext;
 	class ComputeContext;
 	class BaseContext;
-
-	enum BufferType
-	{
-		kBufferTypeUnknown,
-		// Vertex buffer.
-		// Meant to be used as a vertex stream into to a vertex shader.
-		kBufferTypeVertex,
-		// Index buffer.
-		// Meant to be used as a index stream for the inputs to a vs/gs shader.
-		kBufferTypeIndex,
-		// Constant buffer. 
-		// Corresponds to a cbuffer type in shaders.
-		// Uses at minimum 1KB and at most 4KB on certain platforms.
-		kBufferTypeConstant,
-		// Structured buffer.
-		// Corresponds to a StructuredBuffer type in shaders, RegularBuffer? (TODO) on other platforms.
-		// Uses at minimum 4KB and at most 65MB on certain platforms.
-		kBufferTypeStructured,
-		// Indirect args buffer.
-		// Use for storing arguments for indirect draws.
-		kBufferTypeIndirectArgs,
-		// Texture buffer.
-		// Use for loading textures.
-		kBufferTypeTexture,
-
-		// Readback buffer.
-		// Used for reading GPU data on the CPU.
-		kBufferTypeReadback,
-		// Readback texture buffer.
-		// Used for reading specifically texture GPU data on the CPU.
-		kBufferTypeTextureReadback,
-	};
-
-	enum MemoryType
-	{
-		// Allocates memory from the managed GPU heap.
-		kMemoryTypeHeap,
-
-		// Allocates from the command buffer stack.
-		// When not available (such as DX11) will default to allocating from the heap.
-		kMemoryTypeSingleFrame,
-	};
 
 	class Buffer
 	{
@@ -133,13 +94,14 @@ namespace gpu
 		GPUW_API Format			getFormat ( void ) const;
 
 		//	getBufferType() : returns the buffer type.
-		GPUW_API BufferType		getBufferType ( void ) const;
+		GPUW_API gpu::BufferType
+								getBufferType ( void ) const;
 
 	private:
 		friend GraphicsContext;
 		friend ComputeContext;
 
-		BufferType		m_bufferType;
+		gpu::BufferType	m_bufferType;
 		void*			m_buffer;
 		unsigned int	m_elementSize;
 		Format			m_format;
@@ -154,6 +116,6 @@ namespace gpu
 #	endif
 	};
 
-}
+}}
 
-#endif//GPU_WRAPPER_BUFFERS_H_
+#endif//GPU_WRAPPER_BUFFERS_DX11_H_

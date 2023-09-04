@@ -28,6 +28,9 @@
     <Filter Include="SOURCE\GPU Wrapper\DirectX 11\Internal">
       <UniqueIdentifier>{d606d871-acf4-453a-b8c2-50d46ecb9e03}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SOURCE\GPU Wrapper\Base">
+      <UniqueIdentifier>{e450da4b-b45d-44bb-bffc-9db88e597115}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\gpuw\ogl\Buffers.h">
@@ -234,6 +237,21 @@
     <ClInclude Include="source\gpuw\dx11\WriteableResource.dx11.h">
       <Filter>SOURCE\GPU Wrapper\DirectX 11</Filter>
     </ClInclude>
+    <ClInclude Include="source\gpuw\base\Texture.base.h">
+      <Filter>SOURCE\GPU Wrapper\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\base\BaseContext.base.h">
+      <Filter>SOURCE\GPU Wrapper\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\base\Buffers.base.h">
+      <Filter>SOURCE\GPU Wrapper\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\base\ComputeContext.base.h">
+      <Filter>SOURCE\GPU Wrapper\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="source\gpuw\base\GraphicsContext.base.h">
+      <Filter>SOURCE\GPU Wrapper\Base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\gpuw\ogl\Buffers.cpp">
@@ -343,6 +361,9 @@
     </ClCompile>
     <ClCompile Include="source\gpuw\dx11\WriteableResource.dx11.cpp">
       <Filter>SOURCE\GPU Wrapper\DirectX 11</Filter>
+    </ClCompile>
+    <ClCompile Include="source\gpuw\Texture.cpp">
+      <Filter>SOURCE\GPU Wrapper</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
