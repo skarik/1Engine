@@ -1,5 +1,5 @@
-#ifndef GPU_WRAPPER_GRAPHICS_CONTEXT_H_
-#define GPU_WRAPPER_GRAPHICS_CONTEXT_H_
+#ifndef GPU_WRAPPER_BASE_GRAPHICS_CONTEXT_H_
+#define GPU_WRAPPER_BASE_GRAPHICS_CONTEXT_H_
 
 #include "core/types.h"
 #include "gpuw/Public/Enums.h"
@@ -10,9 +10,10 @@
 #include "gpuw/Public/States.h"
 #include <stdint.h>
 
-#include "./BaseContext.dx11.h"
+#include "./BaseContext.base.h"
 
-namespace gpu
+namespace gpu {
+namespace base
 {
 	class ShaderPipeline;
 	class Pipeline;
@@ -28,15 +29,15 @@ namespace gpu
 	{
 	public:
 		GPUW_EXLUSIVE_API explicit
-								GraphicsContext ( Device* wrapperDevice, bool passthroughAsImmediate );
+								GraphicsContext ( Device* device, bool isFirstOrImmediate );
 		GPUW_EXLUSIVE_API 		~GraphicsContext ( void );
 
 		//	reset() : Resets the context state to defaults.
 		// Note that on some API's, this will do nothing.
-		GPUW_API int			reset ( void );
+		GPUW_API virtual int	reset ( void );
 
 		//	submit() : Submits the current graphics commands in the queue.
-		GPUW_API int			submit ( void );
+		GPUW_API virtual int	submit ( void );
 
 		//	validate() : Checks to make sure submitted graphics commands are valid.
 		// Returns gpu::kError_SUCCESS on no error.
@@ -133,52 +134,7 @@ namespace gpu
 		GPUW_API int			debugGroupPush ( const char* groupName );
 		//	debugGroupPop() : Ends the currently set "group" in the commands.
 		GPUW_API int			debugGroupPop ( void );
-
-	private:
-		// implementation details:
-
-		Device*					m_wrapperDevice;
-		//void*					m_deferredContext;
-		bool					m_isImmediateMode;
-
-		//RasterizerState			m_rasterState;
-		void*					m_rasterStateCachedMap;
-		//void*					m_rasterStateCurrent;
-		uint32_t				m_rasterStateCurrentBitfilter;
-
-		//BlendCollectiveState	m_blendCollectState;
-		void*					m_blendStateCachedMap;
-		//void*					m_blendStateCurrent;
-		uint64_t				m_blendStateCurrentBitfilter [4];
-
-		void*					m_depthStateCachedMap;
-		uint64_t				m_depthStateCurrentBitfilter;
-
-		//DepthStencilState		m_depthStencilState;
-		PrimitiveTopology		m_primitiveType;
-
-		void*					m_renderTarget [16];
-		void*					m_depthStencilTarget;
-
-		Pipeline*				m_pipeline;
-		bool					m_pipelineBound;
-		bool					m_pipelineDataBound;
-
-		IndexFormat				m_indexFormat;
-		Buffer*					m_indexBuffer;
-		//Buffer*					m_vertexBuffer[32/*D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT*/];
-		Buffer*					m_indirectArgsBuffer;
-
-		struct ConstantBufferGroup
-		{
-			void*				m_buffers [16];
-		};
-		ConstantBufferGroup		m_constantBuffers [kShaderStageMAX];
-
-		Sampler*				m_defaultSampler;
-
-		int						drawPreparePipeline ( void );
 	};
-}
+}}
 
-#endif//GPU_WRAPPER_GRAPHICS_CONTEXT_H_
+#endif//GPU_WRAPPER_BASE_GRAPHICS_CONTEXT_H_

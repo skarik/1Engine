@@ -4,16 +4,14 @@
 #include "core/types.h"
 #include <stdint.h>
 
-namespace gpu
+namespace gpu {
+namespace base
 {
 	class BaseContext
 	{
 	public:
-		GPUW_EXLUSIVE_API void*	getNativeContext ( void )
-			{ return m_deferredContext; }
-
-	protected:
-		void*					m_deferredContext;
+		GPUW_EXLUSIVE_API virtual void*
+							getNativeContext ( void ) =0;
 	};
 }
 

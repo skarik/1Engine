@@ -4,9 +4,10 @@
 #include "core/types.h"
 #include "gpuw/Public/ShaderTypes.h"
 
-#include "./BaseContext.dx11.h"
+#include "./BaseContext.base.h"
 
-namespace gpu
+namespace gpu {
+namespace base
 {
 	class ShaderPipeline;
 	class Pipeline;
