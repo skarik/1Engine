@@ -13,19 +13,19 @@
 #include <vector>
 #include <stdio.h>
 
-static gpu::Device* m_TargetDisplayDevice = NULL;
+/*static gpu::Device* m_TargetDisplayDevice = NULL;
 
 gpu::Device* gpu::getDevice ( void )
 {
 	return m_TargetDisplayDevice;
-}
+}*/
 
-gpu::Device::Device ( void )
+gpu::dx11::Device::Device ( void )
 	//: mw_module(module_handle), mw_window(module_window),
 	//m_graphicsContext(NULL), m_computeContext(NULL)
 	//m_layers(NULL), m_layerCount(0)
 {}
-gpu::Device::~Device ( void )
+gpu::dx11::Device::~Device ( void )
 {
 	/*delete[] m_layers;
 
@@ -45,7 +45,7 @@ gpu::Device::~Device ( void )
 	free();
 }
 
-int gpu::Device::create ( DeviceFeature* features, uint32_t featureCount, DeviceLayer* layers, uint32_t layerCount )
+int gpu::dx11::Device::create ( DeviceFeature* features, uint32_t featureCount, DeviceLayer* layers, uint32_t layerCount )
 {
 	//IDXGIFactory	*dx_factory;
 	std::vector<IDXGIAdapter*>
@@ -161,7 +161,7 @@ int gpu::Device::create ( DeviceFeature* features, uint32_t featureCount, Device
 	return gpu::kError_SUCCESS;
 }
 
-int gpu::Device::initialize ( OutputSurface* surface )
+int gpu::dx11::Device::initialize ( OutputSurface* surface )
 {
 	// Nothing on DX11.
 
@@ -169,17 +169,17 @@ int gpu::Device::initialize ( OutputSurface* surface )
 }
 
 // Grab native device object
-ID3D11Device* gpu::Device::getNative ( void )
+ID3D11Device* gpu::dx11::Device::getNative ( void )
 {
 	return m_dxDevice;
 }
 
-ID3D11DeviceContext* gpu::Device::getImmediateContext ( void )
+ID3D11DeviceContext* gpu::dx11::Device::getImmediateContext ( void )
 {
 	return m_dxImmediateContext;
 }
 
-int gpu::Device::free ( void )
+int gpu::dx11::Device::free ( void )
 {
 	if (m_dxImmediateContext)
 	{

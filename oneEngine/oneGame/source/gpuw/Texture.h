@@ -1,3 +1,6 @@
+#ifndef GPU_WRAPPER_DYNAMIC_TEXTURES_H_
+#define GPU_WRAPPER_DYNAMIC_TEXTURES_H_
+
 #include "gpuw/gpuw_common.h"
 #include "gpuw/base/Texture.base.h"
 
@@ -61,3 +64,5 @@ namespace gpu
 
 	typedef TextureDynamic Texture;
 }
+
+#endif//GPU_WRAPPER_DYNAMIC_TEXTURES_H_

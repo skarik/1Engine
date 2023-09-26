@@ -1,5 +1,5 @@
-#ifndef GPU_WRAPPER_DEVICE_H_
-#define GPU_WRAPPER_DEVICE_H_
+#ifndef GPU_WRAPPER_DEVICE_DX11_H_
+#define GPU_WRAPPER_DEVICE_DX11_H_
 
 #include "core/types/types.h"
 #include "renderer/types/types.h"
@@ -8,25 +8,15 @@
 #include "./GraphicsContext.dx11.h"
 #include "./ComputeContext.dx11.h"
 #include "./gpu.h"
+#include "gpuw/base/Device.base.h"
 
-namespace gpu
+namespace gpu {
+namespace dx11
 {
 	class Fence;
-	class GraphicsContext;
-	class ComputeContext;
 	class OutputSurface;
 
-	enum DeviceLayer
-	{
-		kDeviceLayerDebug,
-	};
-
-	enum DeviceFeature
-	{
-		kDeviceFeatureRaytracing,
-	};
-
-	class Device
+	class Device : public gpu::base::Device
 	{
 	public:
 		// Non-exposed API for creating device.
@@ -36,9 +26,9 @@ namespace gpu
 		GPUW_EXLUSIVE_API		~Device ( void );
 
 		// Non-exposed API for initializing the device. (before OutputSurface ready)
-		GPUW_EXLUSIVE_API int	create ( DeviceFeature* features, uint32_t featureCount, DeviceLayer* layers, uint32_t layerCount );
+		GPUW_EXLUSIVE_API int	create ( DeviceFeature* features, uint32_t featureCount, DeviceLayer* layers, uint32_t layerCount ) override;
 		// Non-exposed API for starting up the device. (after OutputSurface ready)
-		GPUW_EXLUSIVE_API int	initialize ( OutputSurface* surface );
+		GPUW_EXLUSIVE_API int	initialize ( gpu::base::OutputSurface* surface ) override;
 		// Non-exposed API for refreshing the device
 		//GPUW_EXLUSIVE_API int	refresh ( intptr_t module_handle, intptr_t module_window );
 
@@ -54,7 +44,7 @@ namespace gpu
 		// Non-exposed API for grabbing native device
 		ID3D11Device*			getNative ( void );
 		// Non-exposed API for allocating memory
-		void*					allocateMemory ( uint32_t typeFlags, uint64_t size, uint64_t offset );
+		//void*					allocateMemory ( uint32_t typeFlags, uint64_t size, uint64_t offset );
 		// Non-exposed API for grabbing the immediate device context
 		ID3D11DeviceContext*	getImmediateContext ( void );
 	private:
@@ -103,9 +93,9 @@ namespace gpu
 		//ComputeContext*		m_computeContext;
 	};
 
-	GPUW_API Device* getDevice ( void );
-	GPUW_API void setActiveDevice ( Device* );
+	//GPUW_API Device* getDevice ( void );
+	//GPUW_API void setActiveDevice ( Device* );
 
-}
+}}
 
-#endif//GPU_WRAPPER_BUFFERS_H_
+#endif//GPU_WRAPPER_BUFFERS_DX11_H_

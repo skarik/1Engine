@@ -362,10 +362,13 @@
     <ClCompile Include="source\gpuw\dx11\WriteableResource.dx11.cpp">
       <Filter>SOURCE\GPU Wrapper\DirectX 11</Filter>
     </ClCompile>
-    <ClCompile Include="source\gpuw\Texture.cpp">
+    <ClCompile Include="source\gpuw\Buffers.Dynamic.cpp">
       <Filter>SOURCE\GPU Wrapper</Filter>
     </ClCompile>
-    <ClCompile Include="source\gpuw\Buffers.Dynamic.cpp">
+    <ClCompile Include="source\gpuw\Texture.Dynamic.cpp">
+      <Filter>SOURCE\GPU Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="source\gpuw\GraphicsContext.Dynamic.cpp">
       <Filter>SOURCE\GPU Wrapper</Filter>
     </ClCompile>
   </ItemGroup>

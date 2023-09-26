@@ -108,6 +108,7 @@
     <ClCompile Include="source\gpuw\dx11\ShaderPipeline.dx11.cpp" />
     <ClCompile Include="source\gpuw\dx11\Texture.dx11.cpp" />
     <ClCompile Include="source\gpuw\dx11\WriteableResource.dx11.cpp" />
+    <ClCompile Include="source\gpuw\GraphicsContext.Dynamic.cpp" />
     <ClCompile Include="source\gpuw\ogl\Buffers.cpp" />
     <ClCompile Include="source\gpuw\ogl\ComputeContext.cpp" />
     <ClCompile Include="source\gpuw\ogl\ComputeContext.sync.cpp" />
@@ -125,7 +126,7 @@
     <ClCompile Include="source\gpuw\ogl\Shader.cpp" />
     <ClCompile Include="source\gpuw\ogl\ShaderPipeline.cpp" />
     <ClCompile Include="source\gpuw\ogl\Texture.cpp" />
-    <ClCompile Include="source\gpuw\Texture.cpp" />
+    <ClCompile Include="source\gpuw\Texture.Dynamic.cpp" />
     <ClCompile Include="source\gpuw\vk\Buffers.vk.cpp" />
     <ClCompile Include="source\gpuw\vk\Device.vk.cpp" />
     <ClCompile Include="source\gpuw\vk\GraphicsContext.vk.cpp" />

@@ -22,7 +22,7 @@
 
 #include <stdio.h>
 
-int gpu::GraphicsContext::clearDepthStencil ( bool clearDepth, float depth, bool clearStencil, uint8_t stencil )
+int gpu::dx11::GraphicsContext::clearDepthStencil ( bool clearDepth, float depth, bool clearStencil, uint8_t stencil )
 {
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
 
@@ -37,7 +37,7 @@ int gpu::GraphicsContext::clearDepthStencil ( bool clearDepth, float depth, bool
 	return kError_SUCCESS;
 }
 
-int gpu::GraphicsContext::clearColor ( float* rgbaColor )
+int gpu::dx11::GraphicsContext::clearColor ( float* rgbaColor )
 {
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
 
@@ -51,7 +51,7 @@ int gpu::GraphicsContext::clearColor ( float* rgbaColor )
 	return kError_SUCCESS;
 }
 
-int gpu::GraphicsContext::clearColorAll ( float* rgbaColor )
+int gpu::dx11::GraphicsContext::clearColorAll ( float* rgbaColor )
 {
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
 
@@ -59,7 +59,7 @@ int gpu::GraphicsContext::clearColorAll ( float* rgbaColor )
 
 	for (uint i = 0; i < 16; ++i)
 	{
-		if (m_renderTarget[i] != NULL)
+		if (m_renderTarget[i] != nullptr)
 		{
 			ctx->ClearRenderTargetView((ID3D11RenderTargetView*)m_renderTarget[i], rgbaColor);
 		}
@@ -68,11 +68,12 @@ int gpu::GraphicsContext::clearColorAll ( float* rgbaColor )
 	return kError_SUCCESS;
 }
 
-int gpu::GraphicsContext::setRenderTarget ( RenderTarget* renderTarget )
+int gpu::dx11::GraphicsContext::setRenderTarget ( gpu::base::RenderTarget* renderTarget )
 {
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
+	RenderTarget* rt_dx11 = static_cast<gpu::dx11::RenderTarget*>(renderTarget);
 
-	if (renderTarget != NULL)
+	if (rt_dx11 != nullptr)
 	{
 		// We through the attachments on the render target to generate the list of actual targets.
 		// TODO: This could be pregenerated on the RenderTarget themselves on their assembly. This would also allow removing the awful 0xFFFFFFFF hack.
@@ -81,9 +82,9 @@ int gpu::GraphicsContext::setRenderTarget ( RenderTarget* renderTarget )
 
 		for (UINT i = 0; i < 16; ++i)
 		{
-			if (renderTarget->m_attachments[i] != NULL)
+			if (rt_dx11->m_attachments[i] != NULL)
 			{
-				attachments[attachmentCount] = (ID3D11RenderTargetView*)renderTarget->m_attachments[i];
+				attachments[attachmentCount] = (ID3D11RenderTargetView*)rt_dx11->m_attachments[i];
 				++attachmentCount;
 			}
 			else
@@ -93,8 +94,8 @@ int gpu::GraphicsContext::setRenderTarget ( RenderTarget* renderTarget )
 			}
 		}
 
-		ctx->OMSetRenderTargets(attachmentCount, attachments, (ID3D11DepthStencilView*)renderTarget->m_attachmentDepthStencil);
-		m_depthStencilTarget = renderTarget->m_attachmentDepthStencil;
+		ctx->OMSetRenderTargets(attachmentCount, attachments, (ID3D11DepthStencilView*)rt_dx11->m_attachmentDepthStencil);
+		m_depthStencilTarget = rt_dx11->m_attachmentDepthStencil;
 
 		memcpy(m_renderTarget, attachments, sizeof(void*) * 16);
 	}
@@ -106,7 +107,7 @@ int gpu::GraphicsContext::setRenderTarget ( RenderTarget* renderTarget )
 	return kError_SUCCESS;
 }
 
-int gpu::GraphicsContext::clearPipelineAndWait ( void )
+int gpu::dx11::GraphicsContext::clearPipelineAndWait ( void )
 {
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
 
@@ -139,7 +140,7 @@ int gpu::GraphicsContext::clearPipelineAndWait ( void )
 	return kError_SUCCESS;
 }
 
-int gpu::GraphicsContext::setPipeline ( const Pipeline* pipeline )
+int gpu::dx11::GraphicsContext::setPipeline ( const gpu::base::Pipeline* pipeline )
 {
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
 
@@ -155,7 +156,7 @@ int gpu::GraphicsContext::setPipeline ( const Pipeline* pipeline )
 	return kError_SUCCESS;
 }
 
-int gpu::GraphicsContext::setIndexBuffer ( const Buffer* buffer, IndexFormat format )
+int gpu::dx11::GraphicsContext::setIndexBuffer ( const gpu::base::Buffer* buffer, IndexFormat format )
 {
 	ARCORE_ASSERT(buffer->getBufferType() == kBufferTypeIndex);
 	ARCORE_ASSERT(m_pipeline != NULL);
@@ -168,7 +169,7 @@ int gpu::GraphicsContext::setIndexBuffer ( const Buffer* buffer, IndexFormat for
 	return kError_SUCCESS;
 }
 
-int gpu::GraphicsContext::setVertexBuffer ( int slot, const Buffer* buffer, uint32_t offset )
+int gpu::dx11::GraphicsContext::setVertexBuffer ( int slot, const gpu::base::Buffer* buffer, uint32_t offset )
 {
 	// todo: optimize later
 	ARCORE_ASSERT(buffer->getBufferType() == kBufferTypeVertex);
@@ -186,7 +187,7 @@ int gpu::GraphicsContext::setVertexBuffer ( int slot, const Buffer* buffer, uint
 	return kError_SUCCESS;
 }
 
-int gpu::GraphicsContext::setShaderCBuffer ( ShaderStage stage, int slot, const Buffer* buffer )
+int gpu::dx11::GraphicsContext::setShaderCBuffer ( ShaderStage stage, int slot, const gpu::base::Buffer* buffer )
 {
 	if (buffer == nullptr)
 		return kError_SUCCESS; // TODO: handle this better
@@ -217,7 +218,7 @@ int gpu::GraphicsContext::setShaderCBuffer ( ShaderStage stage, int slot, const 
 	return kError_SUCCESS;
 }
 
-int gpu::GraphicsContext::setShaderCBuffers ( ShaderStage stage, int startSlot, int slotCount, Buffer* const* buffers )
+int gpu::dx11::GraphicsContext::setShaderCBuffers ( ShaderStage stage, int startSlot, int slotCount, gpu::base::Buffer* const* buffers )
 {
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
 	ARCORE_ASSERT(startSlot >= 0);
@@ -263,7 +264,7 @@ int gpu::GraphicsContext::setShaderCBuffers ( ShaderStage stage, int startSlot, 
 	return kError_SUCCESS;
 }
 
-int gpu::GraphicsContext::setShaderSBuffer ( ShaderStage stage, int slot, Buffer* buffer )
+int gpu::dx11::GraphicsContext::setShaderSBuffer ( ShaderStage stage, int slot, gpu::base::Buffer* buffer )
 {
 	if (buffer == nullptr)
 		return kError_SUCCESS; // TODO: handle this better
@@ -296,7 +297,7 @@ int gpu::GraphicsContext::setShaderSBuffer ( ShaderStage stage, int slot, Buffer
 	return kError_SUCCESS;
 }
 
-int gpu::GraphicsContext::setShaderSampler ( ShaderStage stage, int slot, Sampler* sampler )
+int gpu::dx11::GraphicsContext::setShaderSampler ( ShaderStage stage, int slot, gpu::base::Sampler* sampler )
 {
 	ARCORE_ASSERT(sampler != NULL);
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
@@ -322,7 +323,7 @@ int gpu::GraphicsContext::setShaderSampler ( ShaderStage stage, int slot, Sample
 	return kError_SUCCESS;
 }
 
-int gpu::GraphicsContext::setShaderTexture ( ShaderStage stage, int slot, Texture* texture )
+int gpu::dx11::GraphicsContext::setShaderTexture ( ShaderStage stage, int slot, gpu::base::Texture* texture )
 {
 	ARCORE_ASSERT(texture != NULL);
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
@@ -349,7 +350,7 @@ int gpu::GraphicsContext::setShaderTexture ( ShaderStage stage, int slot, Textur
 	return kError_SUCCESS;
 }
 
-int gpu::GraphicsContext::setShaderTexture ( ShaderStage stage, int slot, Texture* texture, Sampler* sampler )
+int gpu::dx11::GraphicsContext::setShaderTexture ( ShaderStage stage, int slot, gpu::base::Texture* texture, gpu::base::Sampler* sampler )
 {
 	ARCORE_ASSERT(texture != NULL);
 	ARCORE_ASSERT(sampler != NULL);
@@ -360,7 +361,7 @@ int gpu::GraphicsContext::setShaderTexture ( ShaderStage stage, int slot, Textur
 	return kError_SUCCESS;
 }
 
-int gpu::GraphicsContext::setShaderTextureAuto ( ShaderStage stage, int slot, Texture* texture )
+int gpu::dx11::GraphicsContext::setShaderTextureAuto ( ShaderStage stage, int slot, gpu::base::Texture* texture )
 {
 	ARCORE_ASSERT(texture != NULL);
 
@@ -371,7 +372,7 @@ int gpu::GraphicsContext::setShaderTextureAuto ( ShaderStage stage, int slot, Te
 }
 
 // this is based on a playstation-ism - it is never actually used so far
-//int gpu::GraphicsContext::setShaderResource ( ShaderStage stage, int slot, Buffer* buffer )
+//int gpu::dx11::GraphicsContext::setShaderResource ( ShaderStage stage, int slot, Buffer* buffer )
 //{
 //	ARCORE_ASSERT(buffer->getBufferType() == kBufferTypeStructured);
 //	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
@@ -393,7 +394,7 @@ int gpu::GraphicsContext::setShaderTextureAuto ( ShaderStage stage, int slot, Te
 //	return kError_SUCCESS;
 //}
 
-int gpu::GraphicsContext::setShaderWriteable ( ShaderStage stage, int slot, WriteableResource* resource )
+int gpu::dx11::GraphicsContext::setShaderWriteable ( ShaderStage stage, int slot, gpu::base::WriteableResource* resource )
 {
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
 	if (resource == NULL)
@@ -423,7 +424,7 @@ int gpu::GraphicsContext::setShaderWriteable ( ShaderStage stage, int slot, Writ
 	return kError_SUCCESS;
 }
 
-int gpu::GraphicsContext::drawPreparePipeline ( void )
+int gpu::dx11::GraphicsContext::drawPreparePipeline ( void )
 {
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
 
@@ -497,7 +498,7 @@ int gpu::GraphicsContext::drawPreparePipeline ( void )
 	return kError_SUCCESS;
 }
 
-int gpu::GraphicsContext::draw ( const uint32_t vertexCount, const uint32_t startVertex )
+int gpu::dx11::GraphicsContext::draw ( const uint32_t vertexCount, const uint32_t startVertex )
 {
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
 	if (drawPreparePipeline() == kError_SUCCESS)
@@ -509,7 +510,7 @@ int gpu::GraphicsContext::draw ( const uint32_t vertexCount, const uint32_t star
 	return kErrorBadArgument;
 }
 
-int gpu::GraphicsContext::drawInstanced ( const uint32_t vertexCount, const uint32_t instanceCount, const uint32_t startVertex )
+int gpu::dx11::GraphicsContext::drawInstanced ( const uint32_t vertexCount, const uint32_t instanceCount, const uint32_t startVertex )
 {
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
 	if (drawPreparePipeline() == kError_SUCCESS)
@@ -521,7 +522,7 @@ int gpu::GraphicsContext::drawInstanced ( const uint32_t vertexCount, const uint
 	return kErrorBadArgument;
 }
 
-int gpu::GraphicsContext::drawIndexed ( const uint32_t indexCount, const uint32_t startIndex, const uint32_t baseVertex )
+int gpu::dx11::GraphicsContext::drawIndexed ( const uint32_t indexCount, const uint32_t startIndex, const uint32_t baseVertex )
 {
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
 	if (drawPreparePipeline() == kError_SUCCESS)
@@ -533,7 +534,7 @@ int gpu::GraphicsContext::drawIndexed ( const uint32_t indexCount, const uint32_
 	return kErrorBadArgument;
 }
 
-int gpu::GraphicsContext::drawIndexedInstanced ( const uint32_t indexCount, const uint32_t instanceCount, const uint32_t startIndex, const uint32_t baseVertex )
+int gpu::dx11::GraphicsContext::drawIndexedInstanced ( const uint32_t indexCount, const uint32_t instanceCount, const uint32_t startIndex, const uint32_t baseVertex )
 {
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
 	if (drawPreparePipeline() == kError_SUCCESS)
@@ -545,7 +546,7 @@ int gpu::GraphicsContext::drawIndexedInstanced ( const uint32_t indexCount, cons
 	return kErrorBadArgument;
 }
 
-int	 gpu::GraphicsContext::setIndirectArgs ( Buffer* buffer )
+int	 gpu::dx11::GraphicsContext::setIndirectArgs ( gpu::base::Buffer* buffer )
 {
 	ARCORE_ASSERT(buffer->getBufferType() == kBufferTypeIndirectArgs);
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
@@ -555,7 +556,7 @@ int	 gpu::GraphicsContext::setIndirectArgs ( Buffer* buffer )
 	return kError_SUCCESS;
 }
 
-int gpu::GraphicsContext::drawInstancedIndirect ( const uint32_t offset )
+int gpu::dx11::GraphicsContext::drawInstancedIndirect ( const uint32_t offset )
 {
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
 	if (drawPreparePipeline() == kError_SUCCESS)
@@ -567,7 +568,7 @@ int gpu::GraphicsContext::drawInstancedIndirect ( const uint32_t offset )
 	return kErrorBadArgument;
 }
 
-int gpu::GraphicsContext::setComputeShader ( ShaderPipeline* computePipeline )
+int gpu::dx11::GraphicsContext::setComputeShader ( gpu::base::ShaderPipeline* computePipeline )
 {
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
 
@@ -577,7 +578,7 @@ int gpu::GraphicsContext::setComputeShader ( ShaderPipeline* computePipeline )
 	return kError_SUCCESS;
 }
 
-int gpu::GraphicsContext::dispatch ( const uint32 threadCountX, const uint32 threadCountY, const uint32 threadCountZ )
+int gpu::dx11::GraphicsContext::dispatch ( const uint32 threadCountX, const uint32 threadCountY, const uint32 threadCountZ )
 {
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
 

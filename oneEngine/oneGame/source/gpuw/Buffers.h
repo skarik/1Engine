@@ -1,3 +1,6 @@
+#ifndef GPU_WRAPPER_DYNAMIC_BUFFERS_H_
+#define GPU_WRAPPER_DYNAMIC_BUFFERS_H_
+
 #include "gpuw/gpuw_common.h"
 #include "gpuw/base/Buffers.base.h"
 
@@ -126,3 +129,5 @@ namespace gpu
 
 	typedef BufferDynamic Buffer;
 }
+
+#endif//GPU_WRAPPER_DYNAMIC_BUFFERS_H_

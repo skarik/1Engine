@@ -145,20 +145,22 @@ static FORCE_INLINE D3D11_STENCIL_OP ArEnumToDx ( const gpu::StencilOp mode )
 
 //===============================================================================================//
 
-gpu::GraphicsContext::GraphicsContext ( Device* wrapperDevice, bool passthroughAsImmediate )
-	: m_rasterStateCachedMap(NULL), m_rasterStateCurrentBitfilter((uint32_t)-1),
-	m_blendStateCachedMap(NULL), m_blendStateCurrentBitfilter(),
-	m_depthStateCachedMap(NULL), m_depthStateCurrentBitfilter((uint64_t)-1)
+gpu::dx11::GraphicsContext::GraphicsContext ( gpu::base::Device* wrapperDevice, bool passthroughAsImmediate )
+	: gpu::base::GraphicsContext(wrapperDevice, passthroughAsImmediate)
+	, m_rasterStateCachedMap(NULL), m_rasterStateCurrentBitfilter((uint32_t)-1)
+	, m_blendStateCachedMap(NULL), m_blendStateCurrentBitfilter()
+	, m_depthStateCachedMap(NULL), m_depthStateCurrentBitfilter((uint64_t)-1)
 {
 	//SamplerCreationDescription scd = SamplerCreationDescription();
 	//m_defaultSampler = new Sampler;
 	//m_defaultSampler->create(NULL, &scd);
 
 	HRESULT			result;
-	gpu::Device*	gpuDevice = (gpu::Device*)wrapperDevice;
+	gpu::dx11::Device*
+					gpuDevice = (gpu::dx11::Device*)wrapperDevice;
 
 	// Save the device for submit
-	m_wrapperDevice = wrapperDevice;
+	m_wrapperDevice = (gpu::dx11::Device*)wrapperDevice;
 
 	// Set up context being used
 	m_isImmediateMode = passthroughAsImmediate;
@@ -193,7 +195,7 @@ gpu::GraphicsContext::GraphicsContext ( Device* wrapperDevice, bool passthroughA
 	m_defaultSampler->create(NULL, &scd);
 }
 
-gpu::GraphicsContext::~GraphicsContext ( void )
+gpu::dx11::GraphicsContext::~GraphicsContext ( void )
 {
 	// Free up all cached rasterizer states
 	GPURasterizerStateMap*	rsMap = (GPURasterizerStateMap*)m_rasterStateCachedMap;
@@ -224,7 +226,7 @@ gpu::GraphicsContext::~GraphicsContext ( void )
 	}
 }
 
-int gpu::GraphicsContext::reset ( void )
+int gpu::dx11::GraphicsContext::reset ( void )
 {
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
 
@@ -249,9 +251,9 @@ int gpu::GraphicsContext::reset ( void )
 	return kError_SUCCESS;
 }
 
-int gpu::GraphicsContext::submit ( void )
+int gpu::dx11::GraphicsContext::submit ( void )
 {
-	gpu::Device*			gpuDevice = (gpu::Device*)m_wrapperDevice;
+	gpu::dx11::Device*		gpuDevice = (gpu::dx11::Device*)m_wrapperDevice;
 	ID3D11CommandList*		commandList = NULL;
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
 	HRESULT					result;
@@ -276,14 +278,14 @@ int gpu::GraphicsContext::submit ( void )
 	return kError_SUCCESS;
 }
 
-int gpu::GraphicsContext::validate ( void )
+int gpu::dx11::GraphicsContext::validate ( void )
 {
 	return kError_SUCCESS;
 }
 
 //===============================================================================================//
 
-int gpu::GraphicsContext::setViewport ( uint32_t left, uint32_t top, uint32_t right, uint32_t bottom )
+int gpu::dx11::GraphicsContext::setViewport ( uint32_t left, uint32_t top, uint32_t right, uint32_t bottom )
 {
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
 
@@ -300,7 +302,7 @@ int gpu::GraphicsContext::setViewport ( uint32_t left, uint32_t top, uint32_t ri
 	return kError_SUCCESS;
 }
 
-int gpu::GraphicsContext::setScissor ( uint32_t left, uint32_t top, uint32_t right, uint32_t bottom )
+int gpu::dx11::GraphicsContext::setScissor ( uint32_t left, uint32_t top, uint32_t right, uint32_t bottom )
 {
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
 
@@ -315,10 +317,10 @@ int gpu::GraphicsContext::setScissor ( uint32_t left, uint32_t top, uint32_t rig
 	return kError_SUCCESS;
 }
 
-int gpu::GraphicsContext::setRasterizerState ( const RasterizerState& state )
+int gpu::dx11::GraphicsContext::setRasterizerState ( const RasterizerState& state )
 {
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
-	ID3D11Device*			device = static_cast<gpu::Device*>(m_wrapperDevice)->getNative();
+	ID3D11Device*			device = static_cast<gpu::dx11::Device*>(m_wrapperDevice)->getNative();
 	GPURasterizerStateMap*	rsMap = (GPURasterizerStateMap*)m_rasterStateCachedMap;
 	uint32_t				bitFilter;
 
@@ -365,7 +367,7 @@ int gpu::GraphicsContext::setRasterizerState ( const RasterizerState& state )
 	return kError_SUCCESS;
 }
 
-int gpu::GraphicsContext::setBlendState ( const BlendState& state )
+int gpu::dx11::GraphicsContext::setBlendState ( const BlendState& state )
 {	
 	BlendCollectiveState	bcs = {};
 	bcs.blend[0] = state;
@@ -374,10 +376,10 @@ int gpu::GraphicsContext::setBlendState ( const BlendState& state )
 	return kError_SUCCESS;
 }
 
-int gpu::GraphicsContext::setBlendCollectiveState ( const BlendCollectiveState& state )
+int gpu::dx11::GraphicsContext::setBlendCollectiveState ( const BlendCollectiveState& state )
 {
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
-	ID3D11Device*			device = static_cast<gpu::Device*>(m_wrapperDevice)->getNative();
+	ID3D11Device*			device = static_cast<gpu::dx11::Device*>(m_wrapperDevice)->getNative();
 	uint64_t				bitFilter [4] = {0, 0, 0, 0};
 	GPUBlendStateMap*		bsMap = (GPUBlendStateMap*)m_blendStateCachedMap;
 
@@ -448,10 +450,10 @@ int gpu::GraphicsContext::setBlendCollectiveState ( const BlendCollectiveState& 
 	return kError_SUCCESS;
 }
 
-int gpu::GraphicsContext::setDepthStencilState ( const DepthStencilState& state )
+int gpu::dx11::GraphicsContext::setDepthStencilState ( const DepthStencilState& state )
 {
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
-	ID3D11Device*			device = static_cast<gpu::Device*>(m_wrapperDevice)->getNative();
+	ID3D11Device*			device = static_cast<gpu::dx11::Device*>(m_wrapperDevice)->getNative();
 	GPUDepthStencilStateMap* dsMap = (GPUDepthStencilStateMap*)m_depthStateCachedMap;
 	uint64_t				bitFilter;
 
@@ -513,7 +515,7 @@ int gpu::GraphicsContext::setDepthStencilState ( const DepthStencilState& state 
 
 //===============================================================================================//
 
-int gpu::GraphicsContext::debugGroupPush ( const char* groupName )
+int gpu::dx11::GraphicsContext::debugGroupPush ( const char* groupName )
 {
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
 	ID3D11DeviceContext2*	ctx2;
@@ -539,7 +541,7 @@ int gpu::GraphicsContext::debugGroupPush ( const char* groupName )
 	return kError_SUCCESS;
 }
 
-int gpu::GraphicsContext::debugGroupPop ( void )
+int gpu::dx11::GraphicsContext::debugGroupPop ( void )
 {
 	ID3D11DeviceContext*	ctx = (ID3D11DeviceContext*)m_deferredContext;
 	ID3D11DeviceContext2*	ctx2;

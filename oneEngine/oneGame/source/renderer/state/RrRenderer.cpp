@@ -56,7 +56,7 @@ RrRenderer::RrRenderer ( void )
 	gpu::DeviceLayer* layers = NULL;
 #endif
 
-	gpu_device = new gpu::Device();
+	gpu_device = gpu::createDynamicDevice();
 	int gpuErrorCode = gpu_device->create(nullptr, 0, layers, layerCount);
 	if (gpuErrorCode != gpu::kError_SUCCESS)
 	{

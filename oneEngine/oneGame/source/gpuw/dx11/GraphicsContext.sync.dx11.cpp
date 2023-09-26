@@ -11,7 +11,7 @@
 
 // TODO: This requires d3d11_3, which is not available in the 8.1 SDK.
 
-int gpu::GraphicsContext::signal ( Fence* fence )
+int gpu::dx11::GraphicsContext::signal ( gpu::base::Fence* fence )
 {
 	//ARCORE_ERROR("not implemented");
 
@@ -33,7 +33,7 @@ int gpu::GraphicsContext::signal ( Fence* fence )
 	// Return that it's not a nullptr.
 	return (fence->m_syncId != NULL) ? kError_SUCCESS : kErrorNullReference;
 }
-int gpu::GraphicsContext::waitOnSignal ( Fence* fence )
+int gpu::dx11::GraphicsContext::waitOnSignal ( gpu::base::Fence* fence )
 {
 	ARCORE_ASSERT(fence->m_syncId != NULL);
 	ARCORE_ASSERT(fence->m_gfxc != NULL || fence->m_compute != NULL);

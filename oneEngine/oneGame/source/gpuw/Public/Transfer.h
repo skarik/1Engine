@@ -9,13 +9,13 @@ namespace gpu
 	enum TransferStyle
 	{
 		// Discard the previous data in the buffer.
-		kTransferWriteDiscardPrevious,
+		kTransferWriteDiscardPrevious = 0x01,
 
 		// Keep the previous data in the buffer, but not for reading.
-		kTransferWrite,
+		kTransferWrite = 0x02,
 
 		// Transfer mode specifically for reading from the GPU on readback buffers.
-		kTransferRead,
+		kTransferRead = 0x04,
 	};
 }
 

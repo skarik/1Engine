@@ -7,7 +7,9 @@
 
 namespace gpu
 {
-	class RenderTarget;
+	namespace base {
+		class RenderTarget;
+	}
 
 	struct RasterizerState
 	{
@@ -79,9 +81,10 @@ namespace gpu
 
 	struct BlitTarget
 	{
-		RenderTarget*	renderTarget;
+		gpu::base::RenderTarget*
+						renderTarget;
 		RenderTargetSlot
-			target;
+						target;
 		Rect2			rect;
 
 		BlitTarget()

@@ -76,6 +76,6 @@ namespace base
 		//void*					m_deferredContext;
 
 	};
-}
+}}
 
 #endif//GPU_WRAPPER_COMPUTE_CONTEXT_H_
