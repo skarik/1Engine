@@ -21,6 +21,7 @@
     <ClInclude Include="source\gpuw\base\BaseContext.base.h" />
     <ClInclude Include="source\gpuw\base\Buffers.base.h" />
     <ClInclude Include="source\gpuw\base\ComputeContext.base.h" />
+    <ClInclude Include="source\gpuw\base\Device.base.h" />
     <ClInclude Include="source\gpuw\base\GraphicsContext.base.h" />
     <ClInclude Include="source\gpuw\base\Texture.base.h" />
     <ClInclude Include="source\gpuw\Buffers.h" />
@@ -92,7 +93,9 @@
     <ClInclude Include="source\gpuw\WriteableResource.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="source\gpuw\base\Device.base.cpp" />
     <ClCompile Include="source\gpuw\Buffers.Dynamic.cpp" />
+    <ClCompile Include="source\gpuw\Device.Dynamic.cpp" />
     <ClCompile Include="source\gpuw\dx11\Buffers.dx11.cpp" />
     <ClCompile Include="source\gpuw\dx11\ComputeContext.dx11.cpp" />
     <ClCompile Include="source\gpuw\dx11\Device.dx11.cpp" />

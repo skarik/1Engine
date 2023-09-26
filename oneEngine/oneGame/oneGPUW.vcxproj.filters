@@ -252,6 +252,9 @@
     <ClInclude Include="source\gpuw\base\GraphicsContext.base.h">
       <Filter>SOURCE\GPU Wrapper\Base</Filter>
     </ClInclude>
+    <ClInclude Include="source\gpuw\base\Device.base.h">
+      <Filter>SOURCE\GPU Wrapper\Base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\gpuw\ogl\Buffers.cpp">
@@ -369,6 +372,12 @@
       <Filter>SOURCE\GPU Wrapper</Filter>
     </ClCompile>
     <ClCompile Include="source\gpuw\GraphicsContext.Dynamic.cpp">
+      <Filter>SOURCE\GPU Wrapper</Filter>
+    </ClCompile>
+    <ClCompile Include="source\gpuw\base\Device.base.cpp">
+      <Filter>SOURCE\GPU Wrapper\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="source\gpuw\Device.Dynamic.cpp">
       <Filter>SOURCE\GPU Wrapper</Filter>
     </ClCompile>
   </ItemGroup>
