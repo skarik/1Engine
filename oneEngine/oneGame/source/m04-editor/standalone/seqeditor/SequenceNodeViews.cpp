@@ -34,6 +34,7 @@ m04::editor::SequenceNode* m04::editor::SequenceNode::CreateWithEditorView ( con
 	m04::editor::SequenceNode* node = new m04::editor::SequenceNode;
 	node->view = new m04::editor::sequence::ExternallyDefinedSeqNodeView(node, definition);
 	node->view->classname = className;
+	node->view->classname_category = definition->category;
 	node->nextNodes.resize(node->view->Flow().outputCount, nullptr);
 	return node;
 }

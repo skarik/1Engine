@@ -70,7 +70,7 @@ static void LoadSettings ( m04::editor::SELInfo& sel, io::OSFReader& reader, io:
 		string_switch(entry.name)
 		{
 			string_case("category"):
-				sel.next_node_category = entry.value;
+				sel.definitions.back().category = entry.value;
 				break;
 			string_case("outputDefault"):
 				sel.output_preference = m04::editor::StringToSequenceOutputPreference(entry.value);
@@ -151,7 +151,7 @@ static void LoadEnumType ( m04::editor::SELInfo& sel, io::OSFReader& reader, io:
 	}
 
 	// Save new enumtype
-	sel.enum_definitions[enumtypeName.c_str()] = new m04::editor::SequenceEnumDefinition(arStringEnumDefinition::CreateNew(nameValues), std::move(displayValues));
+	sel.definitions.back().enum_definitions[enumtypeName.c_str()] = new m04::editor::SequenceEnumDefinition(arStringEnumDefinition::CreateNew(nameValues), std::move(displayValues));
 }
 
 // Forward declare since the following can call each other:
@@ -238,7 +238,7 @@ static void LoadNodeType ( m04::editor::SELInfo& sel, io::OSFReader& reader, con
 
 	m04::editor::SequenceNodeDefinition* node_definition = new m04::editor::SequenceNodeDefinition();
 	// Set the category, pulling from the last read settings:
-	node_definition->category = sel.next_node_category;
+	node_definition->category = sel.definitions.back().category;
 
 	reader.GoInto(entryNodeType);
 	io::OSFEntryInfo entry;
@@ -277,7 +277,7 @@ static void LoadNodeType ( m04::editor::SELInfo& sel, io::OSFReader& reader, con
 	}
 
 	// Save new nodetype
-	sel.node_definitions[entryNodeType.value] = node_definition;
+	sel.definitions.back().node_definitions[entryNodeType.value] = node_definition;
 }
 
 void m04::editor::SELInfo::LoadSequenceEditorListing ( const char* sel_path )
@@ -295,6 +295,9 @@ void m04::editor::SELInfo::LoadSequenceEditorListing ( const char* sel_path )
 
 	// the sel has enum types and node types.
 	// for now we skip the node types because that's a pain to define properly
+
+	// New sequence category for the SEL file.
+	definitions.push_back(SequenceCategoryDefinition{});
 
 	// read in the osf entry-by-entry
 	io::OSFEntryInfo entry;
@@ -320,17 +323,20 @@ void m04::editor::SELInfo::LoadSequenceEditorListing ( const char* sel_path )
 
 void m04::editor::SELInfo::Free ( void )
 {
-	for (auto enumDef : enum_definitions)
-		delete enumDef.second;
-	enum_definitions.clear();
-
-	for (auto nodeDef : node_definitions)
+	for (auto& category : definitions)
 	{
-		for (auto nodeProperty : nodeDef.second->properties)
-			nodeProperty.Free();
-		delete nodeDef.second;
+		for (auto enumDef : category.enum_definitions)
+			delete enumDef.second;
+		category.enum_definitions.clear();
+
+		for (auto nodeDef : category.node_definitions)
+		{
+			for (auto nodeProperty : nodeDef.second->properties)
+				nodeProperty.Free();
+			delete nodeDef.second;
+		}
+		category.node_definitions.clear();
 	}
-	node_definitions.clear();
 }
 
 

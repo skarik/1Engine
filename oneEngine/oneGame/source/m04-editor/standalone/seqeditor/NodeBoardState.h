@@ -174,8 +174,8 @@ namespace sequence {
 	public:
 		explicit				NodeBoardState ( m04::editor::SequenceEditor* editor );
 
-		// CreateBoardNode( classname ) : Creates a board node, allocating a sequence node with the given class name.
-		BoardNode*				CreateBoardNode ( const char* classname );
+		// @brief Creates a board node, allocating a sequence node with the given class name.
+		BoardNode*				CreateBoardNode ( const char* classname, const char* category );
 
 		//	AddDisplayNode( board_node ) : Adds node to display. Allocates and sets up a proper display object.
 		void					AddDisplayNode ( BoardNode* board_node );

@@ -117,6 +117,7 @@
     <ClInclude Include="source\m04\eventide\elements\DefaultStyler.h" />
     <ClInclude Include="source\m04\eventide\elements\Label.h" />
     <ClInclude Include="source\m04\eventide\elements\ListMenu.h" />
+    <ClInclude Include="source\m04\eventide\elements\ListMenuHierarchical.h" />
     <ClInclude Include="source\m04\eventide\UserInterface.h" />
     <ClInclude Include="source\m04\eventide_test\CubicLabel.h" />
     <ClInclude Include="source\m04\interfaces\MapIO.h" />
@@ -199,6 +200,7 @@
     <ClCompile Include="source\m04\eventide\elements\DefaultStyler.cpp" />
     <ClCompile Include="source\m04\eventide\elements\Label.cpp" />
     <ClCompile Include="source\m04\eventide\elements\ListMenu.cpp" />
+    <ClCompile Include="source\m04\eventide\elements\ListMenuHierarchical.cpp" />
     <ClCompile Include="source\m04\eventide\UserInterface.cpp" />
     <ClCompile Include="source\m04\eventide_test\CubicLabel.cpp" />
     <ClCompile Include="source\m04\interfaces\MapIO.cpp" />

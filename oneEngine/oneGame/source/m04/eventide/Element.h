@@ -364,6 +364,20 @@ namespace eventide {
 								GetParent ( void ) const
 			{ return m_parent; }
 
+		// @brief Sets if the item is visible. If visibility is being toggled on, then will regenerate.
+		EVENTIDE_API void		SetVisible ( const bool visible )
+		{
+			if ( m_visible != visible )
+			{
+				m_visible = visible;
+				m_bboxDirty |= m_visible;
+			}
+		}
+		// @brief Get the current visibility state.
+		EVENTIDE_API bool		GetVisible ( void ) const
+			{ return m_visible; }
+
+
 		EVENTIDE_API const FrameUpdate
 								GetFrameUpdate ( void ) const
 			{ return m_frameUpdate; }
@@ -402,6 +416,9 @@ namespace eventide {
 		// "World"-space bounding box of the element, used for rendering.
 		core::math::BoundingBox
 							m_bboxRendering;
+
+	private:
+		bool				m_visible = true;
 
 	protected:
 		// UI this element is associated with.

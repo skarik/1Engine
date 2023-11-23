@@ -372,6 +372,9 @@
     <ClInclude Include="source\m04-editor\standalone\seqeditor\serialization\JSONSequenceBoardSerializer.h">
       <Filter>SOURCE\M04-Editor\Standalone\SeqEditor\Serialization</Filter>
     </ClInclude>
+    <ClInclude Include="source\m04\eventide\elements\ListMenuHierarchical.h">
+      <Filter>SOURCE\M04\Eventide\Elements</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\m04\m04-common.cpp">
@@ -610,6 +613,9 @@
     </ClCompile>
     <ClCompile Include="source\m04-editor\standalone\seqeditor\serialization\JSONSequenceBoardSerializer.cpp">
       <Filter>SOURCE\M04-Editor\Standalone\SeqEditor\Serialization</Filter>
+    </ClCompile>
+    <ClCompile Include="source\m04\eventide\elements\ListMenuHierarchical.cpp">
+      <Filter>SOURCE\M04\Eventide\Elements</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

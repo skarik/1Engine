@@ -2,6 +2,7 @@
 #define M04_EDITORS_SEQUENCE_EDITOR_RIGHT_CLICK_LIST_MENU_H_
 
 #include "m04/eventide/elements/ListMenu.h"
+#include "m04/eventide/elements/ListMenuHierarchical.h"
 #include <vector>
 #include "core/containers/arstring.h"
 
@@ -16,7 +17,7 @@ namespace sequence {
 
 	struct BoardNode;
 
-	class RightClickListMenu : public ui::eventide::elements::ListMenu
+	class RightClickListMenu : public ui::eventide::elements::ListMenuHierarchical
 	{
 	public:
 		explicit				RightClickListMenu ( SequenceEditor* editor = NULL );
@@ -51,6 +52,7 @@ namespace sequence {
 		struct ClassnameEntry
 		{
 			bool			isExternal = false;
+			arstring64		category;
 			arstring128		name;
 		};
 

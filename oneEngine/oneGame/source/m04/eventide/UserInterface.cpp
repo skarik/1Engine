@@ -299,7 +299,7 @@ void ui::eventide::UserInterface::Update ( void )
 				ARCORE_ASSERT(element != NULL);
 
 				core::threads::ScopedSpinlock(element->m_workLock);
-				if (!element->m_isValid) continue;
+				if (!element->m_isValid || !element->m_visible) continue;
 
 				const ui::eventide::Element::MouseInteract elementInteractStyle = element->GetMouseInteract();
 
@@ -325,7 +325,7 @@ void ui::eventide::UserInterface::Update ( void )
 			bool hasValidHit = false;
 
 			core::threads::ScopedSpinlock(element->m_workLock);
-			if (element->m_isValid)
+			if (element->m_isValid && element->m_visible)
 			{
 				// Attempt to do collision with the locked element
 				const ui::eventide::Element::MouseInteract elementInteractStyle = element->GetMouseInteract();
@@ -383,7 +383,7 @@ void ui::eventide::UserInterface::Update ( void )
 		if (minMouseHitElement != m_currentMouseOverElement)
 		{
 			// Exiting the current element:
-			if (m_currentMouseOverElement != nullptr && m_currentMouseOverElement->m_isValid)
+			if (m_currentMouseOverElement != nullptr && m_currentMouseOverElement->m_isValid && m_currentMouseOverElement->m_visible)
 			{
 				if (m_currentMouseOverElement->GetMouseInteract() == ui::eventide::Element::MouseInteract::kCapturing
 					|| m_currentMouseOverElement->GetMouseInteract() == ui::eventide::Element::MouseInteract::kCapturingCatchAll)
@@ -399,7 +399,7 @@ void ui::eventide::UserInterface::Update ( void )
 			m_currentMouseOverElement = minMouseHitElement;
 
 			// Entering the new element:
-			if (m_currentMouseOverElement != nullptr && m_currentMouseOverElement->m_isValid)
+			if (m_currentMouseOverElement != nullptr && m_currentMouseOverElement->m_isValid && m_currentMouseOverElement->m_visible)
 			{
 				if (m_currentMouseOverElement->GetMouseInteract() == ui::eventide::Element::MouseInteract::kCapturing
 					|| m_currentMouseOverElement->GetMouseInteract() == ui::eventide::Element::MouseInteract::kCapturingCatchAll)
@@ -422,7 +422,7 @@ void ui::eventide::UserInterface::Update ( void )
 					event.type = ui::eventide::Element::EventMouse::Type::kClicked;
 					event.button = mouseButton;
 					event.element = m_currentMouseOverElement;
-					if (m_currentMouseOverElement != nullptr && m_currentMouseOverElement->m_isValid)
+					if (m_currentMouseOverElement != nullptr && m_currentMouseOverElement->m_isValid && m_currentMouseOverElement->m_visible)
 					{
 						m_currentMouseOverElement->OnEventMouse(event);
 					}
@@ -430,7 +430,7 @@ void ui::eventide::UserInterface::Update ( void )
 					for (ui::eventide::Element* element : m_elements)
 					{
 						core::threads::ScopedSpinlock(element->m_workLock);
-						if (!element->m_isValid) continue;
+						if (!element->m_isValid || !element->m_visible) continue;
 
 						if (element != m_currentMouseOverElement
 							&& (element->GetMouseInteract() == ui::eventide::Element::MouseInteract::kCapturingCatchAll
@@ -451,7 +451,7 @@ void ui::eventide::UserInterface::Update ( void )
 						event.button = mouseButton;
 						event.velocity_world = mouseDelta;
 						event.element = m_currentMouseOverElement;
-						if (m_currentMouseOverElement != nullptr && m_currentMouseOverElement->m_isValid)
+						if (m_currentMouseOverElement != nullptr && m_currentMouseOverElement->m_isValid && m_currentMouseOverElement->m_visible)
 						{
 							m_currentMouseOverElement->OnEventMouse(event);
 						}
@@ -459,7 +459,7 @@ void ui::eventide::UserInterface::Update ( void )
 						for (ui::eventide::Element* element : m_elements)
 						{
 							core::threads::ScopedSpinlock(element->m_workLock);
-							if (!element->m_isValid) continue;
+							if (!element->m_isValid || !element->m_visible) continue;
 
 							if (element != m_currentMouseOverElement
 								&& (element->GetMouseInteract() == ui::eventide::Element::MouseInteract::kCapturingCatchAll
@@ -485,7 +485,7 @@ void ui::eventide::UserInterface::Update ( void )
 					for (ui::eventide::Element* element : m_elements)
 					{
 						core::threads::ScopedSpinlock(element->m_workLock);
-						if (!element->m_isValid) continue;
+						if (!element->m_isValid || !element->m_visible) continue;
 
 						if (element != m_currentMouseOverElement
 							&& (element->GetMouseInteract() == ui::eventide::Element::MouseInteract::kCapturingCatchAll
@@ -508,7 +508,7 @@ void ui::eventide::UserInterface::Update ( void )
 	for (ui::eventide::Element* element : m_elements) // TODO: this can be parallelized, probably??? Depends on the element OnThing calls.
 	{
 		core::threads::ScopedSpinlock(element->m_workLock);
-		if (!element->m_isValid) continue;
+		if (!element->m_isValid || !element->m_visible) continue;
 
 		const uint32_t interactMask = element->GetInputInteractMask();
 		if (element->m_focused || (interactMask & ui::eventide::Element::InputInteractMasks::kCatchAll))
@@ -653,7 +653,7 @@ void ui::eventide::UserInterface::PostStep ( void )
 	for (Element* element : m_elements)
 	{
 		core::threads::ScopedSpinlock(element->m_workLock);
-		if (element->m_isValid)
+		if (element->m_isValid && element->m_visible)
 			l_renderedElements.push_back(element);
 	}
 	
@@ -664,7 +664,7 @@ void ui::eventide::UserInterface::PostStep ( void )
 		Element* element = l_renderedElements[elementIndex];
 
 		core::threads::ScopedSpinlock(element->m_workLock);
-		if (!element->m_isValid) continue;
+		if (!element->m_isValid || !element->m_visible) continue;
 
 		// Add meshes that need new meshes to the job list
 		if (element->mesh_creation_state.rebuild_requested)

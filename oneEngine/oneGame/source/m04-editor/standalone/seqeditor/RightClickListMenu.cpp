@@ -10,7 +10,7 @@
 #include "./noderenderer/NodeBoardRenderer.h"
 
 m04::editor::sequence::RightClickListMenu::RightClickListMenu ( SequenceEditor* editor )
-	: ListMenu( editor->GetEventideUI() )
+	: ListMenuHierarchical( editor->GetEventideUI() )
 	, m_editor(editor)
 {
 	m_mouseInteract = MouseInteract::kCatchAll;
@@ -48,60 +48,74 @@ m04::editor::sequence::RightClickListMenu::RightClickListMenu ( SequenceEditor* 
 	}
 
 	// Set up own choices now:
+
+	std::vector<HeirarchicalChoice> l_choiceTree;
+	//std::vector<std::string> l_choiceList;
+
 	if (nodeVisual != nullptr && !bHoveringOnConnection)
 	{
 		m_mode = Mode::kOnNode;
 		m_targetNode = nodeVisual->GetBoardNode();
 
-		std::vector<std::string> l_choiceList;
-		l_choiceList.push_back("Cancel");
-		l_choiceList.push_back("Delete");
-		l_choiceList.push_back("[Debug] Dump OSF");
-		this->SetListChoices(l_choiceList);
+		l_choiceTree.push_back({"Cancel"});
+		l_choiceTree.push_back({"Delete"});
+		l_choiceTree.push_back({"Debug"});
+		l_choiceTree.back().choices = std::make_shared<std::vector<HeirarchicalChoice>>();
+		l_choiceTree.back().choices->push_back({"Dump OSF"});
 	}
 	else if (nodeVisual != nullptr && bHoveringOnConnection)
 	{
 		m_mode = Mode::kOnConnection;
 		m_targetNode = nodeVisual->GetBoardNode();
 
-		std::vector<std::string> l_choiceList;
-		l_choiceList.push_back("Cancel");
-		l_choiceList.push_back("Unlink");
-		this->SetListChoices(l_choiceList);
+		l_choiceTree.push_back({"Cancel"});
+		l_choiceTree.push_back({"Unlink"});
 	}
 	else
 	{
 		m_mode = Mode::kEmptyBoard;
 
-		std::vector<std::string> l_choiceList;
-		l_choiceList.push_back("Cancel");
+		l_choiceTree.push_back({"Cancel"});
+
+		l_choiceTree.push_back({"Add System Node"});
+		l_choiceTree.back().choices = std::make_shared<std::vector<HeirarchicalChoice>>();
 		// Add all the hard-coded registered classes:
 		for (auto& registryEntry : ISequenceNodeClassInfo::m_ordereredRegistry)
 		{
 			m_classnameListing.push_back({
 				/*.isExternal = */ false,
+				/*.category = */ "",
 				/*.name = */ registryEntry->m_classname
 				});
 
 			std::string choiceDisplayName = registryEntry->m_displayname;
 			std::replace(choiceDisplayName.begin(), choiceDisplayName.end(), '_', '/');
 
-			l_choiceList.push_back(choiceDisplayName.c_str());
+			l_choiceTree.back().choices->push_back({choiceDisplayName.c_str()});
 		}
 		// Add all the loaded ones from file:
-		for (auto& definitionEntry : editor->GetNodeTypes())
+		for (auto& categoryEntry : editor->GetTypes())
 		{
-			m_classnameListing.push_back({
-				/*.isExternal = */ true,
-				/*.name = */ definitionEntry.first
-				});
+			l_choiceTree.push_back({std::string("Add ") + categoryEntry.category.c_str() + " Node"});
+			l_choiceTree.back().choices = std::make_shared<std::vector<HeirarchicalChoice>>();
+			for (auto& definitionEntry : categoryEntry.node_definitions)
+			{
+				m_classnameListing.push_back({
+					/*.isExternal = */ true,
+					/*.category = */ categoryEntry.category,
+					/*.name = */ definitionEntry.first
+					});
 			
-			std::string choiceDisplayName = std::string(definitionEntry.second->category) + "/" + definitionEntry.second->displayName.c_str();
+				std::string choiceDisplayName = std::string(definitionEntry.second->category) + "/" + definitionEntry.second->displayName.c_str();
 
-			l_choiceList.push_back(choiceDisplayName.c_str());
+				l_choiceTree.back().choices->push_back({choiceDisplayName.c_str()});
+			}
 		}
-		this->SetListChoices(l_choiceList);
 	}
+
+	// Build a leveled listview based on the prefixes:
+
+	this->SetListChoices(l_choiceTree);
 }
 
 m04::editor::sequence::RightClickListMenu::~RightClickListMenu ( void )
@@ -189,7 +203,7 @@ void m04::editor::sequence::RightClickListMenu::OnActivated ( int choiceIndex )
 			}*/
 
 			const auto& classnameInfo = m_classnameListing[choiceIndex - 1];
-			BoardNode* board_node = m_editor->GetNodeBoardState()->CreateBoardNode(classnameInfo.name);
+			BoardNode* board_node = m_editor->GetNodeBoardState()->CreateBoardNode(classnameInfo.name, classnameInfo.category);
 
 			//
 			board_node->SetPosition(GetBBox().GetCenterPoint());

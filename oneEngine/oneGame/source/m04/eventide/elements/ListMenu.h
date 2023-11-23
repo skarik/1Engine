@@ -48,7 +48,8 @@ namespace elements {
 
 		//	SetListChoices( choices ) : Sets the list choices, and marks list dirty.
 		// Dirty lists have visuals regenerated before the end of the following frame.
-		EVENTIDE_API void		SetListChoices ( const std::vector<std::string>& choices );
+		EVENTIDE_API virtual void
+								SetListChoices ( const std::vector<std::string>& choices );
 		//	GetListChoicesForWrite(): Returns reference to the choices, and marks list dirty.
 		// Dirty lists have visuals regenerated before the end of the following frame.
 		EVENTIDE_API std::vector<std::string>&
@@ -79,7 +80,7 @@ namespace elements {
 		// If the button can be activated or focused.
 		bool				m_enabled = true;
 
-	private:
+	protected:
 
 		// List of choices
 		std::vector<std::string>

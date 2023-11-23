@@ -107,7 +107,7 @@ m04::editor::sequence::NodeBoardState::NodeBoardState ( m04::editor::SequenceEdi
 	;
 }
 
-m04::editor::sequence::BoardNode* m04::editor::sequence::NodeBoardState::CreateBoardNode ( const char* classname )
+m04::editor::sequence::BoardNode* m04::editor::sequence::NodeBoardState::CreateBoardNode ( const char* classname, const char* category )
 {
 	BoardNode* board_node = new BoardNode();
 
@@ -126,7 +126,10 @@ m04::editor::sequence::BoardNode* m04::editor::sequence::NodeBoardState::CreateB
 	board_node->sequenceInfo = m04::editor::SequenceNode::CreateWithEditorView(classname);
 	if ( board_node->sequenceInfo == nullptr )
 	{
-		board_node->sequenceInfo = m04::editor::SequenceNode::CreateWithEditorView(GetEditor()->GetNodeTypes().find(classname)->second, classname);
+		if ( const auto* categoryDef = GetEditor()->GetTypes(category) )
+		{
+			board_node->sequenceInfo = m04::editor::SequenceNode::CreateWithEditorView(categoryDef->node_definitions.find(classname)->second, classname);
+		}
 	}
 	ARCORE_ASSERT(board_node->sequenceInfo != nullptr);
 

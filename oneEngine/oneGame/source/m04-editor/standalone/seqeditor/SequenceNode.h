@@ -209,6 +209,7 @@ namespace editor {
 		SequenceNode*		node;
 
 		arstring128			classname;
+		arstring64			classname_category;
 		bool				isExternalClass = false;
 		const SequenceNodeDefinition*
 							externalClass = nullptr;

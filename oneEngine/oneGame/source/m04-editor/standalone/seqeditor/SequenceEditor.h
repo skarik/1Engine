@@ -56,13 +56,26 @@ namespace editor {
 			{ return board_state; }
 
 		//	GetEnums() : Returns the enum definitions loaded for the current SEL.
-		EDITOR_API const SequenceEnumDefinitionMap&
+		/*EDITOR_API const SequenceEnumDefinitionMap&
 								GetEnums ( void )
 			{ return sel.enum_definitions; }
 		//	GetNodeTypes() : Returns the enum definitions loaded for the current SEL.
 		EDITOR_API const SequenceNodeDefinitionMap&
 								GetNodeTypes ( void )
-			{ return sel.node_definitions; }
+			{ return sel.node_definitions; }*/
+		// @brief Returns the types loaded for all SELs.
+		EDITOR_API const SequenceCategoryDefinitionList&
+								GetTypes ( void )
+			{ return sel.definitions; }
+		// @brief Returns the types loaded for all SELs.
+		EDITOR_API const SequenceCategoryDefinition*
+								GetTypes ( const char* categoryName )
+		{
+			for (auto& definition : sel.definitions)
+				if (definition.category.compare(categoryName))
+					return &definition;
+			return nullptr;
+		}
 		//	GetSEL() : returns the SEL loaded.
 		EDITOR_API const SELInfo&
 								GetSEL ( void )

@@ -138,6 +138,7 @@ void m04::editor::sequence::JSONSequenceBoardSerializer::SerializeBoard ( const 
 		nlohmann::json& data_target = false ? data_node : data_temp;
 		{
 			data_target["structType"] = nodeEntry.node->sequenceInfo->view->classname;
+			data_target["structCategory"] = nodeEntry.node->sequenceInfo->view->classname_category;
 			SerializeOSFToJSON(data_target, &nodeEntry.node->sequenceInfo->data);
 		}
 		if (&data_target == &data_temp)
@@ -370,7 +371,7 @@ void m04::editor::sequence::JSONSequenceBoardSerializer::DeserializeBoard ( Node
 		const nlohmann::json& data_target = false ? node : node["data"];
 
 		// Create new node we're going to fill:
-		BoardNode* board_node = board->CreateBoardNode(((std::string)data_target["structType"]).c_str());
+		BoardNode* board_node = board->CreateBoardNode(((std::string)data_target["structType"]).c_str(), ((std::string)data_target["structCategory"]).c_str());
 
 		SerializeJSONToOSF(&board_node->sequenceInfo->data, data_target);
 		SerializeJSONToOSF(&board_node->sequenceInfo->editorData->data, node["editor_data"]);

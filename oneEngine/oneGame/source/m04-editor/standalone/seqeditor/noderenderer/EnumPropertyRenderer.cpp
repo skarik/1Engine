@@ -10,34 +10,40 @@ m04::editor::sequence::EnumPropertyRenderer::EnumPropertyRenderer ( const Proper
 	: IPropertyRenderer(params)
 {
 	// Find the matching enum definition
-	const auto& editorEnums = m_nodeRenderer->GetNodeBoardState()->GetEditor()->GetEnums();
-	arstring128 enumDefinitionName;
-
-	std::string identifierLower = m_property->identifier;
-	core::utils::string::ToLower(identifierLower);
-
-	if (editorEnums.find(identifierLower.c_str()) != editorEnums.end())
+	const auto& editorEnumCategories = m_nodeRenderer->GetNodeBoardState()->GetEditor()->GetTypes();
+	for (const auto& category : editorEnumCategories)
 	{
-		enumDefinitionName = identifierLower.c_str();
-	}
-	else
-	{
-		// Take display name and remove the spaces
-		std::string moddedDisplayName = m_property->label;
-		moddedDisplayName.erase(std::remove(moddedDisplayName.begin(), moddedDisplayName.end(), ' '));
-		core::utils::string::ToLower(moddedDisplayName);
+		const auto& editorEnums = category.enum_definitions;
 
-		if (editorEnums.find(moddedDisplayName.c_str()) != editorEnums.end())
+		arstring128 enumDefinitionName;
+
+		std::string identifierLower = m_property->identifier;
+		core::utils::string::ToLower(identifierLower);
+
+		if (editorEnums.find(identifierLower.c_str()) != editorEnums.end())
 		{
-			enumDefinitionName = moddedDisplayName.c_str();
+			enumDefinitionName = identifierLower.c_str();
 		}
-	}
+		else
+		{
+			// Take display name and remove the spaces
+			std::string moddedDisplayName = m_property->label;
+			moddedDisplayName.erase(std::remove(moddedDisplayName.begin(), moddedDisplayName.end(), ' '));
+			core::utils::string::ToLower(moddedDisplayName);
 
-	//ARCORE_ASSERT(enumDefinitionName.length() > 0); // TODO
-	auto enumEntry = editorEnums.find(enumDefinitionName);
-	if (enumEntry != editorEnums.end())
-	{
-		m_enumDefinition = enumEntry->second;
+			if (editorEnums.find(moddedDisplayName.c_str()) != editorEnums.end())
+			{
+				enumDefinitionName = moddedDisplayName.c_str();
+			}
+		}
+
+		//ARCORE_ASSERT(enumDefinitionName.length() > 0); // TODO
+		auto enumEntry = editorEnums.find(enumDefinitionName);
+		if (enumEntry != editorEnums.end())
+		{
+			m_enumDefinition = enumEntry->second;
+			break;
+		}
 	}
 }
 

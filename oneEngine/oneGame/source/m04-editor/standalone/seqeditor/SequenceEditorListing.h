@@ -20,6 +20,17 @@ namespace editor {
 	typedef std::map<arstring128, SequenceEnumDefinition*> SequenceEnumDefinitionMap;
 	typedef std::map<arstring128, SequenceNodeDefinition*> SequenceNodeDefinitionMap;
 
+	struct SequenceCategoryDefinition
+	{
+		arstring64			category;
+		SequenceEnumDefinitionMap
+							enum_definitions;
+		SequenceNodeDefinitionMap
+							node_definitions;
+	};
+
+	typedef std::vector<SequenceCategoryDefinition> SequenceCategoryDefinitionList;
+
 	class SELInfo
 	{
 	public:
@@ -30,18 +41,20 @@ namespace editor {
 
 	public:
 		// Settings about data generated
-		arstring64			next_node_category = "";
 		SequenceOutputPreference
 							output_preference = SequenceOutputPreference::kOsf;
 		SequenceGUIDType	guid_preference = SequenceGUIDType::kGUID32;
 		SequenceJumpStyle	jump_style = SequenceJumpStyle::kJump;
 
+		// List of all available externally-loaded items
+		SequenceCategoryDefinitionList
+							definitions;
 		// List of all available externally-loaded enums
-		std::map<arstring128, SequenceEnumDefinition*>
+		/*SequenceEnumDefinitionMap
 							enum_definitions;
 		// List of all available externally-loaded nodes
-		std::map<arstring128, SequenceNodeDefinition*>
-							node_definitions;
+		SequenceNodeDefinitionMap
+							node_definitions;*/
 	};
 
 }};
