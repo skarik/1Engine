@@ -14,10 +14,11 @@ namespace elements {
 	class ListMenuHierarchicalButton : public ui::eventide::elements::Button
 	{
 	public:
-		EVENTIDE_API			ListMenuHierarchicalButton ( ListMenuHierarchical* listMenu, int choiceIndex, bool isGroup, ui::eventide::UserInterface* ui = NULL )
+		EVENTIDE_API			ListMenuHierarchicalButton ( ListMenuHierarchical* listMenu, int choiceIndex, int choiceValue, bool isGroup, ui::eventide::UserInterface* ui = NULL )
 			: ui::eventide::elements::Button(ui)
 			, m_listMenu(listMenu)
 			, m_choiceIndex(choiceIndex)
+			, m_choiceValue(choiceValue)
 			, m_isGroup(isGroup)
 		{
 		}
@@ -37,6 +38,7 @@ namespace elements {
 		ListMenuHierarchical*
 							m_listMenu = NULL;
 		int					m_choiceIndex = 0;
+		int					m_choiceValue = 0;
 		bool				m_isGroup = false;
 	};
 
@@ -59,6 +61,7 @@ namespace elements {
 		{
 		public:
 			std::string name = "";
+			uint8_t choiceIndex = UINT8_MAX;
 			std::shared_ptr<std::vector<HeirarchicalChoice>> choices = nullptr;
 		};
 
@@ -77,6 +80,7 @@ namespace elements {
 		{
 			uint8_t m_level : 3;
 			uint8_t m_childrenCount : 5;
+			uint8_t m_index;
 		};
 
 		std::vector<ChoiceLevelInfo>

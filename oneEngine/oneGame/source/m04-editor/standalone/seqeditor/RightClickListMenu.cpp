@@ -50,7 +50,6 @@ m04::editor::sequence::RightClickListMenu::RightClickListMenu ( SequenceEditor* 
 	// Set up own choices now:
 
 	std::vector<HeirarchicalChoice> l_choiceTree;
-	//std::vector<std::string> l_choiceList;
 
 	if (nodeVisual != nullptr && !bHoveringOnConnection)
 	{
@@ -82,16 +81,18 @@ m04::editor::sequence::RightClickListMenu::RightClickListMenu ( SequenceEditor* 
 		// Add all the hard-coded registered classes:
 		for (auto& registryEntry : ISequenceNodeClassInfo::m_ordereredRegistry)
 		{
+			// Save classname listing locally
 			m_classnameListing.push_back({
 				/*.isExternal = */ false,
 				/*.category = */ "",
 				/*.name = */ registryEntry->m_classname
 				});
 
+			// Add option to the menu
 			std::string choiceDisplayName = registryEntry->m_displayname;
 			std::replace(choiceDisplayName.begin(), choiceDisplayName.end(), '_', '/');
 
-			l_choiceTree.back().choices->push_back({choiceDisplayName.c_str()});
+			l_choiceTree.back().choices->push_back({choiceDisplayName.c_str(), (uint8_t)(m_classnameListing.size())});
 		}
 		// Add all the loaded ones from file:
 		for (auto& categoryEntry : editor->GetTypes())
@@ -100,15 +101,17 @@ m04::editor::sequence::RightClickListMenu::RightClickListMenu ( SequenceEditor* 
 			l_choiceTree.back().choices = std::make_shared<std::vector<HeirarchicalChoice>>();
 			for (auto& definitionEntry : categoryEntry.node_definitions)
 			{
+				// Save classname listing locally
 				m_classnameListing.push_back({
 					/*.isExternal = */ true,
 					/*.category = */ categoryEntry.category,
 					/*.name = */ definitionEntry.first
 					});
 			
+				// Add option to the menu
 				std::string choiceDisplayName = std::string(definitionEntry.second->category) + "/" + definitionEntry.second->displayName.c_str();
 
-				l_choiceTree.back().choices->push_back({choiceDisplayName.c_str()});
+				l_choiceTree.back().choices->push_back({choiceDisplayName.c_str(), (uint8_t)(m_classnameListing.size())});
 			}
 		}
 	}
@@ -121,29 +124,6 @@ m04::editor::sequence::RightClickListMenu::RightClickListMenu ( SequenceEditor* 
 m04::editor::sequence::RightClickListMenu::~RightClickListMenu ( void )
 {
 }
-/*
-void m04::editor::sequence::MouseGizmo::BuildMesh ( void )
-{
-	ParamsForQuad quadParams;
-	quadParams.position = GetBBoxAbsolute().GetCenterPoint();
-	quadParams.uvs = Rect(0.0F, 0.0F, 64.0F / 1024, 64.0F / 1024);
-	quadParams.texture = &m_texture;
-
-	// Move quad towards camera slightly
-	Vector3f deltaToCamera = m_ui->GetCamera()->transform.position - quadParams.position;
-	quadParams.position += deltaToCamera.normal();// * 2.0F;
-
-	buildQuad(quadParams);
-}
-
-void m04::editor::sequence::MouseGizmo::OnGameFrameUpdate ( const GameFrameUpdateInput& input_frame )
-{
-	Vector3f centerPosition = m_ui->GetMousePosition();
-	SetBBox(core::math::BoundingBox(Rotator(), centerPosition, Vector3f(10, 10, 1)));
-
-	// Now that we're at a new position, update the menu
-	RequestUpdateMesh();
-}*/
 
 void m04::editor::sequence::RightClickListMenu::OnEventMouse ( const EventMouse& mouse_event )
 {
@@ -176,32 +156,6 @@ void m04::editor::sequence::RightClickListMenu::OnActivated ( int choiceIndex )
 			// TODO: need a callback on somewhere else?
 			// Need to signal to the board state that we want to add a new node at the given position.
 
-			// TODO: move to a boardnode factory for the actual sequence info gen
-			/*BoardNode* board_node = new BoardNode();
-			board_node->SetPosition(GetBBox().GetCenterPoint());
-			std::vector<BoardNodeGUID*> all_guids;
-			std::transform(
-				m_editor->GetNodeBoardState()->nodes.begin(),
-				m_editor->GetNodeBoardState()->nodes.end(),
-				std::back_inserter(all_guids),
-				[](const NodeBoardState::NodeEntry& entry){ return entry.guid; }
-				);
-			board_node->editorData.guid.guidType = (BoardNodeGUIDType)m_editor->GetSEL().guid_preference;
-			board_node->editorData.guid.generateDistinctTo(all_guids);
-
-			// create a view for the board node
-			//board_node->sequenceInfo.view = new m04::editor::sequence::BarebonesSequenceNodeView(&board_node->sequenceInfo);
-			//board_node->sequenceInfo = m04::editor::SequenceNode::CreateWithEditorView("Generic");
-			const auto& classnameInfo = m_classnameListing[choiceIndex - 1];
-			if (!classnameInfo.isExternal)
-			{
-				board_node->sequenceInfo = m04::editor::SequenceNode::CreateWithEditorView(classnameInfo.name);
-			}
-			else
-			{
-				board_node->sequenceInfo = m04::editor::SequenceNode::CreateWithEditorView(m_editor->GetNodeTypes().find(classnameInfo.name)->second, classnameInfo.name);
-			}*/
-
 			const auto& classnameInfo = m_classnameListing[choiceIndex - 1];
 			BoardNode* board_node = m_editor->GetNodeBoardState()->CreateBoardNode(classnameInfo.name, classnameInfo.category);
 
@@ -218,7 +172,7 @@ void m04::editor::sequence::RightClickListMenu::OnActivated ( int choiceIndex )
 		{
 			static constexpr int kChoiceId_Cancel = 0;
 			static constexpr int kChoiceId_Delete = 1;
-			static constexpr int kChoiceId_DebugDump = 2;
+			static constexpr int kChoiceId_DebugDump = 3;
 			if (choiceIndex == kChoiceId_Delete)
 			{
 				// get the node of the hovered

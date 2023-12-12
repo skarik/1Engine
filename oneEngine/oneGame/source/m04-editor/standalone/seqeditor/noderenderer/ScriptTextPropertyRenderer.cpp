@@ -133,7 +133,8 @@ void SplitString ( const char* str, RrFontTexture* font_texture, const Real max_
 			uint32_t l_nextWordLength = GetNextWordLength(l_wordSize);
 
 			// Word is not smaller than max with? Add it normally.
-			if (state.pen.x + l_wordSize.x < max_pen_width)
+			if (state.pen.x == 0 // Force new lines to display
+				|| state.pen.x + l_wordSize.x < max_pen_width)
 			{
 				state.pen += l_wordSize;
 
@@ -174,7 +175,9 @@ void SplitString ( const char* str, RrFontTexture* font_texture, const Real max_
 						break;
 					}
 					// We haven't hit the limit yet, so step forward
-					else if (state.pen.x + l_letterSize.x < max_pen_width)
+					else if (
+						state.pen.x == 0 // Force new lines to display
+						|| state.pen.x + l_letterSize.x < max_pen_width)
 					{
 						state.pen += l_letterSize;
 
@@ -217,7 +220,8 @@ void SplitString ( const char* str, RrFontTexture* font_texture, const Real max_
 			Vector2f l_letterSize (fontInfo->glyphAdvance[c_lookup].x, fontInfo->glyphAdvance[c_lookup].y);
 
 			// We haven't hit the limit yet, so step forward
-			if (state.pen.x + l_letterSize.x < max_pen_width)
+			if (state.pen.x == 0 // Force new lines to display
+				|| state.pen.x + l_letterSize.x < max_pen_width)
 			{
 				state.pen += l_letterSize;
 

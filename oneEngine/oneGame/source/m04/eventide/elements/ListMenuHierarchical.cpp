@@ -9,9 +9,9 @@
 
 void ui::eventide::elements::ListMenuHierarchicalButton::OnActivated ( void )
 {
-	if (m_choiceIndex >= 0 && !m_isGroup)
+	if (m_choiceValue >= 0 && !m_isGroup)
 	{
-		m_listMenu->OnActivated(m_choiceIndex);
+		m_listMenu->OnActivated(m_choiceValue);
 	}
 }
 
@@ -42,7 +42,7 @@ ui::eventide::elements::ListMenuHierarchical::~ListMenuHierarchical ( void )
 
 void ui::eventide::elements::ListMenuHierarchical::SetListChoices ( const std::vector<std::string>& choices )
 {
-	m_choiceLevels.resize(choices.size(), {0, 0});
+	m_choiceLevels.resize(choices.size(), {0, 0, UINT8_MAX});
 	ui::eventide::elements::ListMenu::SetListChoices(choices);
 }
 
@@ -53,7 +53,7 @@ void ui::eventide::elements::ListMenuHierarchical::SetListChoices ( const std::v
 	AddChoice = [&](const HeirarchicalChoice& choice, uint8_t level)
 	{
 		m_choices.push_back(choice.name);
-		m_choiceLevels.push_back({level, choice.choices ? (uint8_t)choice.choices->size() : 0u });
+		m_choiceLevels.push_back({level, choice.choices ? (uint8_t)choice.choices->size() : 0u, choice.choiceIndex });
 		if (choice.choices)
 		{
 			for (const auto& subchoice : *choice.choices)
@@ -75,12 +75,6 @@ void ui::eventide::elements::ListMenuHierarchical::SetListChoices ( const std::v
 void ui::eventide::elements::ListMenuHierarchical::ShowChoiceSubgroup ( int choiceIndex, bool visible )
 {
 	const auto& choiceLevel = m_choiceLevels[choiceIndex];
-
-	/*ARCORE_ASSERT(m_choiceLevels[choiceIndex].m_childrenCount > 0);
-	for (uint32_t i = 0; i < m_choiceLevels[choiceIndex].m_childrenCount; ++i)
-	{
-		m_choiceButtons[choiceIndex + 1 + (int)i]->SetVisible(visible);
-	}*/
 
 	if (visible)
 	{
@@ -131,10 +125,12 @@ void ui::eventide::elements::ListMenuHierarchical::OnGameFrameUpdate ( const Gam
 		{
 			while (m_choiceButtons.size() < m_choices.size())
 			{
+				const auto& choiceLevel = m_choiceLevels[m_choiceButtons.size()];
 				m_choiceButtons.push_back(new ListMenuHierarchicalButton(
 					this,
 					(int)m_choiceButtons.size(),
-					m_choiceLevels[m_choiceButtons.size()].m_childrenCount > 0 ? true : false,
+					choiceLevel.m_index == UINT8_MAX ? (int)m_choiceButtons.size() : (int)choiceLevel.m_index,
+					choiceLevel.m_childrenCount > 0 ? true : false,
 					m_ui));
 			}
 		}
