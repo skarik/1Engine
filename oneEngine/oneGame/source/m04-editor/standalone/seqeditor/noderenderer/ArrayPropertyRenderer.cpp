@@ -128,7 +128,7 @@ void m04::editor::sequence::ArrayPropertyRenderer::BuildMesh ( void )
 
 	// Display the "add element" button
 	quadParams = ParamsForQuad();
-	quadParams.position = m_bboxKey.GetCenterPoint();
+	quadParams.position = m_bboxKey.GetCenterPoint() + Vector3f(m_bboxKey.GetExtents().x * 0.5f, 0, 0);
 	quadParams.size = Vector3f(1, 1, 1) * (ui::eventide::DefaultStyler.text.buttonSize);
 	quadParams.color = Color(1, 1, 1, 1).Lerp(DefaultStyler.box.defaultColor, 0.5F);
 	buildQuad(quadParams);
@@ -275,31 +275,21 @@ void m04::editor::sequence::ArrayPropertyRenderer::OnGameFrameUpdate ( const ui:
 
 void m04::editor::sequence::ArrayPropertyRenderer::UpdateLayout ( const Vector3f& upper_left_corner, const Real left_column_width, const core::math::BoundingBox& node_bbox )
 {
-	int line_height = 1;
-	// todo: don't hack this
 	auto arrayValue = m_targetData->GetAdd<osf::ArrayValue>(m_property->identifier);
-	line_height += (int)arrayValue->values.size() * (int)m_property->definition->arraySubproperties->size();
+	Real lc_width = left_column_width;
 
+	// Start with an estimated bbox with the correct width:
+	int line_height = 1 + (int)arrayValue->values.size() * (int)m_property->definition->arraySubproperties->size();
 	m_bboxHeight = (ui::eventide::DefaultStyler.text.buttonSize + m_nodeRenderer->GetPadding().y) * line_height;
-
 	m_bboxAll = core::math::BoundingBox(
 		Matrix4x4(),
 		upper_left_corner + Vector3f(m_nodeRenderer->GetPadding().x, 0, 0),
-		//upper_left_corner + Vector3f((node_bbox.GetExtents().x - m_nodeRenderer->GetPadding().x) * 2.0F, -ui::eventide::DefaultStyler.text.buttonSize, 4.0F)
-		upper_left_corner + Vector3f((node_bbox.GetExtents().x - m_nodeRenderer->GetPadding().x) * 2.0F, -m_bboxHeight, 4.0F)
+		upper_left_corner + Vector3f(node_bbox.GetExtents().x * 2.0F - m_nodeRenderer->GetPadding().x - lc_width, -m_bboxHeight, 4.0F)
 	);
 
-	m_bboxKey = core::math::BoundingBox(
-		Matrix4x4(),
-		upper_left_corner + Vector3f(left_column_width, 0, 0) + Vector3f(m_nodeRenderer->GetPadding().x, 0, 0),
-		upper_left_corner + Vector3f((node_bbox.GetExtents().x - m_nodeRenderer->GetPadding().x) * 2.0F, -ui::eventide::DefaultStyler.text.buttonSize, 4.0F)
-	);
-
-	// update layout of all the subproperties:
-	core::math::BoundingBox local_bbox = m_bboxAll;
-	Real lc_width = left_column_width;
+	// Collect the height of all the subelements & place them in [roughly] correct positions:
+	float total_subelement_height = ui::eventide::DefaultStyler.text.buttonSize + m_nodeRenderer->GetPadding().y;
 	Vector3f ul_corner = upper_left_corner - Vector3f(-left_column_width, (ui::eventide::DefaultStyler.text.buttonSize + m_nodeRenderer->GetPadding().y), 0);
-	local_bbox.m_Extent.x -= left_column_width * 0.5F;
 
 	for (size_t elementIndex = 0; elementIndex < arrayValue->values.size(); ++elementIndex)
 	{
@@ -311,11 +301,38 @@ void m04::editor::sequence::ArrayPropertyRenderer::UpdateLayout ( const Vector3f
 				m_subproperties[subpropertyRendererIndex]->UpdateLayout(
 					ul_corner,
 					lc_width,
-					local_bbox
+					m_bboxAll
 				);
 
-				ul_corner.y -= m_subproperties[subpropertyRendererIndex]->GetCachedBboxAll().GetExtents().y * 2.0F + m_nodeRenderer->GetPadding().y;
+				float elementHeight = m_subproperties[subpropertyRendererIndex]->GetCachedBboxAll().GetExtents().y * 2.0F + m_nodeRenderer->GetPadding().y;
+
+				ul_corner.y -= elementHeight;
+				total_subelement_height += elementHeight;
 			}
 		}
+	}
+
+	// Resize the bboxes
+	{
+		// Total height:
+		m_bboxHeight = total_subelement_height;
+
+		// Total container:
+		m_bboxAll = core::math::BoundingBox(
+			Matrix4x4(),
+			upper_left_corner
+				+ Vector3f(m_nodeRenderer->GetPadding().x, 0, 0),
+			upper_left_corner
+				+ Vector3f(node_bbox.GetExtents().x * 2.0F - m_nodeRenderer->GetPadding().x - lc_width, -m_bboxHeight, 4.0F)
+		);
+
+		// Interact add/remove button at the top:
+		m_bboxKey = core::math::BoundingBox(
+			Matrix4x4(),
+			upper_left_corner
+				+ Vector3f(left_column_width, 0, 0) + Vector3f(m_nodeRenderer->GetPadding().x, 0, 0),
+			upper_left_corner
+				+ Vector3f(node_bbox.GetExtents().x * 2.0F - m_nodeRenderer->GetPadding().x - lc_width, -ui::eventide::DefaultStyler.text.buttonSize, 4.0F)
+		);
 	}
 }

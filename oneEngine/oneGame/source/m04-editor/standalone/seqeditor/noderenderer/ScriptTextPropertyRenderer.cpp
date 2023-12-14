@@ -351,24 +351,28 @@ void m04::editor::sequence::ScriptTextPropertyRenderer::BuildMesh ( void )
 	quadParams.color = m_propertyState->m_hovered ? Color(0, 0, 0, 1) : Color(0, 0, 0, 1).Lerp(DefaultStyler.box.defaultColor, 0.5F);
 	buildQuad(quadParams);
 
-	textParams = ParamsForText();
-	textParams.string = m_property->label.c_str();
-	textParams.font_texture = &m_nodeRenderer->GetRenderResources().m_fontTexture;
-	textParams.position = m_bboxAll.GetCenterPoint() - Vector3f(m_bboxAll.GetExtents().x, m_bboxAll.GetExtents().y, 0) + Vector3f(0, 0, 0.1F);
-	textParams.rotation = m_nodeRenderer->GetBBoxAbsolute().m_M.getRotator();
-	textParams.size = m_fontSize;
-	textParams.alignment = AlignHorizontal::kLeft;
-	textParams.color = Color(0, 0, 0, 1).Lerp(m_propertyState->m_hovered ? DefaultStyler.text.headingColor : DefaultStyler.text.headingColor.Lerp(DefaultStyler.box.defaultColor, 0.3F), 0.4F);
-	buildText(textParams);
-
-	//const char* str = GetNode()->view->GetPropertyAsString(m_property->identifier);
 	const char* str = properties::GetProperty<const char*>(m_targetData, m_property->identifier);
+
+	if (str && strlen(str) <= 0)
+	{
+		textParams = ParamsForText();
+		textParams.string = m_property->label.c_str();
+		textParams.font_texture = &m_nodeRenderer->GetRenderResources().m_fontTexture;
+		textParams.position = m_bboxAll.GetCenterPoint() - Vector3f(m_bboxAll.GetExtents().x, m_bboxAll.GetExtents().y, 0) + Vector3f(0, 0, 0.1F);
+		textParams.rotation = m_nodeRenderer->GetBBoxAbsolute().m_M.getRotator();
+		textParams.size = m_fontSize;
+		textParams.alignment = AlignHorizontal::kLeft;
+		textParams.color = Color(0, 0, 0, 1).Lerp(m_propertyState->m_hovered ? DefaultStyler.text.headingColor : DefaultStyler.text.headingColor.Lerp(DefaultStyler.box.defaultColor, 0.3F), 0.4F);
+		buildText(textParams);
+	}
+
 	if (str)
 	{
 		textParams = ParamsForText();
 		textParams.font_texture = &m_nodeRenderer->GetRenderResources().m_fontTextureScripting;
 		textParams.size = m_fontSizeScript;
-		textParams.position = m_bboxAll.GetCenterPoint() - Vector3f(m_bboxAll.GetExtents().x, -m_bboxAll.GetExtents().y + textParams.size, 0) + Vector3f(0, 0, 0.2F);
+		textParams.position = m_bboxAll.GetCenterPoint()
+			- Vector3f(m_bboxAll.GetExtents().x - m_nodeRenderer->GetPadding().x, -m_bboxAll.GetExtents().y + textParams.size, 0) + Vector3f(0, 0, 0.2F);
 		textParams.rotation = m_nodeRenderer->GetBBoxAbsolute().m_M.getRotator();
 		textParams.alignment = AlignHorizontal::kLeft;
 		textParams.color = Color(1, 1, 1, 1);
