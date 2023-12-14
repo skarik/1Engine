@@ -168,10 +168,10 @@ void ui::eventide::Element::buildQuad ( const ParamsForQuad& params )
 
 	{
 		Vector3f face[] = {
+			params.position + params.rotation * Vector3f(-params.size.x, params.size.y, 0),
+			params.position + params.rotation * Vector3f( params.size.x, params.size.y, 0),
 			params.position + params.rotation * Vector3f(-params.size.x, -params.size.y, 0),
-			params.position + params.rotation * Vector3f( params.size.x, -params.size.y, 0),
-			params.position + params.rotation * Vector3f(-params.size.x,  params.size.y, 0),
-			params.position + params.rotation * Vector3f( params.size.x,  params.size.y, 0)
+			params.position + params.rotation * Vector3f( params.size.x, -params.size.y, 0)
 		};
 		meshBuilder.addQuad(face, params.rotation * Vector3f(0, 0, -1), params.color);
 	}

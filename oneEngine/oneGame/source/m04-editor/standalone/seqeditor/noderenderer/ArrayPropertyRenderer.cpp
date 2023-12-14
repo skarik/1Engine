@@ -116,23 +116,48 @@ void m04::editor::sequence::ArrayPropertyRenderer::BuildMesh ( void )
 		.setColor(m_propertyState->m_hovered ? DefaultStyler.text.headingColor : DefaultStyler.text.headingColor.Lerp(DefaultStyler.box.defaultColor, 0.3F));
 	buildText(textParams);
 
-
-	for (auto subValue : arrayValue->values)
+	for (size_t elementIndex = 0; elementIndex < arrayValue->values.size(); ++elementIndex)
 	{
-		// Draw each object group, pull the elements from the property definition:
-		for (auto subProperty : *m_property->definition->arraySubproperties)
+		// Draw a quad next to each object group for "remove this item"
+		if (m_property->definition->arraySubproperties->size() > 0)
 		{
+			size_t subpropertyRendererIndex = elementIndex * m_property->definition->arraySubproperties->size();
+			auto* subproperty = m_subproperties[subpropertyRendererIndex];
 
+			// Display the "delete element" button
+			quadParams = ParamsForQuad();
+			quadParams.position = m_bboxKey.GetCenterPoint()
+				- Vector3f(m_bboxKey.GetExtents().x + ui::eventide::DefaultStyler.text.buttonSize + m_nodeRenderer->GetPadding().x, 0, 0);
+			quadParams.position.y = subproperty->GetCachedBboxAll().GetCenterPoint().y + subproperty->GetCachedBboxAll().GetExtents().y
+				- ui::eventide::DefaultStyler.text.buttonSize;
+			quadParams.size = Vector3f(1, 1, 1) * (ui::eventide::DefaultStyler.text.buttonSize) * 0.5;
+			quadParams.color = Color(1, 1, 1, 1).Lerp(DefaultStyler.text.buttonColor, 1.0F);
+			quadParams.texture = &m_nodeRenderer->GetRenderResources().m_uiElementsTexture;
+			quadParams.uvs = Rect({0.0f, 2.0f / 16}, {1.0f / 16, 1.0f / 16});
+			buildQuad(quadParams);
+
+			// Display the "move up" button
+			quadParams.position.x -= quadParams.size.x * 2.0f;
+			quadParams.texture = nullptr;
+			buildQuad(quadParams);
+
+			// Display the "move down" button
+			quadParams.position.x -= quadParams.size.x * 2.0f;
+			quadParams.texture = nullptr;
+			buildQuad(quadParams);
 		}
 	}
 
 	// Display the "add element" button
 	quadParams = ParamsForQuad();
-	quadParams.position = m_bboxKey.GetCenterPoint() + Vector3f(m_bboxKey.GetExtents().x * 0.5f, 0, 0);
-	quadParams.size = Vector3f(1, 1, 1) * (ui::eventide::DefaultStyler.text.buttonSize);
-	quadParams.color = Color(1, 1, 1, 1).Lerp(DefaultStyler.box.defaultColor, 0.5F);
+	quadParams.position = m_bboxKey.GetCenterPoint();// + Vector3f(m_bboxKey.GetExtents().x * 0.5f, 0, 0);
+	quadParams.size = Vector3f(1, 1, 1) * (ui::eventide::DefaultStyler.text.buttonSize) * 0.5;
+	quadParams.color = Color(1, 1, 1, 1).Lerp(DefaultStyler.text.buttonColor, 1.0F);
+	quadParams.texture = &m_nodeRenderer->GetRenderResources().m_uiElementsTexture;
+	quadParams.uvs = Rect({0.0f, 1.0f / 16}, {1.0f / 16, 1.0f / 16});
 	buildQuad(quadParams);
 
+	// Build meshes for all the subproperties on top
 	for (size_t elementIndex = 0; elementIndex < arrayValue->values.size(); ++elementIndex)
 	{
 		for (size_t subpropertyIndex = 0; subpropertyIndex < m_property->definition->arraySubproperties->size(); ++subpropertyIndex)

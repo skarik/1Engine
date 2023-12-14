@@ -5,9 +5,6 @@
 
 #include "core-ext/system/io/assets/Conversion.h"
 
-//#include <filesystem>
-//namespace fs = std::tr2::sys;
-
 namespace core
 {
 	//=========================================//
@@ -16,6 +13,8 @@ namespace core
 	bool Converter::m_initialized = false;
 	bool Converter::m_haveConverter = false;
 	bool Converter::m_haveConverter32 = false;
+	arstring256 Converter::m_pathConverter = "";
+	arstring256 Converter::m_pathConverter32 = "";
 
 	//=========================================//
 	// Internal functions
@@ -25,8 +24,34 @@ namespace core
 	{
 		if (!m_initialized)
 		{
-			m_haveConverter		= IO::FileExists(".tools/dev_tool_oneConverter.exe");
-			m_haveConverter32	= IO::FileExists(".tools/dev_tool_oneConverter32.exe");
+			m_pathConverter		= ".tools/dev_tool_oneConverter.exe";
+			m_pathConverter32	= ".tools/dev_tool_oneConverter32.exe";
+
+			m_haveConverter		= IO::FileExists(m_pathConverter);
+			m_haveConverter32	= IO::FileExists(m_pathConverter32);
+
+			if (!m_haveConverter)
+			{
+				/// @todo: This is also done in gmSceneSystemBuilder
+#ifdef _WIN32
+				// Use GetModuleFileName() to get the Visual Studio build directory
+				char m_exe_path [MAX_PATH]; 
+				GetModuleFileName( GetModuleHandle(NULL), m_exe_path, sizeof(m_exe_path) );
+#else
+				// Use readlink() to get the makefile's build directory
+				char m_exe_path [256];
+				readlink( "/proc/self/exe", m_exe_path, sizeof(m_exe_path) );
+#endif
+				// Replace all \ with /
+				char* m_exe_modder;
+				while ( (m_exe_modder = strrchr( m_exe_path, '\\' )) != NULL ) *m_exe_modder = '/';
+				// Remove the filename from the path
+				*strrchr( m_exe_path, '/' ) = 0;
+				
+				m_pathConverter		= m_exe_path;
+				m_pathConverter		+= "/dev_tool_oneConverter.exe";
+				m_haveConverter		= IO::FileExists(m_pathConverter);
+			}
 
 			m_initialized = true;
 		}
@@ -88,7 +113,7 @@ namespace core
 #		ifdef _WIN32
 			// Create command to run:
 			CHAR commandLine [1024] = {};
-			snprintf(commandLine, sizeof(commandLine), "dev_tool_oneConverter.exe \"%s\" \"%s\"", n_filename, n_outputname);
+			snprintf(commandLine, sizeof(commandLine), "\"%s\" \"%s\" \"%s\"", m_pathConverter.c_str(), n_filename, n_outputname);
 
 			// Set up process
 			STARTUPINFO startupInfo = {};

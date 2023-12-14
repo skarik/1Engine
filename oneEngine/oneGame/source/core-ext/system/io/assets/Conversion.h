@@ -54,6 +54,8 @@ namespace core
 		static bool m_initialized;
 		static bool m_haveConverter;
 		static bool m_haveConverter32;
+		static arstring256 m_pathConverter;
+		static arstring256 m_pathConverter32;
 
 		//=========================================//
 		// Internal functions
