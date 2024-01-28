@@ -73,7 +73,7 @@ nodetype SGUIDialogueParamsChain
 	
 	chain
 	{
-		displayAs ""
+		displayAs "Dialogue"
 		type array
 		{
 			structType

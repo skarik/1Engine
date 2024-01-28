@@ -10,16 +10,63 @@ void m04::editor::sequence::ArrayPropertyRenderer::OnClicked ( const ui::eventid
 
 	if (mouse_event.button == core::kMBLeft)
 	{
-		//m_propertyState->m_editing = true;
-		core::math::BoundingBox addRect(Rotator(), m_bboxKey.GetCenterPoint(), Vector3f(1, 1, 1) * ui::eventide::DefaultStyler.text.buttonSize);
+		auto addButtonBox = GetButtonRect(ButtonType::Add, 0);
+		core::math::BoundingBox addRect(Rotator(), addButtonBox.position, addButtonBox.size);
+
+		auto arrayValue = m_targetData->GetAdd<osf::ArrayValue>(m_property->identifier);
 
 		if (addRect.IsPointInBox(mouse_event.position_world))
-		{
-			// TODO: Signal to UI to wait for rendering to finish.
-			//GetNode()->view->SetProperty(m_property->identifier, !GetNode()->view->GetPropertyAsBool(m_property->identifier));
-			auto arrayValue = m_targetData->GetAdd<osf::ArrayValue>(m_property->identifier);
+		{	// TODO: Signal to UI to wait for rendering to finish.
 			arrayValue->values.push_back(new osf::ObjectValue());
 			return;
+		}
+
+		for (size_t elementIndex = 0; elementIndex < arrayValue->values.size(); ++elementIndex)
+		{
+			if (m_property->definition->arraySubproperties->size() > 0)
+			{
+				auto removeButtonBox = GetButtonRect(ButtonType::Remove, (uint)elementIndex);
+				core::math::BoundingBox removeRect(Rotator(), removeButtonBox.position, removeButtonBox.size);
+				if (removeRect.IsPointInBox(mouse_event.position_world))
+				{	// TODO: Signal to UI to wait for rendering to finish.
+					arrayValue->values.erase(arrayValue->values.begin() + elementIndex);
+					return;
+				}
+
+				auto moveUpButtonBox = GetButtonRect(ButtonType::MoveUp, (uint)elementIndex);
+				core::math::BoundingBox moveUpRect(Rotator(), moveUpButtonBox.position, moveUpButtonBox.size);
+				if (moveUpRect.IsPointInBox(mouse_event.position_world))
+				{	// TODO: Signal to UI to wait for rendering to finish.
+					if (elementIndex > 0)
+					{
+						std::swap(arrayValue->values[elementIndex], arrayValue->values[elementIndex - 1]);
+						for (size_t subpropertyIndex = 0; subpropertyIndex < m_property->definition->arraySubproperties->size(); ++subpropertyIndex)
+						{
+							size_t subpropertyRendererIndex = elementIndex * m_property->definition->arraySubproperties->size() + subpropertyIndex;
+							size_t subpropertyRendererIndexSwap = (elementIndex - 1) * m_property->definition->arraySubproperties->size() + subpropertyIndex;
+							std::swap(m_subproperties[subpropertyRendererIndex], m_subproperties[subpropertyRendererIndexSwap]);
+						}
+					}
+					return;
+				}
+
+				auto moveDownButtonBox = GetButtonRect(ButtonType::MoveDown, (uint)elementIndex);
+				core::math::BoundingBox moveDownRect(Rotator(), moveDownButtonBox.position, moveDownButtonBox.size);
+				if (moveDownRect.IsPointInBox(mouse_event.position_world))
+				{	// TODO: Signal to UI to wait for rendering to finish.
+					if (elementIndex + 1 < arrayValue->values.size())
+					{
+						std::swap(arrayValue->values[elementIndex], arrayValue->values[elementIndex + 1]);
+						for (size_t subpropertyIndex = 0; subpropertyIndex < m_property->definition->arraySubproperties->size(); ++subpropertyIndex)
+						{
+							size_t subpropertyRendererIndex = elementIndex * m_property->definition->arraySubproperties->size() + subpropertyIndex;
+							size_t subpropertyRendererIndexSwap = (elementIndex + 1) * m_property->definition->arraySubproperties->size() + subpropertyIndex;
+							std::swap(m_subproperties[subpropertyRendererIndex], m_subproperties[subpropertyRendererIndexSwap]);
+						}
+					}
+					return;
+				}
+			}
 		}
 	}
 
@@ -72,6 +119,40 @@ void m04::editor::sequence::ArrayPropertyRenderer::OnClickedOutside ( const ui::
 	}
 }
 
+m04::editor::sequence::ArrayPropertyRenderer::CenteredBox
+m04::editor::sequence::ArrayPropertyRenderer::GetButtonRect ( const ButtonType buttonType, const uint index )
+{
+	CenteredBox box = {};
+	if (buttonType == ButtonType::Add)
+	{
+		box.position = m_bboxKey.GetCenterPoint() + Vector3f(m_bboxKey.GetExtents().x, 0, 0);
+		box.size = Vector3f(1, 1, 1) * (ui::eventide::DefaultStyler.text.buttonSize) * 0.5;
+		box.position.x -= box.size.x;
+	}
+	else
+	{
+		if (m_property->definition->arraySubproperties->size() > 0)
+		{
+			size_t subpropertyRendererIndex = ((size_t)(index)) * m_property->definition->arraySubproperties->size();
+			auto* subproperty = m_subproperties[subpropertyRendererIndex];
+
+			box.position = m_bboxKey.GetCenterPoint()
+				- Vector3f(m_bboxKey.GetExtents().x + ui::eventide::DefaultStyler.text.buttonSize + m_nodeRenderer->GetPadding().x, 0, 0);
+			box.position.y = subproperty->GetCachedBboxAll().GetCenterPoint().y + subproperty->GetCachedBboxAll().GetExtents().y
+				- ui::eventide::DefaultStyler.text.buttonSize;
+			box.size = Vector3f(1, 1, 1) * (ui::eventide::DefaultStyler.text.buttonSize) * 0.5;
+
+			if (buttonType == ButtonType::Remove)
+				;
+			else if (buttonType == ButtonType::MoveUp)
+				box.position.x -= box.size.x * 2.0f;
+			else if (buttonType == ButtonType::MoveDown)
+				box.position.x -= box.size.x * 2.0f * 2;
+		}
+	}
+	return box;
+}
+
 void m04::editor::sequence::ArrayPropertyRenderer::BuildMesh ( void )
 {
 	using namespace ui::eventide;
@@ -84,14 +165,15 @@ void m04::editor::sequence::ArrayPropertyRenderer::BuildMesh ( void )
 
 	const Vector3f kZStep = Vector3f(0, 0, 0.1F);
 
-	textParams.setDefaults();
-	textParams.string = m_property->label.c_str();
-	textParams.font_texture = &m_nodeRenderer->GetRenderResources().m_fontTexture;
-	textParams.position = m_bboxAll.GetCenterPoint() - Vector3f(m_bboxAll.GetExtents().x, m_bboxAll.GetExtents().y, 0) + kZStep;
-	textParams.rotation = m_nodeRenderer->GetBBoxAbsolute().m_M.getRotator();
-	textParams.size = math::lerp(0.0F, ui::eventide::DefaultStyler.text.buttonSize, ui::eventide::DefaultStyler.text.headingSize);
-	textParams.alignment = AlignHorizontal::kLeft;
-	textParams.color = m_propertyState->m_hovered ? DefaultStyler.text.headingColor : DefaultStyler.text.headingColor.Lerp(DefaultStyler.box.defaultColor, 0.3F);
+	textParams.setDefaults()
+		.setString(m_property->label.c_str())
+		.setFontTexture(&m_nodeRenderer->GetRenderResources().m_fontTexture)
+		.setTransform(
+			m_bboxAll.GetCenterPoint() - Vector3f(m_bboxAll.GetExtents().x, -m_bboxAll.GetExtents().y + m_bboxKey.GetExtents().y * 2, 0) + kZStep,
+			m_nodeRenderer->GetBBoxAbsolute().m_M.getRotator())
+		.setSize(math::lerp(0.0F, ui::eventide::DefaultStyler.text.buttonSize, ui::eventide::DefaultStyler.text.headingSize))
+		.setAlignment(AlignHorizontal::kLeft)
+		.setColor(m_propertyState->m_hovered ? DefaultStyler.text.headingColor : DefaultStyler.text.headingColor.Lerp(DefaultStyler.box.defaultColor, 0.3F));
 	buildText(textParams);
 
 	// Add the +/- buttons at the top for the array, and display number of values
@@ -126,11 +208,15 @@ void m04::editor::sequence::ArrayPropertyRenderer::BuildMesh ( void )
 
 			// Display the "delete element" button
 			quadParams = ParamsForQuad();
-			quadParams.position = m_bboxKey.GetCenterPoint()
+			/*quadParams.position = m_bboxKey.GetCenterPoint()
 				- Vector3f(m_bboxKey.GetExtents().x + ui::eventide::DefaultStyler.text.buttonSize + m_nodeRenderer->GetPadding().x, 0, 0);
 			quadParams.position.y = subproperty->GetCachedBboxAll().GetCenterPoint().y + subproperty->GetCachedBboxAll().GetExtents().y
 				- ui::eventide::DefaultStyler.text.buttonSize;
 			quadParams.size = Vector3f(1, 1, 1) * (ui::eventide::DefaultStyler.text.buttonSize) * 0.5;
+			*/
+			auto button = GetButtonRect(ButtonType::Remove, (uint)elementIndex);
+			quadParams.position = button.position;
+			quadParams.size = button.size;
 			quadParams.color = Color(1, 1, 1, 1).Lerp(DefaultStyler.text.buttonColor, 1.0F);
 			quadParams.texture = &m_nodeRenderer->GetRenderResources().m_uiElementsTexture;
 			quadParams.uvs = Rect({0.0f, 2.0f / 16}, {1.0f / 16, 1.0f / 16});
@@ -138,20 +224,25 @@ void m04::editor::sequence::ArrayPropertyRenderer::BuildMesh ( void )
 
 			// Display the "move up" button
 			quadParams.position.x -= quadParams.size.x * 2.0f;
-			quadParams.texture = nullptr;
+			quadParams.texture = &m_nodeRenderer->GetRenderResources().m_uiElementsTexture;
+			quadParams.uvs = Rect({1.0f / 16, 3.0f / 16}, {1.0f / 16, -1.0f / 16});
 			buildQuad(quadParams);
 
 			// Display the "move down" button
 			quadParams.position.x -= quadParams.size.x * 2.0f;
-			quadParams.texture = nullptr;
+			quadParams.texture = &m_nodeRenderer->GetRenderResources().m_uiElementsTexture;
+			quadParams.uvs = Rect({1.0f / 16, 2.0f / 16}, {1.0f / 16, 1.0f / 16});
 			buildQuad(quadParams);
 		}
 	}
 
 	// Display the "add element" button
 	quadParams = ParamsForQuad();
-	quadParams.position = m_bboxKey.GetCenterPoint();// + Vector3f(m_bboxKey.GetExtents().x * 0.5f, 0, 0);
-	quadParams.size = Vector3f(1, 1, 1) * (ui::eventide::DefaultStyler.text.buttonSize) * 0.5;
+	//quadParams.position = m_bboxKey.GetCenterPoint();// + Vector3f(m_bboxKey.GetExtents().x * 0.5f, 0, 0);
+	//quadParams.size = Vector3f(1, 1, 1) * (ui::eventide::DefaultStyler.text.buttonSize) * 0.5;
+	auto add_button = GetButtonRect(ButtonType::Add, 0);
+	quadParams.position	= add_button.position;
+	quadParams.size		= add_button.size;
 	quadParams.color = Color(1, 1, 1, 1).Lerp(DefaultStyler.text.buttonColor, 1.0F);
 	quadParams.texture = &m_nodeRenderer->GetRenderResources().m_uiElementsTexture;
 	quadParams.uvs = Rect({0.0f, 1.0f / 16}, {1.0f / 16, 1.0f / 16});

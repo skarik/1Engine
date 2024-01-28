@@ -10,6 +10,20 @@ namespace sequence {
 	class ArrayPropertyRenderer : public IPropertyRenderer
 	{
 	public:
+		enum class ButtonType
+		{
+			Add,
+			MoveUp,
+			MoveDown,
+			Remove,
+		};
+		struct CenteredBox
+		{
+			Vector3f	position;
+			Vector3f	size;
+		};
+
+	public:
 		explicit				ArrayPropertyRenderer ( const PropertyRendererCreateParams& params )
 			: IPropertyRenderer(params)
 			{}
@@ -22,6 +36,8 @@ namespace sequence {
 		virtual void			OnGameFrameUpdate ( const ui::eventide::Element::GameFrameUpdateInput& input_frame ) override;
 
 		virtual void			UpdateLayout ( const Vector3f& upper_left_corner, const Real left_column_width, const core::math::BoundingBox& node_bbox ) override;
+
+		CenteredBox				GetButtonRect ( const ButtonType buttonType, const uint index );
 
 		std::vector<IPropertyRenderer*>
 							m_subproperties;
