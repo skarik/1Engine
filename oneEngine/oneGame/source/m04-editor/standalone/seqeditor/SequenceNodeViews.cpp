@@ -226,6 +226,7 @@ m04::editor::sequence::ExternallyDefinedSeqNodeView::ExternallyDefinedSeqNodeVie
 		{
 			node->data.GetAdd<osf::ArrayValue>(propertyView.identifier);
 		}
+
 		/*if (sourceProperty.defaultValue != "")
 		{
 			SetProperty((int)propertyIndex, sourceProperty.defaultValue);

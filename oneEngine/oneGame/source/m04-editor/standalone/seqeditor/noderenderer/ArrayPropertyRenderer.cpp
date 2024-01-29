@@ -18,6 +18,15 @@ void m04::editor::sequence::ArrayPropertyRenderer::OnClicked ( const ui::eventid
 		if (addRect.IsPointInBox(mouse_event.position_world))
 		{	// TODO: Signal to UI to wait for rendering to finish.
 			arrayValue->values.push_back(new osf::ObjectValue());
+			// Set default values:
+			for (size_t subpropertyIndex = 0; subpropertyIndex < m_property->definition->arraySubproperties->size(); ++subpropertyIndex)
+			{
+				auto object = arrayValue->values.back()->As<osf::ObjectValue>();
+				properties::SetProperty(
+					object,
+					m_property->definition->arraySubproperties->at(subpropertyIndex).name,
+					m_property->definition->arraySubproperties->at(subpropertyIndex).defaultValue);
+			}
 			return;
 		}
 
